@@ -28,9 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Features\Authentication\Command\" />
     <Folder Include="Application\Features\Authentication\Queries\" />
-    <Folder Include="Application\Features\Authentication\Service\" />
   </ItemGroup>
 
 
