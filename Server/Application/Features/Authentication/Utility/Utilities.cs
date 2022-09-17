@@ -7,7 +7,6 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Utility
     public static class Extensions
     {
 
-       
 
 
     }
