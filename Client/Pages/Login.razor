@@ -1,66 +1,47 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
+@inject IAuthentication Authentication
 
 <MudDialog>
     <DialogContent>
-        <div class="d-flex flex-column py-1">
-            <MudGrid>
+        <div class="d-flex flex-column py-1 mx-auto">
+            <MudGrid Justify="Justify.Center">
                 <MudItem xs="12" sm="7">
-                    <MudPaper Class="pa-4">
-                        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                            <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
-                            <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
+                    <MudPaper Class="pa-6 align-content-center">
+                        <MudForm Model="@user" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                            <MudTextField @bind-Value="user.Email"  T="string" Label="Email" Required="true" RequiredError="Email is required!"
                                           Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />
-                            <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
+                            <MudTextField @bind-Value="user.Password" T="string" Label="Password" @ref="pwField1"
                                           InputType="InputType.Password"
                                           Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
                                           RequiredError="Password is required!" />
-                            <MudTextField T="string"
-                                          Label="Password" HelperText="Repeat the password" InputType="InputType.Password"
-                                          Validation="@(new Func<string, string>(PasswordMatch))" />
-                            <div class="d-flex">
-                                <MudRadioGroup T="string" Required="true" RequiredError="Account type is required!">
-                                    <MudRadio Option="@("Personal")">Personal</MudRadio>
-                                    <MudRadio Option="@("Professional")">Professional</MudRadio>
-                                </MudRadioGroup>
-                            </div>
-                            <div class="d-flex align-center justify-space-between">
-                                <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree!" />
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
-                            </div>
                         </MudForm>
                     </MudPaper>
-                    <MudPaper Class="pa-4 mt-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(()=>form.Validate())">Validate</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true" OnClick="@(()=>form.Reset())" Class="mx-2">Reset</MudButton>
-                        <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=>form.ResetValidation())">Reset Validation</MudButton>
+                    <MudPaper Class="pa-4">
+                        <MudButton Variant="Variant.Filled"  OnClick="@(()=>form.ResetValidation())">  <MudIcon Icon="@Icons.Filled.AppRegistration" Title="Register" /></MudButton>
                     </MudPaper>
-                </MudItem>
-                <MudItem xs="12" sm="5">
-                    <MudPaper Class="pa-4 mud-height-full">
-                        <MudText Typo="Typo.subtitle2">@($"Errors ({errors.Length})")</MudText>
-                        @foreach (var error in errors)
-                        {
-                            <MudText Color="@Color.Error">@error</MudText>
-                        }
+                    <MudPaper Class="pa-4">
+                       <MudText Color="@Color.Error">@errorMessage</MudText>
                     </MudPaper>
                 </MudItem>
             </MudGrid>
         </div>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Primary" OnClick="Close">Ok</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-
-    void Close() => MudDialog.Close(DialogResult.Ok(true));
 
     bool success;
     string[] errors = { };
     MudTextField<string> pwField1;
     MudForm form;
+    string errorMessage = string.Empty;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    LoginUserRequest user = new LoginUserRequest();
 
     private IEnumerable<string> PasswordStrength(string pw)
     {
@@ -79,10 +60,18 @@
             yield return "Password must contain at least one digit";
     }
 
-    private string PasswordMatch(string arg)
+    public async Task LoginUser()
     {
-        if (pwField1.Value != arg)
-            return "Passwords don't match";
-        return null;
+        form.Validate();
+
+        var result = await Authentication.AuthenticateAsync(user);
+
+        if (!result.Status)
+        {
+            errorMessage = result.Message;
+        }
+
     }
+
+    
 }

@@ -8,12 +8,12 @@
     }
   },
   "profiles": {
-    "MyDemoProjects.Server": {
+    "MyDemoProjects": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7205;http://localhost:5205",
+      "applicationUrl": "https://localhost:7205",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
