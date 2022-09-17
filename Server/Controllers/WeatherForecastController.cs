@@ -37,11 +37,6 @@ namespace MyDemoProjects.Server.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult<ServerResponse<UserDto>>> RegisterUser(UserDto userDto)
-        {
-
-            return await _mediator.Send(new RegisterUserCommand(userDto));
-        }
+        
     }
 }

@@ -3,16 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using MyDemoProjects.Server.Application.Features.Authentication.Utility;
 using MyDemoProjects.Server.Data;
 using MyDemoProjects.Server.Domain.Entities;
-using MyDemoProjects.Shared.DTO;
-using MyDemoProjects.Shared.DTO.Response;
 using System.Security.Cryptography;
 
 namespace MyDemoProjects.Server.Application.Features.Authentication.Command
 {
-    public record RegisterUserCommand(UserDto User) : IRequest<ServerResponse<UserDto>>;
+    public record RegisterUser(UserDto User) : IRequest<ServerResponse<bool>>;
 
 
-    public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, ServerResponse<UserDto>>
+    public class RegisterUserHandler : IRequestHandler<RegisterUser, ServerResponse<bool>>
     {
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
@@ -22,13 +20,14 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Command
             _dataContext = applicationDbContext;
             _mapper = mapper;
         }
-        public async Task<ServerResponse<UserDto>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<ServerResponse<bool>> Handle(RegisterUser request, CancellationToken cancellationToken)
         {
             if (await _dataContext.Users.AnyAsync(user => user.Email.ToLower()
                  .Equals(request.User.Email.ToLower())))
             {
-                return new ServerResponse<UserDto>
+                return new ServerResponse<bool>
                 {
+                    Data = false,
                     Status = false,
                     Message = "User already exists."
                 };
@@ -36,15 +35,17 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Command
 
             var user = _mapper.Map<User>(request.User);
             PasswordHash.Create(request.User.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+
 
             _dataContext.Users.Add(user);
             await _dataContext.SaveChangesAsync();
 
             var result = _mapper.Map<UserDto>(user);
 
-            return new ServerResponse<UserDto> { Data = result, Message = "Registration successful!" };
+            return new ServerResponse<bool> { Data = true, Message = "Registration successful!" };
         }
 
         

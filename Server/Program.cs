@@ -1,4 +1,7 @@
 global using MediatR;
+global using MyDemoProjects.Shared.DTO;
+global using MyDemoProjects.Shared.DTO.Response;
+global using MyDemoProjects.Shared.DTO.Request;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using MyDemoProjects.Server.Data;
