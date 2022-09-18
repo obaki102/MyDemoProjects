@@ -2,7 +2,10 @@
 @using System.ComponentModel.DataAnnotations
 @inject IAuthentication Authentication
 @inject IDialogService DialogService
-<MudDialogProvider />
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 
 <MudDialog>
     <DialogContent>
@@ -10,17 +13,17 @@
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12" sm="7">
                     <MudPaper Class="pa-6 align-content-center">
-                        <MudForm Model="@user" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                        <MudForm Model="@user" @ref="form" @bind-IsValid="@success">
                             <MudTextField @bind-Value="user.Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
-                                          Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" OnlyValidateIfDirty="true" />
-                            <MudTextField @bind-Value="user.Password" T="string" Label="Password" @ref="pwField1"
+                                          OnlyValidateIfDirty="true" />
+                            <MudTextField @bind-Value="user.Password" T="string" Label="Password"
                                           InputType="InputType.Password"
-                                          Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                                          Required="true"
                                           RequiredError="Password is required!" OnlyValidateIfDirty="true" />
                         </MudForm>
                     </MudPaper>
                     <MudPaper Class="pa-4">
-                        <MudButton Variant="Variant.Filled" OnClick="@Register">  <MudIcon Icon="@Icons.Filled.AppRegistration" Title="Register" /></MudButton>
+                        <MudButton Variant="Variant.Filled" OnClick="@Register">  <MudIcon Icon="@Icons.Filled.AppRegistration" Title="Create account" /></MudButton>
                     </MudPaper>
                     <MudPaper Class="pa-4">
                         <MudText Color="@Color.Error">@errorMessage</MudText>
@@ -36,31 +39,12 @@
 @code {
 
     bool success;
-    string[] errors = { };
-    MudTextField<string> pwField1;
     MudForm form;
     string errorMessage = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     LoginUserRequest user = new LoginUserRequest();
-
-    private IEnumerable<string> PasswordStrength(string pw)
-    {
-        if (string.IsNullOrWhiteSpace(pw))
-        {
-            yield return "Password is required!";
-            yield break;
-        }
-        if (pw.Length < 8)
-            yield return "Password must be at least of length 8";
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-            yield return "Password must contain at least one capital letter";
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-            yield return "Password must contain at least one lowercase letter";
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-            yield return "Password must contain at least one digit";
-    }
 
     public async Task LoginUser()
     {
@@ -73,6 +57,13 @@
             if (!result.Status)
             {
                 errorMessage = result.Message;
+            }
+            else
+            {
+
+                await LocalStorage.SetItemAsync("authToken", result.Data);
+                await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                NavigationManager.NavigateTo("/index");
             }
         }
 

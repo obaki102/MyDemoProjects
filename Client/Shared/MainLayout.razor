@@ -2,19 +2,19 @@
 @inherits LayoutComponentBase
 @inject IDialogService DialogService
 
-  <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
 
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudText Typo="Typo.h5" Class="ml-3">MyDemoProjects</MudText>
         <MudSpacer />
-       <MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-        Login
+        <MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+            Login
         </MudButton>
     </MudAppBar>
     <MudMainContent>
-      
+      @Body
     </MudMainContent>
 </MudLayout>
 
@@ -23,6 +23,6 @@
     private bool _isDarkMode = true;
     private void OpenDialog()
     {
-        DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true});
+        DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
     }
 }

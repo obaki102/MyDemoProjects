@@ -1,7 +1,42 @@
-﻿@page "/"
+﻿@page "/index"
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize]
+
 
 <PageTitle>Index</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
+<AuthorizeView>
+    <h3>Hi! You're logged in with <i>@context.User.FindFirst(ClaimTypes.Surname).Value</i>.</h3>
+</AuthorizeView>
+@*<MudText Typo="Typo.h3" GutterBottom="true">@user.FirstName</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">@user.LastName</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">@user.Email</MudText>*@
 <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
-<MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+
+
+@code {
+    private bool authorized = false;
+    UserDto user;
+
+    //[CascadingParameter]
+    //public Task<AuthenticationState> AuthState { get; set; }
+
+    //protected override async Task OnInitializedAsync()
+    //{
+
+    //    var authState = await AuthState;
+
+    //    if (authState.User.Identity.IsAuthenticated)
+    //    {
+    //        user = new UserDto
+    //            {
+
+    //                FirstName = authState.User.FindFirst(c => c.Type == ClaimTypes.GivenName).Value,
+    //                LastName = authState.User.FindFirst(c => c.Type == ClaimTypes.Surname).Value,
+    //                Email = authState.User.FindFirst(c => c.Type == ClaimTypes.Email).Value
+    //            };
+    //    }
+
+    //}
+
+}

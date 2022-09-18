@@ -7,7 +7,7 @@
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12" sm="7">
                     <MudPaper Class="pa-4">
-                        <MudForm @ref="form" @bind-Errors="@errors" Model="@newUser">
+                        <MudForm @ref="form"  Model="@newUser">
                             <MudTextField @bind-Value="newUser.Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
                                           Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" OnlyValidateIfDirty="true" />
                             <MudTextField @bind-Value="newUser.FirstName" T="string" Label="First Name" Required="true" RequiredError="First Name is required!" OnlyValidateIfDirty="true" />
@@ -45,7 +45,6 @@
 @code {
     bool isSuccess = false;
     bool isError = false;
-    string[] errors = { };
     MudTextField<string> pwField1;
     private string errorMessage = string.Empty;
     MudForm form;

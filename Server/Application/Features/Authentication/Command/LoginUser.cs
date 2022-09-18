@@ -24,7 +24,7 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Command
         }
         public async Task<ServerResponse<string>> Handle(LoginUser request, CancellationToken cancellationToken)
         {
-            var user = await _dataContext.Users.FirstOrDefaultAsync(e => e.Email.ToLower().Equals(request.User.Email.ToLower()));
+            var user = await _dataContext.Users.AsNoTracking().FirstOrDefaultAsync(e => e.Email.ToLower().Equals(request.User.Email.ToLower()));
             //Check if user exist
             if (user == null)
             {
@@ -61,6 +61,8 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Command
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName),
                 new Claim(ClaimTypes.Role,user.Role.ToString())
             };
 

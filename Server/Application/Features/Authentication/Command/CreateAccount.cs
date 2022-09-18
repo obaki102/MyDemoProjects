@@ -22,7 +22,7 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Command
         }
         public async Task<ServerResponse<bool>> Handle(CreateAccount request, CancellationToken cancellationToken)
         {
-            if (await _dataContext.Users.AnyAsync(user => user.Email.ToLower()
+            if (await _dataContext.Users.AsNoTracking().AnyAsync(user => user.Email.ToLower()
                  .Equals(request.User.Email.ToLower())))
             {
                 return new ServerResponse<bool>
