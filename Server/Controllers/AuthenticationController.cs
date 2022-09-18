@@ -15,11 +15,10 @@ namespace MyDemoProjects.Server.Controllers
         {
             _mediator = mediator;
         }
-        [HttpPost("api/registerUser")]
-        [Authorize(Roles = "User")]
-        public async Task<ActionResult<ServerResponse<bool>>> RegisterUser(UserDto user)
+        [HttpPost("api/createAccount")]
+        public async Task<ActionResult<ServerResponse<bool>>> CreateAccount(UserDto user)
         {
-            return await _mediator.Send(new RegisterUser(user));
+            return await _mediator.Send(new CreateAccount(user));
         }
 
         [HttpPost("api/loginUser")]
