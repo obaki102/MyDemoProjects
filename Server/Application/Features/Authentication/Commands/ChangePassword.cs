@@ -4,7 +4,7 @@ using MyDemoProjects.Server.Data;
 using MyDemoProjects.Server.Domain.Entities;
 using System.Security.Claims;
 
-namespace MyDemoProjects.Server.Application.Features.Authentication.Command
+namespace MyDemoProjects.Server.Application.Features.Authentication.Commands
 {
     public record ChangePassword(ChangePasswordRequest User) : IRequest<ServerResponse<bool>>;
 

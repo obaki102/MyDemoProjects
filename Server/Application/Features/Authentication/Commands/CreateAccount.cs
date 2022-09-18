@@ -5,7 +5,7 @@ using MyDemoProjects.Server.Data;
 using MyDemoProjects.Server.Domain.Entities;
 using System.Security.Cryptography;
 
-namespace MyDemoProjects.Server.Application.Features.Authentication.Command
+namespace MyDemoProjects.Server.Application.Features.Authentication.Commands
 {
     public record CreateAccount(UserDto User) : IRequest<ServerResponse<bool>>;
 

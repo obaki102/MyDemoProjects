@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyDemoProjects.Server.Application.Features.Authentication.Command;
+using MyDemoProjects.Server.Application.Features.Authentication.Commands;
 
 namespace MyDemoProjects.Server.Controllers
 {

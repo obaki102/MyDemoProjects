@@ -13,6 +13,8 @@ namespace MyDemoProjects.Server.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Token> Tokens { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

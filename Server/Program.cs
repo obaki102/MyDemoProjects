@@ -2,21 +2,31 @@ global using MediatR;
 global using MyDemoProjects.Shared.DTO;
 global using MyDemoProjects.Shared.DTO.Response;
 global using MyDemoProjects.Shared.DTO.Request;
+global using MyDemoProjects.Server.Application.Features.Shared.Service;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using MyDemoProjects.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MyDemoProjects.Server.Application.Features.Shared.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddHttpClient<IHttpService, HttpService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7244/");
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddSingleton(typeof(IJsonToServerResponse<>), typeof(JsonToServerResponse<>));
+builder.Services.AddHttpClient<IHttpService, HttpService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7205/");
+});
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

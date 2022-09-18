@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\Features\AnimeList\Commands\" />
     <Folder Include="Application\Features\Authentication\Queries\" />
   </ItemGroup>
 

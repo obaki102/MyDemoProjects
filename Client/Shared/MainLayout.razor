@@ -7,12 +7,16 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">MyDemoProjects</MudText>
         <MudSpacer />
         <MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
             Login
         </MudButton>
     </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+       <NavMenu/>
+    </MudDrawer>
     <MudMainContent>
       @Body
     </MudMainContent>
@@ -24,5 +28,12 @@
     private void OpenDialog()
     {
         DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
+    }
+
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
     }
 }

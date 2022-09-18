@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MyDemoProjects.Server.Application.Features.Authentication.Command;
+using MyDemoProjects.Server.Application.Features.Authentication.Commands;
 using MyDemoProjects.Shared;
 using MyDemoProjects.Shared.DTO;
 using MyDemoProjects.Shared.DTO.Response;

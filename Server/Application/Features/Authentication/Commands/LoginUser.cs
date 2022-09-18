@@ -8,7 +8,7 @@ using MyDemoProjects.Server.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace MyDemoProjects.Server.Application.Features.Authentication.Command
+namespace MyDemoProjects.Server.Application.Features.Authentication.Commands
 {
     public record LoginUser(LoginUserRequest User) : IRequest<ServerResponse<string>>;
 
