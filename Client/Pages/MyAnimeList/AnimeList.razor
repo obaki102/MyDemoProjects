@@ -9,21 +9,32 @@
 else
 {
     <MudGrid>
-
         @foreach (var anime in AnimeListService.AnimeLists)
         {
-            <MudItem xs="3">
-                <MudCard>
-                    <MudCardMedia ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Image="@anime.Node.MainPicture.Large" Class="rounded-lg" Height="250" Elevation="25" />
-                    <MudCardContent>
-                        <MudText Typo="Typo.h5">@anime.Node.Title</MudText>
-                        <MudText Typo="Typo.body2">@anime.Node.Synopsis</MudText>
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                        <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-                    </MudCardActions>
-                </MudCard>
+            <MudItem xs="6" sm="3">
+                <div Class="d-md-flex pa-1">
+
+                    <MudCard>
+                        <MudCardMedia ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Image="@anime.Node.MainPicture.Large" Class="rounded-lg" Height="250" Elevation="25" />
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">@anime.Node.Title (@anime.Node.AlternativeTitles.Ja)</MudText>
+                            @* <MudText Typo="Typo.body2">@anime.Node.Synopsis</MudText>*@
+                        </MudCardContent>
+                        <MudCardActions>
+
+                            @if (anime.Node.Genres != null)
+                            {
+                                @foreach (var g in anime.Node.Genres.Take(3))
+                                {
+
+                                    <MudChip Color="Color.Default"> @g.Name</MudChip>
+
+                                }
+                            }
+                        </MudCardActions>
+
+                    </MudCard>
+                </div>
             </MudItem>
         }
     </MudGrid>
