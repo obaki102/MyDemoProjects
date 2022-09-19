@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Shared.DTO
 {
-    public class UserDto
+    public record UserDto
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

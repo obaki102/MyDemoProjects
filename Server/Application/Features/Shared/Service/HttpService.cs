@@ -14,12 +14,11 @@ namespace MyDemoProjects.Server.Application.Features.Shared.Service
         {
             _httpClient = httpClient;
             _configuration = configuration;
-
+            _httpClient.DefaultRequestHeaders.Add("X-MAL-CLIENT-ID", _configuration.GetSection("client_id").Value);
         }
 
         public async Task<HttpResponseMessage> GetResponse(HttpServiceOption options)
         {
-
             if (options.IsTokenRequired)
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", options.Token);
@@ -41,14 +40,14 @@ namespace MyDemoProjects.Server.Application.Features.Shared.Service
 
                if(!options.IsRefreshToken)
                 {
-                    properties.Add("client_id", _configuration.GetSection("MyDemoProjects:client_id").Value);
-                    properties.Add("client_secret", _configuration.GetSection("MyDemoProjects:client_secret").Value);
-                    properties.Add("code_verifier", _configuration.GetSection("MyDemoProjects:code_verifier").Value);
-                    properties.Add("code", _configuration.GetSection("MyDemoProjects:code").Value);
+                    properties.Add("client_id", _configuration.GetSection("client_id").Value);
+                    properties.Add("client_secret", _configuration.GetSection("client_secret").Value);
+                    properties.Add("code_verifier", _configuration.GetSection("code_verifier").Value);
+                    properties.Add("code", _configuration.GetSection("code").Value);
                 }
                 _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_configuration.GetSection("MyDemoProjects:client_id").Value}:{_configuration.GetSection("MyDemoProjects:client_secret").Value}")));
+                Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_configuration.GetSection("client_id").Value}:{_configuration.GetSection("client_secret").Value}")));
 
                 return await _httpClient.PostAsync(options.Endpoint, new FormUrlEncodedContent(properties));
 

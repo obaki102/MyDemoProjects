@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Shared.DTO.Response
 {
-    public class TokenResponse
+    public record TokenResponse
     {
         [JsonPropertyName("access_token")]
         public string? AccessToken { get; set; }

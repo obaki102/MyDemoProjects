@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Shared.DTO.Request
 {
-    public class ChangePasswordRequest
+    public record ChangePasswordRequest
     {
         public string Email { get; set; } = string.Empty;
         public string CurrentPassword { get; set; } = string.Empty;

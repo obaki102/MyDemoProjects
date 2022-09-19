@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Shared.DTO.Response
 {
-    public class ServerResponse<T>
+    public record ServerResponse<T> 
     {
         public T Data { get; set; }
 
@@ -15,3 +15,5 @@ namespace MyDemoProjects.Shared.DTO.Response
         public bool Status { get; set; }
     }
 }
+
+

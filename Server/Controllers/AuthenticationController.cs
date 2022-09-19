@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyDemoProjects.Server.Application.Features.AnimeList.Commands;
+using MyDemoProjects.Server.Application.Features.AnimeList.Queries;
 using MyDemoProjects.Server.Application.Features.Authentication.Commands;
 
 namespace MyDemoProjects.Server.Controllers
@@ -33,6 +35,13 @@ namespace MyDemoProjects.Server.Controllers
         public async Task<ActionResult<ServerResponse<bool>>> ChangePassword(ChangePasswordRequest request)
         {
             return await _mediator.Send(new ChangePassword(request));
+        }
+
+
+        [HttpPost("api/test")]
+        public async Task<ActionResult<ServerResponse<MyAnimeListRoot>>> Test(Season season)
+        {
+            return await _mediator.Send(new GetAnimeListBySeasonAndYear(season));
         }
     }
 
