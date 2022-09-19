@@ -2,19 +2,19 @@
 
 namespace MyDemoProjects.Server.Application.Features.AnimeList.Queries
 {
-    public record GetAnimeListBySeasonAndYear(Season Season) : IRequest<ServerResponse<MyAnimeListRoot>>;
+    public record GetAnimeListBySeasonAndYear(Season Season) : IRequest<ServerResponse<AnimeListRoot>>;
 
-    public class GetAnimeListBySeasonAndYearHandler : IRequestHandler<GetAnimeListBySeasonAndYear, ServerResponse<MyAnimeListRoot>>
+    public class GetAnimeListBySeasonAndYearHandler : IRequestHandler<GetAnimeListBySeasonAndYear, ServerResponse<AnimeListRoot>>
     {
         private readonly IHttpService _httpService;
-        private readonly IJsonToServerResponse<MyAnimeListRoot> _jsonSerializer;
+        private readonly IJsonToServerResponse<AnimeListRoot> _jsonSerializer;
 
-        public GetAnimeListBySeasonAndYearHandler(IHttpService httpService, IJsonToServerResponse<MyAnimeListRoot> jsonSerializer)
+        public GetAnimeListBySeasonAndYearHandler(IHttpService httpService, IJsonToServerResponse<AnimeListRoot> jsonSerializer)
         {
             _httpService = httpService;
             _jsonSerializer = jsonSerializer;
         }
-        public async Task<ServerResponse<MyAnimeListRoot>> Handle(GetAnimeListBySeasonAndYear request, CancellationToken cancellationToken)
+        public async Task<ServerResponse<AnimeListRoot>> Handle(GetAnimeListBySeasonAndYear request, CancellationToken cancellationToken)
         {
 
             var options = new HttpServiceOption

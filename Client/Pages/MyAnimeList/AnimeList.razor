@@ -1,11 +1,38 @@
 ﻿@page "/animelist"
+@inject IAnimeList AnimeListService
+@if (AnimeListService.AnimeLists == null)
+{
+    <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+    </MudOverlay>
+}
+else
+{
+    <MudGrid>
 
-<MudPaper Height="100%" Width="100%">
-    <MudContainer Fixed="true">
-        <MudPaper Height="100%" Width="100%" Square="true" Class="mud-theme-secondary"></MudPaper>
-    </MudContainer>
-</MudPaper>
+        @foreach (var anime in AnimeListService.AnimeLists)
+        {
+            <MudItem xs="3">
+                <MudCard>
+                    <MudCardMedia ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Image="@anime.Node.MainPicture.Large" Class="rounded-lg" Height="250" Elevation="25" />
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5">@anime.Node.Title</MudText>
+                        <MudText Typo="Typo.body2">@anime.Node.Synopsis</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @code {
 
+    protected override async Task OnInitializedAsync()
+    {
+        await AnimeListService.GetAnimeListBySeasonAndYear(new Season(2022, "fall"));
+    }
 }

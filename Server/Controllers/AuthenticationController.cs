@@ -38,11 +38,6 @@ namespace MyDemoProjects.Server.Controllers
         }
 
 
-        [HttpPost("api/test")]
-        public async Task<ActionResult<ServerResponse<MyAnimeListRoot>>> Test(Season season)
-        {
-            return await _mediator.Send(new GetAnimeListBySeasonAndYear(season));
-        }
     }
 
 }

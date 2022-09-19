@@ -8,6 +8,7 @@ using MyDemoProjects.Client;
 using MudBlazor.Services;
 using MyDemoProjects.Client.Services.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
+using MyDemoProjects.Client.Services.AnimeList;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,5 +21,6 @@ builder.Services.AddMudServices();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<IAnimeList, AnimeList>();
 
 await builder.Build().RunAsync();

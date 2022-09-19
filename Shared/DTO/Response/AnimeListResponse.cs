@@ -63,8 +63,8 @@ namespace MyDemoProjects.Shared.DTO.Response
 
     );
 
-    public record MyAnimeListRoot(
-        [property: JsonPropertyName("data")] IReadOnlyList<Datum> Data,
+    public record AnimeListRoot(
+        [property: JsonPropertyName("data")] IEnumerable<Datum> Data,
         [property: JsonPropertyName("paging")] Paging Paging,
         [property: JsonPropertyName("season")] Season Season
     );
