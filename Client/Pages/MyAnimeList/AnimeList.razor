@@ -9,41 +9,80 @@
 else
 {
     <MudGrid>
-        @foreach (var anime in AnimeListService.AnimeLists)
+        @foreach (var anime in AnimeListService.AnimeLists.OrderBy(o => o.Node.Popularity))
         {
             <MudItem xs="6" sm="3">
-                <div Class="d-md-flex pa-1">
-
-                    <MudCard>
-                        <MudCardMedia ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Image="@anime.Node.MainPicture.Large" Class="rounded-lg" Height="250" Elevation="25" />
-                        <MudCardContent>
-                            <MudText Typo="Typo.h6">@anime.Node.Title (@anime.Node.AlternativeTitles.Ja)</MudText>
-                            @* <MudText Typo="Typo.body2">@anime.Node.Synopsis</MudText>*@
-                        </MudCardContent>
-                        <MudCardActions>
-
-                            @if (anime.Node.Genres != null)
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                           
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                             <MudButton Variant="Variant.Text" OnClick="@(() => OpenDrawer(Anchor.Bottom,anime.Node.Synopsis))">
+                                 <MudTooltip Text="Synopsis">
+                                <MudIcon Icon="@Icons.Filled.Newspaper" Color="Color.Default"  />
+                                </MudTooltip>
+                            </MudButton>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardMedia ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Image="@anime.Node.MainPicture.Large" Class="rounded-lg" Height="250" Elevation="25" />
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6">@anime.Node.Title (@anime.Node.AlternativeTitles.Ja)</MudText>
+                        <MudDivider />
+                        @if (anime.Node.Genres != null)
+                        {
+                            @foreach (var g in anime.Node.Genres)
                             {
-                                @foreach (var g in anime.Node.Genres.Take(3))
-                                {
-
-                                    <MudChip Color="Color.Default"> @g.Name</MudChip>
-
-                                }
+                                <MudChip Color="Color.Default" Size="Size.Small"> @g.Name</MudChip>
                             }
-                        </MudCardActions>
+                        }
 
-                    </MudCard>
-                </div>
+                    </MudCardContent>
+                    <MudCardActions>
+
+                    </MudCardActions>
+                </MudCard>
             </MudItem>
+
         }
     </MudGrid>
+    <MudDrawer @bind-Open="@open" Anchor="@anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.body2">@synopsis</MudText>
+        </MudDrawerHeader>
+        
+    </MudDrawer>
 }
 
 @code {
+    bool open;
+    Anchor anchor;
 
+    private int year = DateTime.Today.Year;
+    private string synopsis = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-        await AnimeListService.GetAnimeListBySeasonAndYear(new Season(2022, "fall"));
+        await AnimeListService.GetAnimeListBySeasonAndYear(new Season(year, GetCurrentSeason(DateTime.Today.Month)));
+    }
+
+    private string GetCurrentSeason(int currentMonth)
+    {
+        if (currentMonth >= 3 && currentMonth <= 5)
+            return "spring";
+
+        if (currentMonth >= 6 && currentMonth <= 8)
+            return "summer";
+
+        if (currentMonth >= 9 && currentMonth <= 11)
+            return "fall";
+
+        return "winter";
+    }
+
+    private void OpenDrawer(Anchor anchor, string synopsis)
+    {
+        open = true;
+        this.anchor = anchor;
+        this.synopsis = synopsis;
     }
 }
