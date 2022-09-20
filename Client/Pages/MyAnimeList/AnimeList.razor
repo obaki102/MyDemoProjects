@@ -15,12 +15,25 @@ else
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
-                           
+                            @if (@anime.Node.NumEpisodes == 0)
+                            {
+                                <MudText Typo="Typo.body2">
+                                    @FormatDate(anime.Node.StartDate)
+
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2">
+                                    @FormatDate(anime.Node.StartDate) | @anime.Node.NumEpisodes eps
+
+                                </MudText>
+                            }
                         </CardHeaderContent>
                         <CardHeaderActions>
-                             <MudButton Variant="Variant.Text" OnClick="@(() => OpenDrawer(Anchor.Bottom,anime.Node.Synopsis))">
-                                 <MudTooltip Text="Synopsis">
-                                <MudIcon Icon="@Icons.Filled.Newspaper" Color="Color.Default"  />
+                            <MudButton Variant="Variant.Text" OnClick="@(() => OpenDrawer(Anchor.Bottom, anime.Node))">
+                                <MudTooltip Text="Synopsis">
+                                    <MudIcon Icon="@Icons.Filled.Newspaper" Color="Color.Default" />
                                 </MudTooltip>
                             </MudButton>
                         </CardHeaderActions>
@@ -31,12 +44,11 @@ else
                         <MudDivider />
                         @if (anime.Node.Genres != null)
                         {
-                            @foreach (var g in anime.Node.Genres)
+                            @foreach (var genre in anime.Node.Genres)
                             {
-                                <MudChip Color="Color.Default" Size="Size.Small"> @g.Name</MudChip>
+                                <MudChip Color="Color.Default" Size="Size.Small"> @genre.Name</MudChip>
                             }
                         }
-
                     </MudCardContent>
                     <MudCardActions>
 
@@ -47,10 +59,23 @@ else
         }
     </MudGrid>
     <MudDrawer @bind-Open="@open" Anchor="@anchor" Elevation="1" Variant="@DrawerVariant.Temporary">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.body2">@synopsis</MudText>
-        </MudDrawerHeader>
-        
+        @if (node != null)
+        {
+            <MudDrawerHeader>
+                <MudStack>
+                    <MudText Typo="Typo.body2">@node.Synopsis</MudText>
+                    <MudDivider />
+                    <MudText Typo="Typo.caption"> Status:<MudChip Color="Color.Primary" Size="Size.Small"> @node.Status.Replace("_"," ")</MudChip></MudText>
+                    @if (node.Studios != null)
+                    {
+                        @foreach (var studio in node.Studios)
+                        {
+                            <MudText Typo="Typo.caption">@studio.Name</MudText>
+                        }
+                    }
+                </MudStack>
+            </MudDrawerHeader>
+        }
     </MudDrawer>
 }
 
@@ -59,7 +84,7 @@ else
     Anchor anchor;
 
     private int year = DateTime.Today.Year;
-    private string synopsis = string.Empty;
+    private Node node;
     protected override async Task OnInitializedAsync()
     {
         await AnimeListService.GetAnimeListBySeasonAndYear(new Season(year, GetCurrentSeason(DateTime.Today.Month)));
@@ -79,10 +104,14 @@ else
         return "winter";
     }
 
-    private void OpenDrawer(Anchor anchor, string synopsis)
+    private void OpenDrawer(Anchor anchor, Node node)
     {
         open = true;
         this.anchor = anchor;
-        this.synopsis = synopsis;
+        this.node = node;
+    }
+    private string FormatDate(string date)
+    {
+        return DateTime.Parse(date).ToString("MMM dd, yyyy");
     }
 }
