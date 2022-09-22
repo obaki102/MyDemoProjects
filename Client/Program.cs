@@ -9,6 +9,7 @@ using MudBlazor.Services;
 using MyDemoProjects.Client.Services.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using MyDemoProjects.Client.Services.AnimeList;
+using MyDemoProjects.Client.Services.ChatRoom;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -22,5 +23,6 @@ builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<IAnimeList, AnimeList>();
+builder.Services.AddSingleton<IChatRoom, ChatRoom>();
 
 await builder.Build().RunAsync();

@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyDemoProjects.Server.Application.Features.Shared.Utility;
+using MyDemoProjects.Server.Application.Features.ChatRoom.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,7 @@ builder.Services.AddHttpClient<IHttpService, HttpService>(client =>
 });
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddSingleton(typeof(IJsonToServerResponse<>), typeof(JsonToServerResponse<>));
@@ -86,6 +89,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
 app.UseSwagger();
 app.UseHttpsRedirection();
 
@@ -98,6 +103,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatRoomHub>(ChatRoomHub.HubUrl);
+});
+
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
