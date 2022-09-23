@@ -6,11 +6,11 @@
 <PageTitle>Index</PageTitle>
 
 <AuthorizeView>
-    <h3>Hi! You're logged in with <i>@context.User.FindFirst(ClaimTypes.Surname).Value</i>.</h3>
+    <h3>Hi! You're logged in with <i>@context.User1.FindFirst(ClaimTypes.Surname).Value</i>.</h3>
 </AuthorizeView>*@
-@*<MudText Typo="Typo.h3" GutterBottom="true">@user.FirstName</MudText>
-<MudText Typo="Typo.h3" GutterBottom="true">@user.LastName</MudText>
-<MudText Typo="Typo.h3" GutterBottom="true">@user.Email</MudText>*@
+@*<MudText Typo="Typo.h3" GutterBottom="true">@User1.FirstName</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">@User1.LastName</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">@User1.Email</MudText>*@
 <MudCarousel Class="mud-width-full" Style="height:200px;" ShowArrows="true" ShowBullets="true" EnableSwipeGesture="true" AutoCycle="true" TData="object">
     <MudCarouselItem Transition="Transition.Slide" Color="@Color.Primary">
         <div class="d-flex" style="height:100%">
@@ -32,7 +32,7 @@
 
 @code {
     private bool authorized = false;
-    UserDto user;
+    UserDto User1;
 
     //[CascadingParameter]
     //public Task<AuthenticationState> AuthState { get; set; }
@@ -42,14 +42,14 @@
 
     //    var authState = await AuthState;
 
-    //    if (authState.User.Identity.IsAuthenticated)
+    //    if (authState.User1.Identity.IsAuthenticated)
     //    {
-    //        user = new UserDto
+    //        User1 = new UserDto
     //            {
 
-    //                FirstName = authState.User.FindFirst(c => c.Type == ClaimTypes.GivenName).Value,
-    //                LastName = authState.User.FindFirst(c => c.Type == ClaimTypes.Surname).Value,
-    //                Email = authState.User.FindFirst(c => c.Type == ClaimTypes.Email).Value
+    //                FirstName = authState.User1.FindFirst(c => c.Type == ClaimTypes.GivenName).Value,
+    //                LastName = authState.User1.FindFirst(c => c.Type == ClaimTypes.Surname).Value,
+    //                Email = authState.User1.FindFirst(c => c.Type == ClaimTypes.Email).Value
     //            };
     //    }
 

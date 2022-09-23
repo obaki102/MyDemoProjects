@@ -30,7 +30,7 @@ builder.Services.AddHttpClient<IHttpService, HttpService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7205/");
 });
-builder.Services.AddDbContext<DataContext>(options =>
+builder.Services.AddDbContext<MyDemoProjects.Server.Data.ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });

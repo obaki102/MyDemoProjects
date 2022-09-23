@@ -2,7 +2,7 @@
 
 namespace MyDemoProjects.Server.Domain.Entities
 {
-    public class User
+    public class User1
     {
         [Key]
         public Guid Id { get; set; }

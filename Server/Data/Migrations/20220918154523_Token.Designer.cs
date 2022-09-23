@@ -11,7 +11,7 @@ using MyDemoProjects.Server.Data;
 
 namespace MyDemoProjects.Server.Migrations
 {
-    [DbContext(typeof(DataContext))]
+    [DbContext(typeof(Data.ApplicationDbContext))]
     [Migration("20220918154523_Token")]
     partial class Token
     {
@@ -49,7 +49,7 @@ namespace MyDemoProjects.Server.Migrations
                     b.ToTable("Tokens");
                 });
 
-            modelBuilder.Entity("MyDemoProjects.Server.Domain.Entities.User", b =>
+            modelBuilder.Entity("MyDemoProjects.Server.Domain.Entities.User1", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

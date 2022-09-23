@@ -39,8 +39,8 @@ namespace MyDemoProjects.Client.Services.Authentication
                 }
             }
 
-            var user = new ClaimsPrincipal(identity);
-            var state = new AuthenticationState(user);
+            var User1 = new ClaimsPrincipal(identity);
+            var state = new AuthenticationState(User1);
 
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 

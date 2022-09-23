@@ -6,22 +6,22 @@ using System.Security.Claims;
 
 namespace MyDemoProjects.Server.Application.Features.Authentication.Commands
 {
-    public record ChangePassword(ChangePasswordRequest User) : IRequest<ServerResponse<bool>>;
+    public record ChangePassword(ChangePasswordRequest User1) : IRequest<ServerResponse<bool>>;
 
     public class ChangePasswordHandler : IRequestHandler<ChangePassword, ServerResponse<bool>>
     {
-        private readonly DataContext _dataContext;
+        private readonly Data.ApplicationDbContext _dataContext;
 
-        public ChangePasswordHandler(DataContext dataContext)
+        public ChangePasswordHandler(Data.ApplicationDbContext dataContext)
         {
             _dataContext = dataContext;
         }
 
         public async Task<ServerResponse<bool>> Handle(ChangePassword request, CancellationToken cancellationToken)
         {
-            var user = await _dataContext.Users.FirstOrDefaultAsync(e => e.Email.ToLower().Equals(request.User.Email.ToLower()));
-            //Check if user exist
-            if (user == null)
+            var User1 = await _dataContext.Users.FirstOrDefaultAsync(e => e.Email.ToLower().Equals(request.User1.Email.ToLower()));
+            //Check if User1 exist
+            if (User1 == null)
             {
                 return new ServerResponse<bool>
                 {
@@ -30,20 +30,20 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Commands
                     Status = false
                 };
             }
-            //Check if user claims who he is by verifying the current password
-            if (!PasswordHash.Verify(request.User.CurrentPassword, user.PasswordHash, user.PasswordSalt))
-            {
-                return new ServerResponse<bool>
-                {
-                    Data = false,
-                    Message = "Password change failed. Please check if current password is entered correctly.",
-                    Status = false
-                };
-            }
+            ////Check if User1 claims who he is by verifying the current password
+            //if (!PasswordHash.Verify(request.User1.CurrentPassword, User1.PasswordHash, User1.PasswordSalt))
+            //{
+            //    return new ServerResponse<bool>
+            //    {
+            //        Data = false,
+            //        Message = "Password change failed. Please check if current password is entered correctly.",
+            //        Status = false
+            //    };
+            //}
 
-            PasswordHash.Create(request.User.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            //PasswordHash.Create(request.User1.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+            //User1.PasswordHash = passwordHash;
+            //User1.PasswordSalt = passwordSalt;
 
             var result =  await _dataContext.SaveChangesAsync();
 

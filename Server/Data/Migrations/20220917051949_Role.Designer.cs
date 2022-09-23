@@ -11,7 +11,7 @@ using MyDemoProjects.Server.Data;
 
 namespace MyDemoProjects.Server.Migrations
 {
-    [DbContext(typeof(DataContext))]
+    [DbContext(typeof(Data.ApplicationDbContext))]
     [Migration("20220917051949_Role")]
     partial class Role
     {
@@ -24,7 +24,7 @@ namespace MyDemoProjects.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("MyDemoProjects.Server.Domain.Entities.User", b =>
+            modelBuilder.Entity("MyDemoProjects.Server.Domain.Entities.User1", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

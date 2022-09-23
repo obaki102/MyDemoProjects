@@ -18,15 +18,15 @@ namespace MyDemoProjects.Server.Controllers
             _mediator = mediator;
         }
         [HttpPost("api/createAccount")]
-        public async Task<ActionResult<ServerResponse<bool>>> CreateAccount(UserDto user)
+        public async Task<ActionResult<ServerResponse<bool>>> CreateAccount(UserDto User1)
         {
-            return await _mediator.Send(new CreateAccount(user));
+            return await _mediator.Send(new CreateAccount(User1));
         }
 
         [HttpPost("api/loginUser")]
-        public async Task<ActionResult<ServerResponse<string>>> Login(LoginUserRequest user)
+        public async Task<ActionResult<ServerResponse<string>>> Login(LoginUserRequest User1)
         {
-            return await _mediator.Send(new LoginUser(user));
+            return await _mediator.Send(new LoginUser(User1));
         }
 
 

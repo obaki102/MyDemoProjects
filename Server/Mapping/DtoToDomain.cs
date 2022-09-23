@@ -8,7 +8,7 @@ namespace MyDemoProjects.Server.Mapping
     {
         public DtoToDomain()
         {
-            CreateMap<UserDto, User>()
+            CreateMap<UserDto, User1>()
                 .ReverseMap();
         }
         

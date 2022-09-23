@@ -13,10 +13,10 @@
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12" sm="7">
                     <MudPaper Class="pa-6 align-content-center">
-                        <MudForm Model="@user" @ref="form" @bind-IsValid="@success">
-                            <MudTextField @bind-Value="user.Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
+                        <MudForm Model="@User1" @ref="form" @bind-IsValid="@success">
+                            <MudTextField @bind-Value="User1.Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
                                           OnlyValidateIfDirty="true" />
-                            <MudTextField @bind-Value="user.Password" T="string" Label="Password"
+                            <MudTextField @bind-Value="User1.Password" T="string" Label="Password"
                                           InputType="InputType.Password"
                                           Required="true"
                                           RequiredError="Password is required!" OnlyValidateIfDirty="true" />
@@ -44,7 +44,7 @@
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    LoginUserRequest user = new LoginUserRequest();
+    LoginUserRequest User1 = new LoginUserRequest();
 
     public async Task LoginUser()
     {
@@ -52,7 +52,7 @@
 
         if (form.IsValid)
         {
-            var result = await Authentication.AuthenticateAsync(user);
+            var result = await Authentication.AuthenticateAsync(User1);
 
             if (!result.Status)
             {
