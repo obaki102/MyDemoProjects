@@ -1,4 +1,4 @@
-﻿namespace MyDemoProjects.Server.Application.Features.Authentication.Commands;
+﻿namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
 public record CreateAccount(UserDto User1) : IRequest<ApplicationResponse<bool>>;
 
@@ -20,7 +20,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, ApplicationRe
             return new ApplicationResponse<bool>
             {
                 Data = false,
-               
+
                 Message = "User1 already exists."
             };
         }
@@ -37,7 +37,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, ApplicationRe
 
         //var result = _mapper.Map<UserDto>(User1);
 
-        return new ApplicationResponse<bool> { Data = true, Status = true, Message = "Registration successful!"};
+        return new ApplicationResponse<bool> { Data = true, Status = true, Message = "Registration successful!" };
     }
 
 }

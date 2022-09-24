@@ -8,7 +8,6 @@ global using MyDemoProjects.Application.Infastructure.Data;
 global using MyDemoProjects.Application.Features.Shared.Service;
 global using MyDemoProjects.Application.Features.Shared.Utility;
 global using MyDemoProjects.Application.Features.ChatRoom.Hubs;
-global using MyDemoProjects.Server.Application.Features.Shared.Utility;
 global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.AspNetCore.Components.Server.Circuits;

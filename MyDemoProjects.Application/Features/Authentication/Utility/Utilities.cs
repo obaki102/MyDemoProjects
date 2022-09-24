@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MyDemoProjects.Server.Application.Features.Authentication.Utility
+namespace MyDemoProjects.Application.Features.Authentication.Utility
 {
     public static class Extensions
     {
@@ -19,7 +19,7 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Utility
             {
                 passwordSalt = hmac.Key;
                 passwordHash = hmac
-                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(passsword));
+                    .ComputeHash(Encoding.UTF8.GetBytes(passsword));
             }
         }
 
@@ -28,7 +28,7 @@ namespace MyDemoProjects.Server.Application.Features.Authentication.Utility
             using (var hmac = new HMACSHA512(passwordSalt))
             {
                 var computedHash =
-                    hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                    hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
         }

@@ -1,4 +1,4 @@
-﻿namespace MyDemoProjects.Client.Services.ChatRoom
+﻿namespace MyDemoProjects.UI.Services.ChatRoom
 {
     public interface IChatRoom
     {
@@ -6,7 +6,7 @@
         void BroadcastMessage(string name, string message);
         Task SendAsync(string message);
         Task DisconnectAsync();
-        List<MessagesDto> Messages { get; set; }
+        // List<MessagesDto> Messages { get; set; }
 
         event Action BroadcastChanged;
     }

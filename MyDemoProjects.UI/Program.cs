@@ -8,6 +8,7 @@ using MyDemoProjects.Application;
 using MyDemoProjects.Application.Infastructure.Data;
 using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.UI.Data;
+using MyDemoProjects.UI.Services.AnimeList;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 builder.Services.AddApplicationDependency(builder.Configuration);
+builder.Services.AddScoped<IAnimeList,AnimeList>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +38,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseInfrastructure(builder.Configuration);
+app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 //using (var scope = app.Services.CreateScope())
 //{

@@ -1,4 +1,4 @@
-﻿namespace MyDemoProjects.Server.Application.Features.Authentication.Commands;
+﻿namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
 public record ChangePassword(ChangePasswordRequest User1) : IRequest<ApplicationResponse<bool>>;
 
@@ -39,7 +39,7 @@ public class ChangePasswordHandler : IRequestHandler<ChangePassword, Application
         //User1.PasswordHash = passwordHash;
         //User1.PasswordSalt = passwordSalt;
 
-        var result =  await _dataContext.SaveChangesAsync();
+        var result = await _dataContext.SaveChangesAsync();
 
         return new ApplicationResponse<bool>
         {

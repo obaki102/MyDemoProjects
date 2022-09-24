@@ -1,4 +1,4 @@
-﻿namespace MyDemoProjects.Server.Application.Features.AnimeList.Queries;
+﻿namespace MyDemoProjects.Application.Features.AnimeList.Queries;
 
 public record GetAnimeListBySeasonAndYear(Season Season) : IRequest<ApplicationResponse<AnimeListRoot>>;
 

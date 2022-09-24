@@ -1,4 +1,5 @@
 ﻿@page "/animelist"
+@using MyDemoProjects.Application.Shared.DTO.Response
 @inject IAnimeList AnimeListService
 @if (AnimeListService.AnimeLists == null)
 {
@@ -82,7 +83,6 @@ else
 @code {
     bool open;
     Anchor anchor;
-
     private int year = DateTime.Today.Year;
     private Node node;
     protected override async Task OnInitializedAsync()

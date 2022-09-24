@@ -1,4 +1,4 @@
-﻿namespace MyDemoProjects.Application.Features;
+﻿namespace MyDemoProjects.Application.Features.AnimeList.Commands;
 public record GetToken() : IRequest<ApplicationResponse<TokenResponse>>;
 
 public class GetTokenhandler : IRequestHandler<GetToken, ApplicationResponse<TokenResponse>>

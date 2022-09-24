@@ -1,4 +1,4 @@
-﻿namespace MyDemoProjects.Server.Application.Features.Authentication.Commands;
+﻿namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
 public record LoginUser(LoginUserRequest User1) : IRequest<ApplicationResponse<string>>;
 
@@ -10,7 +10,7 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<s
     public LoginUserHandler(ApplicationDbContext applicationDbContext, IConfiguration configuration)
     {
         _dataContext = applicationDbContext;
-        _configuration = configuration; 
+        _configuration = configuration;
     }
     public async Task<ApplicationResponse<string>> Handle(LoginUser request, CancellationToken cancellationToken)
     {
@@ -37,7 +37,7 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<s
 
         return new ApplicationResponse<string>
         {
-           // Data = CreateToken(User1),
+            // Data = CreateToken(User1),
             Message = "Login Successful",
             Status = true
         };

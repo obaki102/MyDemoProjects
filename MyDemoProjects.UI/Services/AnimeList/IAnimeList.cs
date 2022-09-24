@@ -1,4 +1,6 @@
-﻿namespace MyDemoProjects.Client.Services.AnimeList
+﻿using MyDemoProjects.Application.Shared.DTO.Response;
+
+namespace MyDemoProjects.UI.Services.AnimeList
 {
     public interface IAnimeList
     {

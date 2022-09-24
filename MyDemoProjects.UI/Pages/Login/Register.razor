@@ -1,6 +1,7 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
-@inject IAuthentication Authentication
+@using MyDemoProjects.Application.Shared.DTO
+
 <MudDialog>
     <DialogContent>
         <div class="d-flex flex-column py-1 mx-auto">
@@ -77,17 +78,17 @@
     {
         form.Validate();
 
-        if (form.IsValid)
-        {
-            var result = await Authentication.CreateAccountAsync(newUser);
+        //if (form.IsValid)
+        //{
+        //    var result = null;
 
-            if (!result.Status)
-            {
-                errorMessage = result.Message;
-                isError = true;
-            }
-            isSuccess = true;
-        }
+        //    if (!result.Status)
+        //    {
+        //        errorMessage = result.Message;
+        //        isError = true;
+        //    }
+        //    isSuccess = true;
+        //}
     }
 
 }
