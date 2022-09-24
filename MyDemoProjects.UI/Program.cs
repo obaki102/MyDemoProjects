@@ -19,10 +19,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
-builder.Services.AddApplicationDependency(builder.Configuration);
+builder.Services.AddApplicationDependency(builder.Configuration, "https://localhost:7205");
 builder.Services.AddScoped<IAnimeList,AnimeList>();
-var app = builder.Build();
 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

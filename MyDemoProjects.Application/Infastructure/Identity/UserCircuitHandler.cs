@@ -8,7 +8,7 @@ public class UserCircuitHandler : CircuitHandler
     public override async Task OnConnectionUpAsync(Circuit circuit, CancellationToken cancellationToken)
     {
 
-        
+        Console.WriteLine($"circuit id: {circuit.Id}");
     }
 
     public override Task OnConnectionDownAsync(Circuit circuit, CancellationToken cancellationToken)

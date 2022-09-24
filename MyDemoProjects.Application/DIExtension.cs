@@ -1,5 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -7,16 +9,16 @@ namespace MyDemoProjects.Application;
 
 public static class DIExtension
 {
-    public static IServiceCollection AddApplicationDependency(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplicationDependency(this IServiceCollection services, IConfiguration configuration, string baseUrl)
     {
         services.AddSignalR();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
-        services.AddScoped<CircuitHandler>((sp) => new UserCircuitHandler());
+        services.AddScoped<CircuitHandler, UserCircuitHandler>();
         services.AddHttpClient<IHttpService, HttpService>(client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7205/");
+            client.BaseAddress = new Uri(baseUrl);
         });
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -33,6 +35,7 @@ public static class DIExtension
 
         return services;
     }
+
 
     public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app, IConfiguration configuration)
     {
