@@ -1,6 +1,3 @@
-global using MyDemoProjects.Shared.DTO.Request;
-global using MyDemoProjects.Shared.DTO.Response;
-global using MyDemoProjects.Shared.DTO;
 global using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -10,6 +7,7 @@ using MyDemoProjects.Client.Services.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using MyDemoProjects.Client.Services.AnimeList;
 using MyDemoProjects.Client.Services.ChatRoom;
+using System.Net;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -25,4 +23,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>
 builder.Services.AddScoped<IAnimeList, AnimeList>();
 builder.Services.AddSingleton<IChatRoom, ChatRoom>();
 
+
 await builder.Build().RunAsync();
+
+

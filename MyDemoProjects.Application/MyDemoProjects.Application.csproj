@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>b3a84497-a2fd-4e7d-b8e3-b421b1db6a5b</UserSecretsId>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="MediatR" Version="10.0.1" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.9" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Features\Authentication\Queries\" />
+	  <Folder Include="Infastructure\Data\Migrations\" />
+		<Folder Include="Infastructure\Identity\Models\" />
+	</ItemGroup>
+</Project>

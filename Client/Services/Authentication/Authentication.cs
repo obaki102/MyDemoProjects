@@ -2,7 +2,7 @@
 using static System.Net.WebRequestMethods;
 using System.Net;
 using System.Net.Http.Json;
-using MyDemoProjects.Shared.DTO.Request;
+using MyDemoProjects.DTO.Request;
 
 namespace MyDemoProjects.Client.Services.Authentication
 {
