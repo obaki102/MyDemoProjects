@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Application.Infastructure.Services.Identity
 {
-    public class IIdentityService
+    public interface IIdentityService
     {
-        //public void Login
+        Task<ApplicationResponse<bool>> LoginUserAsync();
+        Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser);
     }
 }

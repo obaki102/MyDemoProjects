@@ -1,39 +1,25 @@
-﻿namespace MyDemoProjects.Application.Features.Authentication.Commands;
+﻿using MyDemoProjects.Application.Infastructure.Services.Identity;
+using MyDemoProjects.Application.Shared.DTO;
 
-public record CreateAccount() : IRequest<ApplicationResponse<bool>>;
+namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
-//public class CreateAccountHandler : IRequestHandler<CreateAccount, ApplicationResponse<bool>>
-//{
-//    private readonly ApplicationDbContext _dataContext;
-//    private readonly IMapper _mapper;
+public record CreateAccount(UserDto User) : IRequest<ApplicationResponse<bool>>;
 
-//    public CreateAccountHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
-//    {
-//        _dataContext = applicationDbContext;
-//        _mapper = mapper;
-//    }
-//    public async Task<ApplicationResponse<bool>> Handle(CreateAccount request, CancellationToken cancellationToken)
-//    {
-//        if (await _dataContext.Users.AsNoTracking().AnyAsync(User1 => User1.Email.ToLower()
-//             .Equals(request.User1.Email.ToLower())))
-//        {
-           
-//        }
+public class CreateAccountHandler : IRequestHandler<CreateAccount, ApplicationResponse<bool>>
+{
+    private readonly IIdentityService _identityService;
+    private readonly IMapper _mapper;
 
-//        //var User1 = _mapper.Map<User1>(request.User1);
-//        //PasswordHash.Create(request.User1.Password, out byte[] passwordHash, out byte[] passwordSalt);
+    public CreateAccountHandler(IIdentityService identityService, IMapper mapper)
+    {
+        _identityService = identityService;
+        _mapper = mapper;
+    }
+    public async Task<ApplicationResponse<bool>> Handle(CreateAccount request, CancellationToken cancellationToken)
+    {
+        var newUser = _mapper.Map<ApplicationUser>(request.User);
+        return await _identityService.CreateUserAsync(newUser);
+    }
 
-//        //User1.PasswordHash = passwordHash;
-//        //User1.PasswordSalt = passwordSalt;
-
-
-//        //_dataContext.Users.Add(User1);
-//        //await _dataContext.SaveChangesAsync();
-
-//        //var result = _mapper.Map<UserDto>(User1);
-
-//        return new ApplicationResponse<bool> { Data = true, Status = true, Message = "Registration successful!" };
-//    }
-
-//}
+}
 

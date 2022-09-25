@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+
 
 namespace MyDemoProjects.Application;
 
@@ -9,6 +9,7 @@ public static class DIExtension
 {
     public static IServiceCollection AddApplicationDependency(this IServiceCollection services, IConfiguration configuration, string baseUrl)
     {
+      
         services.AddSignalR();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -31,8 +32,17 @@ public static class DIExtension
                 });
         });
 
+        services
+                .AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+        services.AddTransient<IIdentityService, IdentyService>();
         return services;
     }
+
+
 
 
     public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app, IConfiguration configuration)
@@ -43,6 +53,8 @@ public static class DIExtension
             endpoints.MapHub<ChatRoomHub>(ChatRoomHub.HubUrl);
         });
 
+        app.UseAuthentication();
+        app.UseAuthorization();
         return app;
     }
 }

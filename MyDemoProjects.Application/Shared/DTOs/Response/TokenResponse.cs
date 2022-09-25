@@ -9,18 +9,10 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
 {
     public record TokenResponse
     {
-        [JsonPropertyName("access_token")]
-        public string? AccessToken { get; set; }
-
-        [JsonPropertyName("refresh_token")]
-        public string? RefreshToken { get; set; }
-
-        [JsonPropertyName("token_type")]
-        public string? TokenType { get; set; }
-
-        [JsonPropertyName("expires_in")]
-        public int TokenExpiresInSeconds { get; set; }
-
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }
+        public string UserImageURL { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
     }
 }

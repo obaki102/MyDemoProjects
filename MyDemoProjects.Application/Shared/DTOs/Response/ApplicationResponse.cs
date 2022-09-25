@@ -130,7 +130,7 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
     }
 
     // TODO: Implement Async methods
-    public class ApplicationResponse<T> : ApplicationResponse,IApplicationResponse<T>
+    public class ApplicationResponse<T> : ApplicationResponse, IApplicationResponse<T>
     {
         public T Data { get; set; }
 
