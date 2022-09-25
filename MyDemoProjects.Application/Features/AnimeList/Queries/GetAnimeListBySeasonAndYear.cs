@@ -24,12 +24,8 @@ public class GetAnimeListBySeasonAndYearHandler : IRequestHandler<GetAnimeListBy
 
         var response = await _httpService.GetResponse(options);
         var result = await response.Content.ReadAsStreamAsync();
-
-        return new ApplicationResponse<AnimeListRoot>
-        {
-            Data = _jsonSerializer.DeserializeStream<AnimeListRoot>(result),
-            Message = "Success",
-            Status = true,
-        };
+        var data = _jsonSerializer.DeserializeStream<AnimeListRoot>(result);
+        return ApplicationResponse<AnimeListRoot>.Success(data);
+        
     }
 }

@@ -1,4 +1,4 @@
-﻿using MyDemoProjects.Application.Shared.DTO.Response;
+﻿using MyDemoProjects.Application.Shared.DTOs.Response;
 
 namespace MyDemoProjects.UI.Services.AnimeList
 {

@@ -35,12 +35,8 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<s
         //    };
         //}
 
-        return new ApplicationResponse<string>
-        {
-            // Data = CreateToken(User1),
-            Message = "Login Successful",
-            Status = true
-        };
+        return ApplicationResponse<string>.Fail();
+       
 
     }
 

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyDemoProjects.Application.Features.AnimeList.Queries;
-using MyDemoProjects.Application.Shared.DTO.Response;
+using MyDemoProjects.Application.Shared.DTOs.Response;
 
 namespace MyDemoProjects.Api.Controllers;
 
@@ -17,8 +17,8 @@ public class AnimeListController : Controller
     }
 
     [HttpPost("api/animeList")]
-    public async Task<ApplicationResponse<AnimeListRoot>> GetAnimeList(Season season)
+    public async Task<ActionResult<ApplicationResponse<AnimeListRoot>>> GetAnimeList(Season season)
     {
-        return await _mediator.Send(new GetAnimeListBySeasonAndYear(season));
+        return Ok(await _mediator.Send(new GetAnimeListBySeasonAndYear(season)));
     }
 }

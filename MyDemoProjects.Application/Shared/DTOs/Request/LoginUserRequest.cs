@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyDemoProjects.Application.Shared.DTO.Request
+namespace MyDemoProjects.Application.Shared.DTOs.Request
 {
     public record LoginUserRequest
     {

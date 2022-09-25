@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace MyDemoProjects.Application.Shared.DTO.Response
+namespace MyDemoProjects.Application.Shared.DTOs.Response
 {
     public record TokenResponse
     {
