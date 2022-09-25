@@ -15,23 +15,36 @@ public class IdentyService : IIdentityService
         _userManager = userManager;
     }
 
-    public async Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser)
+    public async Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string pasword)
     {
         var user = await _userManager.FindByEmailAsync(newUser.Email);
-        if(user is not null)
+        if (user is not null)
         {
 
             return ApplicationResponse<bool>.Fail("User already exist");
         }
 
-        var result =  await _userManager.CreateAsync(newUser);
+        var result = await _userManager.CreateAsync(newUser, pasword);
 
-        return result.Succeeded == true ? ApplicationResponse<bool>.Success(result.Succeeded) : ApplicationResponse<bool>.Fail(result.Errors.Select(s=> s.Description).ToList());
+        return result.Succeeded == true ? ApplicationResponse<bool>.Success(result.Succeeded) : ApplicationResponse<bool>.Fail(result.Errors.Select(s => s.Description).ToList());
 
     }
 
-    public Task<ApplicationResponse<bool>> LoginUserAsync()
+    public async Task<ApplicationResponse<bool>> LoginUserAsync(string email, string password)
     {
-        throw new NotImplementedException();
+        var user = _userManager.FindByEmailAsync(email);
+        if (user.Result is null)
+        {
+            return ApplicationResponse<bool>.Fail("User not found.Please check your username and password.");
+
+        }
+        var result = await _userManager.CheckPasswordAsync(user.Result, password);
+
+        if (result is false)
+        {
+            return ApplicationResponse<bool>.Fail("Invalid Credentials.");
+        }
+
+        return ApplicationResponse<bool>.Success();
     }
 }

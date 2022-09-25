@@ -18,7 +18,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, ApplicationRe
     public async Task<ApplicationResponse<bool>> Handle(CreateAccount request, CancellationToken cancellationToken)
     {
         var newUser = _mapper.Map<ApplicationUser>(request.User);
-        return await _identityService.CreateUserAsync(newUser);
+        return await _identityService.CreateUserAsync(newUser, request.User.Password);
     }
 
 }

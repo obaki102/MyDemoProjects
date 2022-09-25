@@ -8,7 +8,7 @@ namespace MyDemoProjects.Application.Infastructure.Services.Identity
 {
     public interface IIdentityService
     {
-        Task<ApplicationResponse<bool>> LoginUserAsync();
-        Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser);
+        Task<ApplicationResponse<bool>> LoginUserAsync(string email, string password);
+        Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string password);
     }
 }
