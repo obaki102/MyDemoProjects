@@ -19,7 +19,7 @@ namespace MyDemoProjects.Api.Controllers
         }
 
         [HttpPost("api/createuser")]
-        public async Task<ActionResult<ApplicationResponse<bool>>> CreateUser(UserDto newUser)
+        public async Task<ActionResult<ApplicationResponse<bool>>> CreateUser(CreateAccountRequest newUser)
         {
             return await _mediator.Send(new CreateAccount(newUser));
         }
