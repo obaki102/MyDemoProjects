@@ -11,7 +11,7 @@ namespace MyDemoProjects.Application.Mapping
     {
         public ApplicationUserProfile()
         {
-            CreateMap<UserDto, ApplicationUser>().ReverseMap();
+            CreateMap<CreateAccountRequest, ApplicationUser>().ReverseMap();
         }
     }
 }

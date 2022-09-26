@@ -1,6 +1,7 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
 @using MyDemoProjects.Application.Shared.DTO
+@inject IAuthentication Authentication
 
 <MudDialog>
     <DialogContent>
@@ -11,6 +12,7 @@
                         <MudForm @ref="form"  Model="@newUser">
                             <MudTextField @bind-Value="newUser.Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
                                           Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" OnlyValidateIfDirty="true" />
+                            <MudTextField @bind-Value="newUser.UserName" T="string" Label="User Name" Required="true" RequiredError="User Name is required!" OnlyValidateIfDirty="true" />
                             <MudTextField @bind-Value="newUser.FirstName" T="string" Label="First Name" Required="true" RequiredError="First Name is required!" OnlyValidateIfDirty="true" />
                             <MudTextField @bind-Value="newUser.LastName" T="string" Label="Last Name" Required="true" RequiredError="Last Name is required!" OnlyValidateIfDirty="true" />
                             <MudTextField @bind-Value="newUser.Password" T="string" Label="Password" @ref="pwField1"
@@ -49,7 +51,7 @@
     MudTextField<string> pwField1;
     private string errorMessage = string.Empty;
     MudForm form;
-    UserDto newUser = new UserDto();
+    CreateAccountRequest newUser = new CreateAccountRequest();
     private IEnumerable<string> PasswordStrength(string pw)
     {
         if (string.IsNullOrWhiteSpace(pw))
@@ -78,17 +80,22 @@
     {
         form.Validate();
 
-        //if (form.IsValid)
-        //{
-        //    var result = null;
+        if (form.IsValid)
+        {
+            var result = await Authentication.CreateAccountAsync(newUser);
 
-        //    if (!result.Status)
-        //    {
-        //        errorMessage = result.Message;
-        //        isError = true;
-        //    }
-        //    isSuccess = true;
-        //}
+            if (!result.IsSuccess)
+            {
+                errorMessage = result.Messages.FirstOrDefault();
+                isError = true;
+                isSuccess = false;
+            }
+            else
+            {
+                isSuccess = true;
+                isError = false;
+            }
+        }
     }
 
 }

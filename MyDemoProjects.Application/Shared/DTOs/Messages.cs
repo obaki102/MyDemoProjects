@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Application.Shared.DTO
 {
-    public record MessagesDto(string Username, string Message);
+    public record Messages(string Username, string Message);
 }

@@ -3,7 +3,7 @@ using MyDemoProjects.Application.Shared.DTO;
 
 namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
-public record CreateAccount(UserDto User) : IRequest<ApplicationResponse<bool>>;
+public record CreateAccount(CreateAccountRequest User) : IRequest<ApplicationResponse<bool>>;
 
 public class CreateAccountHandler : IRequestHandler<CreateAccount, ApplicationResponse<bool>>
 {
