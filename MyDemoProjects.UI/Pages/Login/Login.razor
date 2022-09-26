@@ -1,9 +1,8 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
-@using MyDemoProjects.Application.Shared.DTOs.Request
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAuthentication Authentication
 
 
 <MudDialog>
@@ -49,23 +48,24 @@
     {
         form.Validate();
 
-        //if (form.IsValid)
-        //{
-        //    var result = await Authentication.AuthenticateAsync(User1);
+        if (form.IsValid)
+        {
+            var result = await Authentication.LoginAsync(User1);
 
-        //    if (!result.Status)
-        //    {
-        //        errorMessage = result.Message;
-        //    }
-        //    else
-        //    {
+            if (!result.IsSuccess)
+            {
+                errorMessage = result.Messages.FirstOrDefault();
+            }
+            else
+            {
 
-        //      //  await LocalStorage.SetItemAsync("authToken", result.Data);
-        //       // await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        //        NavigationManager.NavigateTo("/index");
-        //    }
-        //}
-
+                //  await LocalStorage.SetItemAsync("authToken", result.Data);
+                // await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                MudDialog.Close();
+                NavigationManager.NavigateTo("/index");
+            }
+        }
+        NavigationManager.NavigateTo("/index");
     }
 
     public void Register()

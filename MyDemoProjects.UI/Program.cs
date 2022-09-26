@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
-using MyDemoProjects.Application.Infastructure.Data;
-using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.UI.Data;
 using MyDemoProjects.UI.Services.AnimeList;
+using MyDemoProjects.UI.Services.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +16,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 builder.Services.AddApplicationDependency(builder.Configuration, "https://localhost:7205");
 builder.Services.AddScoped<IAnimeList,AnimeList>();
+builder.Services.AddScoped<IAuthentication, Authentication>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

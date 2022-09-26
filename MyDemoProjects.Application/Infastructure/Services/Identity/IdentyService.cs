@@ -17,13 +17,13 @@ public class IdentyService : IIdentityService
 
     public async Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword)
     {
-        var user = _userManager.FindByEmailAsync(email);
-        if (user.Result is null)
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null)
         {
             return ApplicationResponse<bool>.Fail("User not found.Please check your username and password.");
 
         }
-        var result = await _userManager.ChangePasswordAsync(user.Result, currentPassword, newPassword);
+        var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
 
         if (result.Succeeded is false)
         {
@@ -50,13 +50,13 @@ public class IdentyService : IIdentityService
 
     public async Task<ApplicationResponse<bool>> LoginUserAsync(string email, string password)
     {
-        var user = _userManager.FindByEmailAsync(email);
-        if (user.Result is null)
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user is null)
         {
             return ApplicationResponse<bool>.Fail("User not found.Please check your username and password.");
 
         }
-        var result = await _userManager.CheckPasswordAsync(user.Result, password);
+        var result = await _userManager.CheckPasswordAsync(user, password);
 
         if (result is false)
         {
