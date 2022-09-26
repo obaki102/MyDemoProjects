@@ -10,5 +10,6 @@ namespace MyDemoProjects.Application.Infastructure.Services.Identity
     {
         Task<ApplicationResponse<bool>> LoginUserAsync(string email, string password);
         Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string password);
+        Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword);
     }
 }

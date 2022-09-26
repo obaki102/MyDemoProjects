@@ -29,5 +29,11 @@ namespace MyDemoProjects.Api.Controllers
         {
             return await _mediator.Send(new LoginUser(user));
         }
+
+        [HttpPost("api/changepassword")]
+        public async Task<ActionResult<ApplicationResponse<bool>>> ChangePassword(ChangePasswordRequest user)
+        {
+            return await _mediator.Send(new ChangePassword(user));
+        }
     }
 }

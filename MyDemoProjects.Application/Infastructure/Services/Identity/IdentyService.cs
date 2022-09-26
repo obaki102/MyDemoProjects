@@ -15,6 +15,24 @@ public class IdentyService : IIdentityService
         _userManager = userManager;
     }
 
+    public async Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword)
+    {
+        var user = _userManager.FindByEmailAsync(email);
+        if (user.Result is null)
+        {
+            return ApplicationResponse<bool>.Fail("User not found.Please check your username and password.");
+
+        }
+        var result = await _userManager.ChangePasswordAsync(user.Result, currentPassword, newPassword);
+
+        if (result.Succeeded is false)
+        {
+            return ApplicationResponse<bool>.Fail(result.Errors.Select(s => s.Description).ToList());
+        }
+
+        return ApplicationResponse<bool>.Success(result.Succeeded);
+    }
+
     public async Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string pasword)
     {
         var user = await _userManager.FindByEmailAsync(newUser.Email);
