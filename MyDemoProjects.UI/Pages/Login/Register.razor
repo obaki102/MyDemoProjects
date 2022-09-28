@@ -82,7 +82,7 @@
 
         if (form.IsValid)
         {
-            var result = await Authentication.CreateAccountAsync(newUser).ConfigureAwait(false);
+            var result = await Authentication.CreateAccountAsync(newUser);
 
             if (!result.IsSuccess)
             {

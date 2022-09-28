@@ -50,7 +50,7 @@
 
         if (form.IsValid)
         {
-            var result = await Authentication.LoginAsync(User1).ConfigureAwait(false);
+            var result = await Authentication.LoginAsync(User1);
 
             if (!result.IsSuccess)
             {

@@ -16,12 +16,12 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         public async Task<ApplicationResponse<bool>> CreateAccountAsync(CreateAccountRequest newUser)
         {
-            return await _mediator.Send(new CreateAccount(newUser)).ConfigureAwait(false);
+            return await _mediator.Send(new CreateAccount(newUser));
         }
 
         public async Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser)
         {
-            return await _mediator.Send(new LoginUser(loginUser)).ConfigureAwait(false);
+            return await _mediator.Send(new LoginUser(loginUser));
         }
     }
 }

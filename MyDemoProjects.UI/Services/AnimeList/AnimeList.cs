@@ -18,7 +18,7 @@ namespace MyDemoProjects.UI.Services.AnimeList
         public async Task GetAnimeListBySeasonAndYear(Season season)
         {
 
-            var result = await _mediator.Send(new GetAnimeListBySeasonAndYear(season)).ConfigureAwait(false);
+            var result = await _mediator.Send(new GetAnimeListBySeasonAndYear(season));
 
             AnimeLists = result.Data.Data;
 
