@@ -52,7 +52,6 @@ public class IdentyService : IIdentityService
     public async Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync()
     {
         var users = await _userManager.Users.ToListAsync();
-
         if(users is null)
         {
             return ApplicationResponse<ApplicationUser>.Success("No users found");
