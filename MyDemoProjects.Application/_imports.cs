@@ -3,6 +3,7 @@ global using MyDemoProjects.Application.Infastructure.Identity.Models;
 global using MyDemoProjects.Application.Shared.Models.Interfaces;
 global using MyDemoProjects.Application.Shared.Models.Request;
 global using MyDemoProjects.Application.Shared.DTOs.Response;
+global using MyDemoProjects.Application.Shared.Models.Response;
 global using MyDemoProjects.Application.Infastructure.Identity;
 global using MyDemoProjects.Application.Infastructure.Data;
 global using MyDemoProjects.Application.Features.Shared.Service;
