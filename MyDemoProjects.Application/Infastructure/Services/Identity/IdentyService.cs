@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Application.Infastructure.Services.Identity;
 
@@ -46,6 +47,17 @@ public class IdentyService : IIdentityService
 
         return result.Succeeded == true ? ApplicationResponse<bool>.Success(result.Succeeded) : ApplicationResponse<bool>.Fail(result.Errors.Select(s => s.Description).ToList());
 
+    }
+
+    public async Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync()
+    {
+        var users = await _userManager.Users.ToListAsync();
+
+        if(users is null)
+        {
+            return ApplicationResponse<ApplicationUser>.Success("No users found");
+        }
+        return ApplicationResponse<ApplicationUser>.Success(users);
     }
 
     public async Task<ApplicationResponse<bool>> LoginUserAsync(string email, string password)

@@ -1,5 +1,5 @@
-﻿using MyDemoProjects.Application.Shared.DTOs.Request;
-using MyDemoProjects.Application.Shared.DTOs.Response;
+﻿using MyDemoProjects.Application.Shared.Models.Request;
+using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.UI.Services.Authentication
 {

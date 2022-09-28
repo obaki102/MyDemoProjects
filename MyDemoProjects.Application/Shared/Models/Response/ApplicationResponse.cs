@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyDemoProjects.Application.Shared.DTOs.Response
+namespace MyDemoProjects.Application.Shared.Models.Response
 {
     public class ApplicationResponse : IApplicationResponse
     {
@@ -28,7 +28,7 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         /// <returns></returns>
         public static ApplicationResponse Success(string message)
         {
-            return new ApplicationResponse { IsSuccess = true, Messages = new List<string> { message}};
+            return new ApplicationResponse { IsSuccess = true, Messages = new List<string> { message } };
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         /// <returns></returns>
         public static ApplicationResponse Success(List<string> messages)
         {
-            return new ApplicationResponse { IsSuccess = true , Messages = messages};
+            return new ApplicationResponse { IsSuccess = true, Messages = messages };
         }
 
         /// <summary>
@@ -132,13 +132,15 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
     // TODO: Implement Async methods
     public class ApplicationResponse<T> : ApplicationResponse, IApplicationResponse<T>
     {
-        public T Data { get; set; }
+        public T? Data { get; set; }
+
+        public IEnumerable<T>? ListOfData { get; set; }
 
         /// <summary>
         /// Returns a succesful synchronous response but with no messages. No data is attached.
         /// </summary>
         /// <returns></returns>
-        public static ApplicationResponse<T> Success()
+        public static new ApplicationResponse<T> Success()
         {
             return new ApplicationResponse<T> { IsSuccess = true };
         }
@@ -148,16 +150,16 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static ApplicationResponse<T> Success(string message)
+        public static new ApplicationResponse<T> Success(string message)
         {
-            return new ApplicationResponse<T> { IsSuccess = true , Messages = new List<string> { message} };
+            return new ApplicationResponse<T> { IsSuccess = true, Messages = new List<string> { message } };
         }
 
         /// <summary>
         /// Returns a succesful synchronous response with more than one messages.  No data is attached.
         /// <param name="messages"></param>
         /// <returns></returns>
-        public static ApplicationResponse<T> Success(List<string> messages)
+        public static new ApplicationResponse<T> Success(List<string> messages)
         {
             return new ApplicationResponse<T> { IsSuccess = true, Messages = messages };
         }
@@ -168,7 +170,16 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         /// <returns></returns>
         public static ApplicationResponse<T> Success(T data)
         {
-            return new ApplicationResponse<T> { IsSuccess = true , Data = data};
+            return new ApplicationResponse<T> { IsSuccess = true, Data = data };
+        }
+
+        /// <summary>
+        /// Returns a succesful synchronous response but with no messages. Data is attached.
+        /// </summary>
+        /// <returns></returns>
+        public static ApplicationResponse<T> Success(IEnumerable<T> data)
+        {
+            return new ApplicationResponse<T> { IsSuccess = true, ListOfData = data };
         }
 
         /// <summary>
@@ -191,12 +202,11 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         }
 
 
-
         /// <summary>
         /// Returns a unsuccesful synchronous response but with no messages. No data is attached.
         /// </summary>
         /// <returns></returns>
-        public static ApplicationResponse<T> Fail()
+        public static new ApplicationResponse<T> Fail()
         {
             return new ApplicationResponse<T> { IsSuccess = false };
         }
@@ -206,7 +216,7 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static ApplicationResponse<T> Fail(string message)
+        public static new ApplicationResponse<T> Fail(string message)
         {
             return new ApplicationResponse<T> { IsSuccess = false, Messages = new List<string> { message } };
         }
@@ -215,7 +225,7 @@ namespace MyDemoProjects.Application.Shared.DTOs.Response
         /// Returns a unsuccesful synchronous response with more than one messages.  No data is attached.
         /// <param name="messages"></param>
         /// <returns></returns>
-        public static ApplicationResponse<T> Fail(List<string> messages)
+        public static new ApplicationResponse<T> Fail(List<string> messages)
         {
             return new ApplicationResponse<T> { IsSuccess = false, Messages = messages };
         }

@@ -1,9 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyDemoProjects.Application.Features.Authentication.Commands;
-using MyDemoProjects.Application.Shared.DTO;
-using MyDemoProjects.Application.Shared.DTOs.Request;
+using MyDemoProjects.Application.Features.Authentication.Queries;
+using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Shared.DTOs.Response;
+using MyDemoProjects.Application.Shared.Models;
+using MyDemoProjects.Application.Shared.Models.Request;
+using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Api.Controllers
 {
@@ -34,6 +37,13 @@ namespace MyDemoProjects.Api.Controllers
         public async Task<ActionResult<ApplicationResponse<bool>>> ChangePassword(ChangePasswordRequest user)
         {
             return await _mediator.Send(new ChangePassword(user));
+        }
+
+
+        [HttpPost("api/getallusers")]
+        public async Task<ActionResult<ApplicationResponse<UserDetailsResponse>>> GetAllUsers()
+        {
+            return await _mediator.Send(new GetAllUsers());
         }
     }
 }

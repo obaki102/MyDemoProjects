@@ -1,4 +1,5 @@
 ﻿using MyDemoProjects.Application.Shared.DTO;
+using MyDemoProjects.Application.Shared.Models.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace MyDemoProjects.Application.Mapping
         public ApplicationUserProfile()
         {
             CreateMap<CreateAccountRequest, ApplicationUser>().ReverseMap();
+            CreateMap<ApplicationUser, UserDetailsResponse>();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyDemoProjects.Application.Features.AnimeList.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;
+using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Api.Controllers;
 

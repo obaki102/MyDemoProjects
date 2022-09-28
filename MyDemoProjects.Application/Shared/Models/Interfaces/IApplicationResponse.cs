@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyDemoProjects.Application.Shared.DTOs.Interfaces
+namespace MyDemoProjects.Application.Shared.Models.Interfaces
 {
     public interface IApplicationResponse
     {
