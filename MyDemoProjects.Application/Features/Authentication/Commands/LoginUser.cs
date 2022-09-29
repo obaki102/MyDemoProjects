@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+﻿using LazyCache;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MyDemoProjects.Application.Shared.Models.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
 using System.Text;
@@ -11,12 +12,12 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<b
 {
     private readonly IIdentityService _identityService;
     private readonly CustomAuthenticationStateProvider _customAuthenticationStateProvider;
-    private readonly ProtectedLocalStorage _protectedLocalStorage;
-    public LoginUserHandler(IIdentityService identityService, CustomAuthenticationStateProvider customAuthenticationStateProvider, ProtectedLocalStorage protectedLocalStorage)  
+    private readonly IAppCache _lazyCache = new CachingService();
+    public LoginUserHandler(IIdentityService identityService, CustomAuthenticationStateProvider customAuthenticationStateProvider, IAppCache lazyCache)  
     {
         _identityService = identityService;
         _customAuthenticationStateProvider = customAuthenticationStateProvider;
-        _protectedLocalStorage = protectedLocalStorage;
+        _lazyCache = lazyCache;
     }
     public async Task<ApplicationResponse<bool>> Handle(LoginUser request, CancellationToken cancellationToken)
     {
@@ -26,13 +27,13 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<b
             return ApplicationResponse<bool>.Fail(isLoginSuccess.Messages);
         }
         var identityCreatedFromUser = await _identityService.GenerateClaimsIdentityFromUser(isLoginSuccess.Data);
-            //store claims into  browser
+            //store claims to browser
             using (var memoryStream = new MemoryStream())
             await using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
             {
-                identityCreatedFromUser.WriteTo(binaryWriter);
-                var base64 = Convert.ToBase64String(memoryStream.ToArray());
-                await _protectedLocalStorage.SetAsync("Claimsidentity", base64).ConfigureAwait(false);
+              identityCreatedFromUser.WriteTo(binaryWriter);
+              var base64 = Convert.ToBase64String(memoryStream.ToArray());
+             _lazyCache.Add("Claimsidentity",  base64, DateTimeOffset.Now.AddMinutes(5));
             }
             _customAuthenticationStateProvider.NotifyAuthenticationStateChanged();
 

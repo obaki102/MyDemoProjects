@@ -32,7 +32,7 @@ public static class DIExtension
                     builder.CommandTimeout(15);
                 });
         });
-
+        services.AddLazyCache();
         services
                 .AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<ApplicationRole>()
@@ -69,8 +69,7 @@ public static class DIExtension
                     builder.CommandTimeout(15);
                 });
         });
-        services.TryAddScoped<ProtectedLocalStorage>();
-        services.TryAddScoped<ProtectedSessionStorage>();
+        services.AddLazyCache();
         services
                 .AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<ApplicationRole>()

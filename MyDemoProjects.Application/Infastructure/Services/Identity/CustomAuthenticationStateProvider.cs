@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+﻿using LazyCache;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
 using System.Text;
 
@@ -7,10 +8,10 @@ namespace MyDemoProjects.Application.Infastructure.Services.Identity
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly ProtectedLocalStorage _protectedLocalStorage;
-        public CustomAuthenticationStateProvider(ProtectedLocalStorage protectedLocalStorage)
+        private readonly IAppCache _lazyCache = new CachingService();
+        public CustomAuthenticationStateProvider(IAppCache lazyCache)
         {
-            _protectedLocalStorage = protectedLocalStorage;
+            _lazyCache = lazyCache;
         }
 
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -18,10 +19,10 @@ namespace MyDemoProjects.Application.Infastructure.Services.Identity
             var principal = new ClaimsPrincipal(new ClaimsIdentity());
             try
             {
-                var storedClaimsIdentity = await _protectedLocalStorage.GetAsync<string>("Claimsidentity");
-                if (storedClaimsIdentity.Success && storedClaimsIdentity.Value is not null)
+                var storedClaimsIdentity = await _lazyCache.GetAsync<string>("Claimsidentity");
+                if (storedClaimsIdentity is not null)
                 {
-                    var buffer = Convert.FromBase64String(storedClaimsIdentity.Value);
+                    var buffer = Convert.FromBase64String(storedClaimsIdentity);
                     using (var deserializationStream = new MemoryStream(buffer))
                     {
                         var identity = new ClaimsIdentity(new BinaryReader(deserializationStream, Encoding.UTF8));
