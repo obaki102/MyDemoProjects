@@ -7,6 +7,7 @@ using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Api.Controllers;
 
+
 [ApiController]
 [Route("[controller]")]
 public class AnimeListController : Controller
@@ -19,6 +20,7 @@ public class AnimeListController : Controller
     }
 
     [HttpPost("api/animeList")]
+    [Authorize]
     public async Task<ActionResult<ApplicationResponse<AnimeListRoot>>> GetAnimeList(Season season)
     {
         return Ok(await _mediator.Send(new GetAnimeListBySeasonAndYear(season)));

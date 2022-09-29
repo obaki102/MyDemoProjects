@@ -28,9 +28,9 @@ namespace MyDemoProjects.Api.Controllers
         }
 
         [HttpPost("api/login")]
-        public async Task<ActionResult<ApplicationResponse<bool>>> Login(LoginUserRequest user)
+        public async Task<ActionResult<ApplicationResponse<TokenResponse>>> Login(LoginUserRequest user)
         {
-            return await _mediator.Send(new LoginUser(user));
+            return await _mediator.Send(new LoginWithJwtToken(user));
         }
 
         [HttpPost("api/changepassword")]

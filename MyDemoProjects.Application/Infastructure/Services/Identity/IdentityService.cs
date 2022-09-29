@@ -1,11 +1,7 @@
-﻿using System.IO;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
-using IdentityModel;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using MyDemoProjects.Application.Shared.Constants;
-using MyDemoProjects.Application.Shared.Models.Response;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MyDemoProjects.Application.Infastructure.Services.Identity;
 
@@ -13,12 +9,14 @@ public class IdentityService :IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
+    private readonly IConfiguration _configuration;
   
 
-    public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+    public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IConfiguration configuration)
     {
         _userManager = userManager;
         _roleManager = roleManager;
+        _configuration = configuration;
     }
 
     public async Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword)
@@ -79,37 +77,37 @@ public class IdentityService :IIdentityService
 
     public async Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user)
     {
-        //TODO: Store it to users-secrets
-        var result = new ClaimsIdentity("Basic");
-        result.AddClaim(new(ClaimTypes.NameIdentifier, user.Id));
-        result.AddClaim(new(ApplicationClaimTypes.Status, user.IsActive.ToString()));
+        //TODO: Store key to users-secrets
+        var claimsIdentity = new ClaimsIdentity("Basic");
+        claimsIdentity.AddClaim(new(ClaimTypes.NameIdentifier, user.Id));
+        claimsIdentity.AddClaim(new(ApplicationClaimTypes.Status, user.IsActive.ToString()));
         if (!string.IsNullOrEmpty(user.UserName))
         {
-            result.AddClaims(new[] {
+            claimsIdentity.AddClaims(new[] {
                 new Claim(ClaimTypes.Name, user.UserName)
             });
         }
         if (!string.IsNullOrEmpty(user.Email))
         {
-            result.AddClaims(new[] {
+            claimsIdentity.AddClaims(new[] {
                 new Claim(ClaimTypes.Email, user.Email)
             });
         }
         if (!string.IsNullOrEmpty(user.ProfilePictureDataUrl))
         {
-            result.AddClaims(new[] {
+            claimsIdentity.AddClaims(new[] {
                 new Claim(ApplicationClaimTypes.ProfilePictureDataUrl, user.ProfilePictureDataUrl)
             });
         }
         if (!string.IsNullOrEmpty(user.DisplayName))
         {
-            result.AddClaims(new[] {
+            claimsIdentity.AddClaims(new[] {
                 new Claim(ClaimTypes.GivenName, user.DisplayName)
             });
         }
         if (!string.IsNullOrEmpty(user.PhoneNumber))
         {
-            result.AddClaims(new[] {
+            claimsIdentity.AddClaims(new[] {
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
             });
         }
@@ -120,13 +118,26 @@ public class IdentityService :IIdentityService
             var claims = await _roleManager.GetClaimsAsync(role);
             foreach (var claim in claims)
             {
-                result.AddClaim(claim);
+                claimsIdentity.AddClaim(claim);
             }
-            result.AddClaims(new[] {
+            claimsIdentity.AddClaims(new[] {
                 new Claim(ClaimTypes.Role, roleName) });
 
         }
-        return result;
+
+        return claimsIdentity;
     }
 
+    public Task<string> CreateToken(ClaimsIdentity claimsIdentity)
+    {
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
+               .GetBytes(_configuration.GetSection("token_key").Value));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var token = new JwtSecurityToken(
+                claims: claimsIdentity.Claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+        var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+        return Task.FromResult(generatedJwtToken);
+    }
 }

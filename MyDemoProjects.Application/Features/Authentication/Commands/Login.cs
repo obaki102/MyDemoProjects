@@ -6,9 +6,9 @@ using System.Text;
 
 namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
-public record LoginUser(LoginUserRequest User) : IRequest<ApplicationResponse<bool>>;
+public record Login(LoginUserRequest User) : IRequest<ApplicationResponse<bool>>;
 
-public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<bool>>
+public class LoginUserHandler : IRequestHandler<Login, ApplicationResponse<bool>>
 {
     private readonly IIdentityService _identityService;
     private readonly CustomAuthenticationStateProvider _customAuthenticationStateProvider;
@@ -19,7 +19,7 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<b
         _customAuthenticationStateProvider = customAuthenticationStateProvider;
         _lazyCache = lazyCache;
     }
-    public async Task<ApplicationResponse<bool>> Handle(LoginUser request, CancellationToken cancellationToken)
+    public async Task<ApplicationResponse<bool>> Handle(Login request, CancellationToken cancellationToken)
     {
         var isLoginSuccess = await _identityService.LoginUserAsync(request.User.Email, request.User.Password);
         if (isLoginSuccess.IsSuccess is false)
@@ -27,13 +27,14 @@ public class LoginUserHandler : IRequestHandler<LoginUser, ApplicationResponse<b
             return ApplicationResponse<bool>.Fail(isLoginSuccess.Messages);
         }
         var identityCreatedFromUser = await _identityService.GenerateClaimsIdentityFromUser(isLoginSuccess.Data);
-            //store claims to browser
+            //store claims to cache
             using (var memoryStream = new MemoryStream())
             await using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
             {
               identityCreatedFromUser.WriteTo(binaryWriter);
-              var base64 = Convert.ToBase64String(memoryStream.ToArray());
-             _lazyCache.Add("Claimsidentity",  base64, DateTimeOffset.Now.AddMinutes(5));
+              var base64Result = Convert.ToBase64String(memoryStream.ToArray());
+            //TODO: Create constants variable to store key
+             _lazyCache.Add<string>("Claimsidentity", base64Result, DateTimeOffset.Now.AddMinutes(5));
             }
             _customAuthenticationStateProvider.NotifyAuthenticationStateChanged();
 

@@ -1,6 +1,8 @@
 ﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 
 namespace MyDemoProjects.Application;
@@ -22,15 +24,15 @@ public static class DIExtension
         });
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-        options.UseSqlServer(configuration.GetSection("DefaultConnection").Value,
-            builder =>
-                {
-                    builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
-                    builder.EnableRetryOnFailure(maxRetryCount: 5,
-                                                 maxRetryDelay: TimeSpan.FromSeconds(5),
-                                                 errorNumbersToAdd: null);
-                    builder.CommandTimeout(15);
-                });
+            options.UseSqlServer(configuration.GetSection("DefaultConnection").Value,
+                builder =>
+                    {
+                        builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                        builder.EnableRetryOnFailure(maxRetryCount: 5,
+                                                     maxRetryDelay: TimeSpan.FromSeconds(5),
+                                                     errorNumbersToAdd: null);
+                        builder.CommandTimeout(15);
+                    });
         });
         services.AddLazyCache();
         services
@@ -53,6 +55,7 @@ public static class DIExtension
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
         services.AddScoped<CircuitHandler, UserCircuitHandler>();
+     
         services.AddHttpClient<IHttpService, HttpService>(client =>
         {
             client.BaseAddress = new Uri(baseUrl);
@@ -69,6 +72,7 @@ public static class DIExtension
                     builder.CommandTimeout(15);
                 });
         });
+
         services.AddLazyCache();
         services
                 .AddDefaultIdentity<ApplicationUser>()
@@ -79,6 +83,24 @@ public static class DIExtension
         services.AddScoped<CustomAuthenticationStateProvider>()
                 .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthenticationStateProvider>())
                 .AddTransient<IIdentityService, IdentityService>();
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(System.Text.Encoding.UTF8
+                        .GetBytes(configuration.GetSection("token_key").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         return services;
     }
 

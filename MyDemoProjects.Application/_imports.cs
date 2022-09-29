@@ -19,7 +19,6 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 global using MyDemoProjects.Application.Shared.Constants;
 global using MediatR;
 global using AutoMapper;

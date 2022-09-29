@@ -21,7 +21,7 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         public async Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser)
         {
-            return await _mediator.Send(new LoginUser(loginUser));
+            return await _mediator.Send(new Login(loginUser));
         }
     }
 }
