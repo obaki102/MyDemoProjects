@@ -39,7 +39,7 @@ namespace MyDemoProjects.Api.Controllers
             return await _mediator.Send(new ChangePassword(user));
         }
 
-
+       
         [HttpPost("api/getallusers")]
         public async Task<ActionResult<ApplicationResponse<UserDetailsResponse>>> GetAllUsers()
         {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyDemoProjects.Application.Features.AnimeList.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;

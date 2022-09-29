@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MyDemoProjects.Application.Infastructure.Services.Identity
 {

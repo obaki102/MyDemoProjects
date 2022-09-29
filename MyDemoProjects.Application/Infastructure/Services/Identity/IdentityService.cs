@@ -9,17 +9,16 @@ using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Application.Infastructure.Services.Identity;
 
-public class IdentyService :IIdentityService
+public class IdentityService :IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
-    private readonly ProtectedLocalStorage _protectedLocalStorage;
+  
 
-    public IdentyService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ProtectedLocalStorage protectedLocalStorage)
+    public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _protectedLocalStorage = protectedLocalStorage;
     }
 
     public async Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword)
@@ -63,29 +62,19 @@ public class IdentyService :IIdentityService
         return ApplicationResponse<ApplicationUser>.Success(users);
     }
 
-    public async Task<ApplicationResponse<bool>> LoginUserAsync(string email, string password)
+    public async Task<ApplicationResponse<ApplicationUser>> LoginUserAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null)
         {
-            return ApplicationResponse<bool>.Fail("User not found.Please check your username and password.");
+            return ApplicationResponse<ApplicationUser>.Fail("User not found.Please check your username and password.");
         }
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
         if (isPasswordValid is false)
         {
-            return ApplicationResponse<bool>.Fail("Invalid Credentials.");
+            return ApplicationResponse<ApplicationUser>.Fail("Invalid Credentials.");
         }
-        var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
-        //store clains into  local storage
-        using (var memoryStream = new MemoryStream())
-        await using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
-        {
-            identityCreatedFromUser.WriteTo(binaryWriter);
-            var base64 = Convert.ToBase64String(memoryStream.ToArray());
-            await _protectedLocalStorage.SetAsync("Claimsidentity", base64);
-        }
-      
-        return ApplicationResponse<bool>.Success();
+        return ApplicationResponse<ApplicationUser>.Success(user);
     }
 
     public async Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user)

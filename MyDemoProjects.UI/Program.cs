@@ -10,13 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
-builder.Services.AddApplicationDependency(builder.Configuration, "https://localhost:7205");
+builder.Services.AddUIApplicationDependencies(builder.Configuration, "https://localhost:7205");
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
