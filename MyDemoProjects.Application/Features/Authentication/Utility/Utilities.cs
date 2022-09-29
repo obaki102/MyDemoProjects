@@ -4,12 +4,6 @@ using System.Text;
 
 namespace MyDemoProjects.Application.Features.Authentication.Utility
 {
-    public static class Extensions
-    {
-
-
-
-    }
 
     public static class PasswordHash
     {

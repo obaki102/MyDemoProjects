@@ -38,7 +38,9 @@ public static class DIExtension
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-        services.AddTransient<IIdentityService, IdentyService>();
+        services.AddScoped<CustomAuthenticationStateProvider>()
+                .AddScoped<AuthenticationStateProvider>(provier => provier.GetService<CustomAuthenticationStateProvider>())
+                .AddTransient<IIdentityService, IdentyService>();
         return services;
     }
 
