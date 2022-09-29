@@ -13,13 +13,26 @@ builder.Services.AddSwaggerGen(opt =>
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyDemoProjects.API", Version = "v1" });
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
         BearerFormat = "JWT",
-        Scheme = "bearer"
+        In = ParameterLocation.Header
     });
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+     {
+         {
+               new OpenApiSecurityScheme
+                 {
+                     Reference = new OpenApiReference
+                     {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                     }
+                 },
+                 new string[] {}
+         }
+     });
 });
 builder.Services.AddAPiApplicationDependencies(builder.Configuration, builder.Configuration["applicationUrl"]);
 var app = builder.Build();
