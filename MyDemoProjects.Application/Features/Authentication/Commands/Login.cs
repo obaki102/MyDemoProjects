@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MyDemoProjects.Application.Shared.Models.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
+using System.Security.Claims;
 using System.Text;
 
 namespace MyDemoProjects.Application.Features.Authentication.Commands;
@@ -28,14 +29,8 @@ public class LoginUserHandler : IRequestHandler<Login, ApplicationResponse<bool>
         }
         var identityCreatedFromUser = await _identityService.GenerateClaimsIdentityFromUser(isLoginSuccess.Data);
             //store claims to cache
-            using (var memoryStream = new MemoryStream())
-            await using (var binaryWriter = new BinaryWriter(memoryStream, Encoding.UTF8, true))
-            {
-              identityCreatedFromUser.WriteTo(binaryWriter);
-              var base64Result = Convert.ToBase64String(memoryStream.ToArray());
             //TODO: Create constants variable to store key
-             _lazyCache.Add<string>("Claimsidentity", base64Result, DateTimeOffset.Now.AddMinutes(5));
-            }
+             _lazyCache.Add<ClaimsIdentity>("Claimsidentity", identityCreatedFromUser, DateTimeOffset.Now.AddMinutes(5));
             _customAuthenticationStateProvider.NotifyAuthenticationStateChanged();
 
         return ApplicationResponse<bool>.Success("Succesfully login.");

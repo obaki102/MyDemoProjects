@@ -11,6 +11,11 @@ public static class DIExtension
 {
     public static IServiceCollection AddUIApplicationDependencies(this IServiceCollection services, IConfiguration configuration, string baseUrl)
     {
+        if (services == null)
+        {
+            throw new ArgumentNullException("services");
+        }
+
         services.AddRazorPages();
         services.AddServerSideBlazor();
         services.AddSignalR();
@@ -35,12 +40,12 @@ public static class DIExtension
                     });
         });
         services.AddLazyCache();
+        //Authentication
         services
                 .AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
         services.AddScoped<CustomAuthenticationStateProvider>()
                 .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthenticationStateProvider>())
                 .AddTransient<IIdentityService, IdentityService>();
@@ -49,6 +54,10 @@ public static class DIExtension
 
     public static IServiceCollection AddAPiApplicationDependencies(this IServiceCollection services, IConfiguration configuration, string baseUrl)
     {
+        if (services == null)
+        {
+            throw new ArgumentNullException("services");
+        }
 
         services.AddSignalR();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -72,7 +81,7 @@ public static class DIExtension
                     builder.CommandTimeout(15);
                 });
         });
-
+        //Authentication
         services.AddLazyCache();
         services
                 .AddDefaultIdentity<ApplicationUser>()
@@ -83,7 +92,6 @@ public static class DIExtension
         services.AddScoped<CustomAuthenticationStateProvider>()
                 .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthenticationStateProvider>())
                 .AddTransient<IIdentityService, IdentityService>();
-
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -109,6 +117,10 @@ public static class DIExtension
 
     public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app, IConfiguration configuration)
     {
+        if (app == null)
+        {
+            throw new ArgumentNullException("builder");
+        }
         app.UseEndpoints(endpoints =>
         {
 

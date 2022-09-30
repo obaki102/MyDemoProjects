@@ -1,9 +1,10 @@
 ﻿@page "/index"
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <AuthorizeView>
 
     <Authorized>
         <MudText Typo="Typo.h3" GutterBottom="true">Authorized!</MudText>
-        <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
+        <MudText Class="mb-8">@username</MudText>
     </Authorized>
     <NotAuthorized>
         <MudText Typo="Typo.h3" GutterBottom="true">NOT Authorized!</MudText>
@@ -11,3 +12,13 @@
 
 
 </AuthorizeView>
+
+@code{
+    private string username = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authSate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        username = authSate.User.Identity?.Name;
+    }
+}

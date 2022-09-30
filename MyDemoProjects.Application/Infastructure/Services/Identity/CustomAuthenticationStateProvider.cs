@@ -17,22 +17,10 @@ namespace MyDemoProjects.Application.Infastructure.Services.Identity
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var principal = new ClaimsPrincipal(new ClaimsIdentity());
-            try
+            var storedClaimsIdentityInCache = await _lazyCache.GetAsync<ClaimsIdentity>("Claimsidentity");
+            if (storedClaimsIdentityInCache is not null)
             {
-                var storedClaimsIdentityInCache = await _lazyCache.GetAsync<string>("Claimsidentity");
-                if (storedClaimsIdentityInCache is not null)
-                {
-                    var buffer = Convert.FromBase64String(storedClaimsIdentityInCache);
-                    using (var deserializationStream = new MemoryStream(buffer))
-                    {
-                        var identity = new ClaimsIdentity(new BinaryReader(deserializationStream, Encoding.UTF8));
-                        principal = new(identity);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-               
+                principal = new(storedClaimsIdentityInCache);
             }
             return new AuthenticationState(principal);
         }
