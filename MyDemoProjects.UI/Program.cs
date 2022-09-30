@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
+using MyDemoProjects.Application.Infastructure.Services.Identity;
 using MyDemoProjects.UI.Data;
 using MyDemoProjects.UI.Services.AnimeList;
 using MyDemoProjects.UI.Services.Authentication;
@@ -16,6 +18,8 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddUIApplicationDependencies(builder.Configuration, "https://localhost:7205");
+builder.Services.AddScoped<CustomAuthStateProvider>()
+               .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthStateProvider>());
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -8,10 +8,11 @@ namespace MyDemoProjects.UI.Services.Authentication
     public class Authentication : IAuthentication
     {
         private readonly IMediator _mediator;
-
-        public Authentication(IMediator mediator)
+        private readonly CustomAuthStateProvider customAuthStateProvider;
+        public Authentication(IMediator mediator, CustomAuthStateProvider customAuthStateProvider)
         {
             _mediator = mediator;
+            this.customAuthStateProvider = customAuthStateProvider;
         }
 
         public async Task<ApplicationResponse<bool>> CreateAccountAsync(CreateAccountRequest newUser)
@@ -21,7 +22,14 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         public async Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser)
         {
-            return await _mediator.Send(new Login(loginUser));
+            var loginResponse = await _mediator.Send(new LoginWithJwtToken(loginUser));
+            if(loginResponse.IsSuccess is false)
+            {
+                return ApplicationResponse<bool>.Fail(loginResponse.Messages);
+            }
+
+            await customAuthStateProvider.SaveJwtToLocalStorageAndUpadteNotificationState(loginResponse.Data.Token);
+            return ApplicationResponse<bool>.Success(loginResponse.Messages);
         }
     }
 }

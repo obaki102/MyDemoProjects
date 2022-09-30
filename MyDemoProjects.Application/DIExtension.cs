@@ -46,9 +46,7 @@ public static class DIExtension
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-        services.AddScoped<CustomAuthenticationStateProvider>()
-                .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthenticationStateProvider>())
-                .AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IIdentityService, IdentityService>();
         return services;
     }
 
@@ -81,17 +79,16 @@ public static class DIExtension
                     builder.CommandTimeout(15);
                 });
         });
-        //Authentication
         services.AddLazyCache();
+        //Authentication
         services
                 .AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-        services.AddScoped<CustomAuthenticationStateProvider>()
-                .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthenticationStateProvider>())
-                .AddTransient<IIdentityService, IdentityService>();
+
+        services.AddTransient<IIdentityService, IdentityService>();
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
