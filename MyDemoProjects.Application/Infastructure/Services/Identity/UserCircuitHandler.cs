@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 
-namespace MyDemoProjects.Application.Infastructure.Identity;
+namespace MyDemoProjects.Application.Infastructure.Services.Identity;
 
 public class UserCircuitHandler : CircuitHandler
 {

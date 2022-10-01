@@ -59,23 +59,25 @@ public class IdentityService :IIdentityService
         }
         return ApplicationResponse<ApplicationUser>.Success(users);
     }
-
-    public async Task<ApplicationResponse<ApplicationUser>> LoginUserAsync(string email, string password)
+    
+    public async Task<ApplicationResponse<TokenResponse>> LoginUserAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null)
         {
-            return ApplicationResponse<ApplicationUser>.Fail("User not found.Please check your username and password.");
+            return ApplicationResponse<TokenResponse>.Fail("User not found.Please check your username and password.");
         }
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
         if (isPasswordValid is false)
         {
-            return ApplicationResponse<ApplicationUser>.Fail("Invalid Credentials.");
+            return ApplicationResponse<TokenResponse>.Fail("Invalid Credentials.");
         }
-        return ApplicationResponse<ApplicationUser>.Success(user);
+        var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
+        var token = new TokenResponse(CreateToken(identityCreatedFromUser).Result);
+        return ApplicationResponse<TokenResponse>.Success(token);
     }
 
-    public async Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user)
+    private async Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user)
     {
         //TODO: Store key to users-secrets
         var claimsIdentity = new ClaimsIdentity("Bearer");
@@ -128,7 +130,7 @@ public class IdentityService :IIdentityService
         return claimsIdentity;
     }
 
-    public Task<string> CreateToken(ClaimsIdentity claimsIdentity)
+    private Task<string> CreateToken(ClaimsIdentity claimsIdentity)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8
                .GetBytes(_configuration.GetSection("token_key").Value));

@@ -10,10 +10,15 @@ namespace MyDemoProjects.Application.Infastructure.Services.Identity;
 
 public interface IIdentityService
 {
-    Task<ApplicationResponse<ApplicationUser>> LoginUserAsync(string email, string password);
+    /// <summary>
+    /// Verify credentials and return a token if user is authenticated.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    Task<ApplicationResponse<TokenResponse>> LoginUserAsync(string email, string password);
     Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string password);
     Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword);
     Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync();
-    Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user);
-    Task<string> CreateToken(ClaimsIdentity claimsIdentity);
+   
 }
