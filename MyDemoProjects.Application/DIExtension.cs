@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using MyDemoProjects.Application.Infastructure.Identity.Extensions;
 using System.Reflection;
 
 namespace MyDemoProjects.Application;
@@ -13,7 +13,7 @@ public static class DIExtension
     {
         if (services == null)
         {
-            throw new ArgumentNullException("services");
+            throw new ArgumentNullException();
         }
 
         services.AddRazorPages();
@@ -22,7 +22,6 @@ public static class DIExtension
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
-        services.AddScoped<CircuitHandler, UserCircuitHandler>();
         services.AddHttpClient<IHttpService, HttpService>(client =>
         {
             client.BaseAddress = new Uri(baseUrl);
@@ -47,6 +46,8 @@ public static class DIExtension
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         services.AddTransient<IIdentityService, IdentityService>();
+        services.AddAuthentication().TryConfigureGoogleAccount(configuration); 
+
         return services;
     }
 
@@ -54,15 +55,11 @@ public static class DIExtension
     {
         if (services == null)
         {
-            throw new ArgumentNullException("services");
+            throw new ArgumentNullException();
         }
-
-        services.AddSignalR();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
-        services.AddScoped<CircuitHandler, UserCircuitHandler>();
-     
         services.AddHttpClient<IHttpService, HttpService>(client =>
         {
             client.BaseAddress = new Uri(baseUrl);
@@ -86,7 +83,6 @@ public static class DIExtension
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
 
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddAuthentication(options =>

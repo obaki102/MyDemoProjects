@@ -2,11 +2,13 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using MyDemoProjects.Application.Shared.DTOs.Request;
 
 namespace MyDemoProjects.Application.Infastructure.Services.Identity;
 
 public class IdentityService :IIdentityService
 {
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IConfiguration _configuration;
@@ -62,19 +64,64 @@ public class IdentityService :IIdentityService
     
     public async Task<ApplicationResponse<TokenResponse>> LoginUserAsync(string email, string password)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user is null)
+        await _semaphore.WaitAsync();
+        try
         {
-            return ApplicationResponse<TokenResponse>.Fail("User not found.Please check your username and password.");
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return ApplicationResponse<TokenResponse>.Fail("Please check your username and password.");
+            }
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+            if (isPasswordValid is false)
+            {
+                return ApplicationResponse<TokenResponse>.Fail("Invalid Credentials.");
+            }
+            var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
+            var token = new TokenResponse(CreateToken(identityCreatedFromUser).Result);
+            return ApplicationResponse<TokenResponse>.Success(token);
         }
-        var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
-        if (isPasswordValid is false)
+        finally
         {
-            return ApplicationResponse<TokenResponse>.Fail("Invalid Credentials.");
+            _semaphore.Release();
         }
-        var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
-        var token = new TokenResponse(CreateToken(identityCreatedFromUser).Result);
-        return ApplicationResponse<TokenResponse>.Success(token);
+    }
+
+    public async Task<ApplicationResponse<TokenResponse>> LoginExternalUserAsync(LoginExternalUserRequset externalUser)
+    {
+        await _semaphore.WaitAsync();
+        try
+        {
+            var user = await _userManager.FindByEmailAsync(externalUser.EmailAddress);
+            if (user is null)
+            {
+                user = new ApplicationUser
+                {
+                    EmailConfirmed = true,
+                    IsActive = true,
+                    IsLive = true,
+                    UserName = externalUser.EmailAddress,
+                    Email = externalUser.EmailAddress,
+                    Provider = externalUser.Provider,
+                    DisplayName = externalUser.UserName,
+                };
+                var isNewUserCreated = await _userManager.CreateAsync(user);
+                if (isNewUserCreated.Succeeded is false)
+                {
+                    return ApplicationResponse<TokenResponse>.Fail("External login failed.");
+                }
+                //TODO:Implement roles
+                //await _userManager.AddToRoleAsync(user, "");
+                await _userManager.AddLoginAsync(user, new UserLoginInfo(externalUser.Provider, externalUser.EmailAddress, externalUser.AccessToken));
+            }
+            var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
+            var token = new TokenResponse(CreateToken(identityCreatedFromUser).Result);
+            return ApplicationResponse<TokenResponse>.Success(token);
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     private async Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user)
@@ -141,5 +188,28 @@ public class IdentityService :IIdentityService
                 signingCredentials: signingCredential);
         var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
         return Task.FromResult(generatedJwtToken);
+    }
+
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("token_key").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RoleClaimType = ClaimTypes.Role,
+            ClockSkew = TimeSpan.Zero,
+            ValidateLifetime = false
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature,
+            StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return principal;
     }
 }

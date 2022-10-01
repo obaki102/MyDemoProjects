@@ -6,10 +6,10 @@ public class ApplicationDbContext : IdentityDbContext<
     ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin,
     ApplicationRoleClaim, ApplicationUserToken>
 {
-
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

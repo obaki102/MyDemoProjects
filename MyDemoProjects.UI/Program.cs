@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using MudBlazor;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
 using MyDemoProjects.Application.Infastructure.Services.Identity;
@@ -18,6 +20,18 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddUIApplicationDependencies(builder.Configuration, "https://localhost:7205");
+builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = true;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 4000;
+    config.SnackbarConfiguration.HideTransitionDuration = 500;
+    config.SnackbarConfiguration.ShowTransitionDuration = 500;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
 builder.Services.AddScoped<CustomAuthStateProvider>()
                .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthStateProvider>());
 var app = builder.Build();

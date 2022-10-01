@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyDemoProjects.Application.Migrations
 {
-    public partial class indetity2 : Migration
+    public partial class AddedProvider : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,6 +30,7 @@ namespace MyDemoProjects.Application.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Provider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfilePictureDataUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsLive = table.Column<bool>(type: "bit", nullable: false),

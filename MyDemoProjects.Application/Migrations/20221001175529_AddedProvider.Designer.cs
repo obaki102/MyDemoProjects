@@ -12,8 +12,8 @@ using MyDemoProjects.Application.Infastructure.Data;
 namespace MyDemoProjects.Application.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220924131924_indetity2")]
-    partial class indetity2
+    [Migration("20221001175529_AddedProvider")]
+    partial class AddedProvider
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,6 +124,9 @@ namespace MyDemoProjects.Application.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfilePictureDataUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Provider")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RefreshToken")

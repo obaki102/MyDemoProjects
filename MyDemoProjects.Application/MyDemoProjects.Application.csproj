@@ -7,13 +7,15 @@
     <UserSecretsId>b3a84497-a2fd-4e7d-b8e3-b421b1db6a5b</UserSecretsId>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="11.0.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
 		<PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
-		<PackageReference Include="MediatR" Version="10.0.1" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="MediatR" Version="11.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
@@ -33,8 +35,8 @@
 	<ItemGroup>
 	  <Folder Include="Features\AnimeList\Commands\" />
 	  <Folder Include="Features\Authentication\Queries\" />
+	  <Folder Include="Infastructure\Data\Migrations\" />
 		<Folder Include="Infastructure\Identity\Models\" />
-		<Folder Include="Shared\DTOs\Request\" />
 		<Folder Include="Shared\Utility\" />
 	</ItemGroup>
 </Project>

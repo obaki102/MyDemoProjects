@@ -124,6 +124,9 @@ namespace MyDemoProjects.Application.Migrations
                     b.Property<string>("ProfilePictureDataUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Provider")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 

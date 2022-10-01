@@ -3,8 +3,7 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @inject IAuthentication Authentication
-
-
+@inject IJSRuntime JS
 <MudDialog>
     <DialogContent>
         <div class="d-flex flex-column py-1 mx-auto">
@@ -22,6 +21,10 @@
                     </MudPaper>
                     <MudPaper Class="pa-4">
                         <MudButton Variant="Variant.Filled" OnClick="@Register">  <MudIcon Icon="@Icons.Filled.AppRegistration" Title="Create account" /></MudButton>
+                        <MudButton Class="flex-grow-1" OnClick="@(()=>SignInExternal("Google"))" Variant="Variant.Filled" StartIcon="@Icons.Custom.Brands.Google" ButtonType="ButtonType.Button"
+                                   title="Sign in with Google">
+                            Google
+                        </MudButton>
                     </MudPaper>
                     <MudPaper Class="pa-4">
                         <MudText Color="@Color.Error">@errorMessage</MudText>
@@ -32,6 +35,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
+ 
     </DialogActions>
 </MudDialog>
 @code {
@@ -50,21 +54,20 @@
 
         if (form.IsValid)
         {
-            var result = await Authentication.LoginAsync(User1);
+            var isUserAuthenticated = await Authentication.LoginAsync(User1);
 
-            if (!result.IsSuccess)
+            if (!isUserAuthenticated.IsSuccess)
             {
-                errorMessage = result.Messages.FirstOrDefault();
+                errorMessage = isUserAuthenticated.Messages.FirstOrDefault();
+                Snackbar.Add(isUserAuthenticated.Messages.FirstOrDefault(), Severity.Error);
             }
             else
             {
-
-
                 MudDialog.Close();
                 NavigationManager.NavigateTo("/index");
             }
         }
-       
+
     }
 
     public void Register()
@@ -72,6 +75,33 @@
         MudDialog.Close();
         DialogService.Show<Register>("Register", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
 
+    }
+
+    private async Task SignInExternal(string provider)
+    {
+        await JS.InvokeVoidAsync("externalLogin", provider, DotNetObjectReference.Create(this));
+    }
+    [JSInvokable]
+    public async Task ConfirmExternal(string provider, string email, string name, string accesstoken)
+    {
+        var externalUser = new LoginExternalUserRequset
+        {
+                AccessToken = accesstoken,
+                EmailAddress = email,
+                Provider = provider,
+                UserName = name
+        };
+
+        var isExternlaUserAuthenticated = await Authentication.ExternalLoginAsync(externalUser);
+        if (isExternlaUserAuthenticated.IsSuccess is false)
+        {
+            Snackbar.Add("Please check your username and password. If you are still unable to log in, contact your administrator.", MudBlazor.Severity.Error);
+        }
+        else
+        {
+            MudDialog.Close();
+            NavigationManager.NavigateTo("/index");
+        }
     }
 
 
