@@ -1,7 +1,9 @@
 ﻿
+using MyDemoProjects.Application.Shared.Models.Security;
+
 namespace MyDemoProjects.Application.Features.Authentication.Commands
 {
-    public record LoginWithToken(LoginUserRequest User) : IRequest<ApplicationResponse<TokenResponse>>;
+    public record LoginWithToken(LoginFormModel User) : IRequest<ApplicationResponse<TokenResponse>>;
 
     public class LoginWithJwtTokenHandler : IRequestHandler<LoginWithToken, ApplicationResponse<TokenResponse>>
     {
@@ -13,7 +15,7 @@ namespace MyDemoProjects.Application.Features.Authentication.Commands
 
         public async Task<ApplicationResponse<TokenResponse>> Handle(LoginWithToken request, CancellationToken cancellationToken)
         {
-            return await _identityService.LoginUserAsync(request.User.Email, request.User.Password);
+            return await _identityService.LoginUserAsync(request.User.EmailAddress, request.User.Password);
         }
     }
 

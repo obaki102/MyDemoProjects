@@ -3,6 +3,7 @@ using MyDemoProjects.Application.Features.Authentication.Commands;
 using MyDemoProjects.Application.Shared.DTOs.Request;
 using MyDemoProjects.Application.Shared.Models.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
+using MyDemoProjects.Application.Shared.Models.Security;
 
 namespace MyDemoProjects.UI.Services.Authentication
 {
@@ -21,7 +22,7 @@ namespace MyDemoProjects.UI.Services.Authentication
             return await _mediator.Send(new CreateAccount(newUser));
         }
 
-        public async Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser)
+        public async Task<ApplicationResponse<bool>> LoginAsync(LoginFormModel loginUser)
         {
             var loginResponse = await _mediator.Send(new LoginWithToken(loginUser));
             if(loginResponse.IsSuccess is false)

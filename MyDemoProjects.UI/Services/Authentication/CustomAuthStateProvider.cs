@@ -19,6 +19,7 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
+
             var authToken = await _protectedLocalStorage.GetAsync<string>("authToken");
 
             var identity = new ClaimsIdentity();

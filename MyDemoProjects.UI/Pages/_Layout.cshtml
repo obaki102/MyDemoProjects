@@ -61,7 +61,7 @@
                     const data = await fetch(url).then((response) => response.json());
                     await dotNetHelper.invokeMethodAsync('ConfirmExternal', provider, data.email, data.name, access_token);
                     console.log('login with google success');
-                    localStorage.setItem('google_client_token', access_token);
+                   // localStorage.setItem('google_client_token', access_token);
 
                 }
             });

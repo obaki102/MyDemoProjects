@@ -10,13 +10,14 @@
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12" sm="7">
                     <MudPaper Class="pa-6 align-content-center">
-                        <MudForm Model="@User1" @ref="form" @bind-IsValid="@success">
-                            <MudTextField @bind-Value="User1.Email" T="string" Label="Email" Required="true" RequiredError="Email is required!"
-                                          OnlyValidateIfDirty="true" />
-                            <MudTextField @bind-Value="User1.Password" T="string" Label="Password"
+                        <MudForm Model="@_user" @ref="form" @bind-IsValid="@success" Validation="@(_loginValidator.ValidateValue)">
+                           
+                            <MudTextField @bind-Value="_user.EmailAddress" T="string" For="@(() => _user.EmailAddress)"
+                                          Label="Email" 
+                                          OnlyValidateIfDirty="true"> </MudTextField>
+                            <MudTextField @bind-Value="_user.Password" T="string" Label="Password"  For="@(() => _user.Password)"
                                           InputType="InputType.Password"
-                                          Required="true"
-                                          RequiredError="Password is required!" OnlyValidateIfDirty="true" />
+                                          OnlyValidateIfDirty="true"> </MudTextField>
                         </MudForm>
                     </MudPaper>
                     <MudPaper Class="pa-4">
@@ -45,16 +46,15 @@
     string errorMessage = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-
-    LoginUserRequest User1 = new LoginUserRequest();
-
+    LoginFormModel _user = new LoginFormModel();
+    private LoginFormModelFluentValidator _loginValidator = new LoginFormModelFluentValidator();
     public async Task LoginUser()
     {
         form.Validate();
 
         if (form.IsValid)
         {
-            var isUserAuthenticated = await Authentication.LoginAsync(User1);
+            var isUserAuthenticated = await Authentication.LoginAsync(_user);
 
             if (!isUserAuthenticated.IsSuccess)
             {

@@ -7,6 +7,7 @@ using MyDemoProjects.Application.Shared.DTOs.Response;
 using MyDemoProjects.Application.Shared.Models;
 using MyDemoProjects.Application.Shared.Models.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
+using MyDemoProjects.Application.Shared.Models.Security;
 
 namespace MyDemoProjects.Api.Controllers
 {
@@ -28,7 +29,7 @@ namespace MyDemoProjects.Api.Controllers
         }
 
         [HttpPost("api/login")]
-        public async Task<ActionResult<ApplicationResponse<TokenResponse>>> Login(LoginUserRequest user)
+        public async Task<ActionResult<ApplicationResponse<TokenResponse>>> Login(LoginFormModel user)
         {
             return await _mediator.Send(new LoginWithToken(user));
         }

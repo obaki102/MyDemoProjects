@@ -1,0 +1,104 @@
+﻿@page "/login2"
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+@inject IAuthentication Authentication
+@inject IJSRuntime JS
+@inject IDialogService DialogService
+
+<MudPaper Class="pa-6 align-content-center">
+    <MudForm Model="@_user" @ref="form" @bind-IsValid="@success" Validation="@(_loginValidator.ValidateValue)">
+
+        <MudTextField @bind-Value="_user.EmailAddress" T="string" For="@(() => _user.EmailAddress)"
+                      Label="Email"
+                      OnlyValidateIfDirty="true"> </MudTextField>
+        <MudTextField @bind-Value="_user.Password" T="string" Label="Password" For="@(() => _user.Password)"
+                      InputType="InputType.Password"
+                      OnlyValidateIfDirty="true"> </MudTextField>
+    </MudForm>
+</MudPaper>
+<MudPaper Class="pa-4">
+    <MudButton Variant="Variant.Filled" OnClick="@Register">  <MudIcon Icon="@Icons.Filled.AppRegistration" Title="Create account" /></MudButton>
+    <MudButton Class="flex-grow-1" OnClick="@(()=>SignInExternal("Google"))" Variant="Variant.Filled" StartIcon="@Icons.Custom.Brands.Google" ButtonType="ButtonType.Button"
+               title="Sign in with Google">
+        Google
+    </MudButton>
+
+</MudPaper>
+
+<MudPaper Class="pa-4">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
+
+</MudPaper>
+<MudPaper Class="pa-4">
+    <MudText Color="@Color.Error">@errorMessage</MudText>
+</MudPaper>
+
+
+
+
+@code {
+
+    bool success;
+    MudForm form;
+    string errorMessage = string.Empty;
+    LoginFormModel _user = new LoginFormModel();
+    private LoginFormModelFluentValidator _loginValidator = new LoginFormModelFluentValidator();
+
+    public async Task LoginUser()
+    {
+        form.Validate();
+
+        if (form.IsValid)
+        {
+            var isUserAuthenticated = await Authentication.LoginAsync(_user);
+
+            if (!isUserAuthenticated.IsSuccess)
+            {
+                errorMessage = isUserAuthenticated.Messages.FirstOrDefault();
+                Snackbar.Add(isUserAuthenticated.Messages.FirstOrDefault(), Severity.Error);
+            }
+            else
+            {
+                
+                NavigationManager.NavigateTo("/index");
+            }
+        }
+
+    }
+
+    public void Register()
+    {
+        DialogService.Show<Register>("Register", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
+
+    }
+
+    private async Task SignInExternal(string provider)
+    {
+        await JS.InvokeVoidAsync("externalLogin", provider, DotNetObjectReference.Create(this));
+    }
+    [JSInvokable]
+    public async Task ConfirmExternal(string provider, string email, string name, string accesstoken)
+    {
+        var externalUser = new LoginExternalUserRequset
+            {
+                AccessToken = accesstoken,
+                EmailAddress = email,
+                Provider = provider,
+                UserName = name
+            };
+
+        var isExternlaUserAuthenticated = await Authentication.ExternalLoginAsync(externalUser);
+        if (isExternlaUserAuthenticated.IsSuccess is false)
+        {
+            Snackbar.Add("Please check your username and password. If you are still unable to log in, contact your administrator.", MudBlazor.Severity.Error);
+        }
+        else
+        {
+           
+            NavigationManager.NavigateTo("/index");
+        }
+    }
+
+
+}

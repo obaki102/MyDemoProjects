@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using MyDemoProjects.Application.Infastructure.Identity.Extensions;
 using System.Reflection;
 
+using MyDemoProjects.Application.Shared.Models.Security;
+
 namespace MyDemoProjects.Application;
 
 public static class DIExtension
