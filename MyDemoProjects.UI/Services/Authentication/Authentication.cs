@@ -25,7 +25,7 @@ namespace MyDemoProjects.UI.Services.Authentication
         public async Task<ApplicationResponse<bool>> LoginAsync(LoginFormModel loginUser)
         {
             var loginResponse = await _mediator.Send(new LoginWithToken(loginUser));
-            if(loginResponse.IsSuccess is false)
+            if(loginResponse.IsSuccess is false || loginResponse.Data is null)
             {
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);
             }
@@ -37,7 +37,7 @@ namespace MyDemoProjects.UI.Services.Authentication
         public async Task<ApplicationResponse<bool>> ExternalLoginAsync(LoginExternalUserRequset externalLoginUser)
         {
             var loginResponse = await _mediator.Send(new LoginWithExternalAuthService(externalLoginUser));
-            if (loginResponse.IsSuccess is false)
+            if (loginResponse.IsSuccess is false || loginResponse.Data is null)
             {
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);
             }

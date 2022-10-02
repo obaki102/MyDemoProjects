@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
 using MyDemoProjects.Application.Infastructure.Identity.Extensions;
 using System.Reflection;
+using MyDemoProjects.Application.Behaviours.Validation;
 
-using MyDemoProjects.Application.Shared.Models.Security;
 
 namespace MyDemoProjects.Application;
 
@@ -17,17 +17,22 @@ public static class DIExtension
         {
             throw new ArgumentNullException();
         }
-
+        //UI
         services.AddRazorPages();
         services.AddServerSideBlazor();
         services.AddSignalR();
+        //3rd Party
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        //Services
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
         services.AddHttpClient<IHttpService, HttpService>(client =>
         {
             client.BaseAddress = new Uri(baseUrl);
         });
+        //DB
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetSection("DefaultConnection").Value,
@@ -40,6 +45,7 @@ public static class DIExtension
                         builder.CommandTimeout(15);
                     });
         });
+        //Utility
         services.AddLazyCache();
         //Authentication
         services
@@ -59,8 +65,12 @@ public static class DIExtension
         {
             throw new ArgumentNullException();
         }
+        //3rd Party
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        //Services
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
         services.AddHttpClient<IHttpService, HttpService>(client =>
         {
@@ -78,6 +88,7 @@ public static class DIExtension
                     builder.CommandTimeout(15);
                 });
         });
+        //Utility
         services.AddLazyCache();
         //Authentication
         services
@@ -85,7 +96,6 @@ public static class DIExtension
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddAuthentication(options =>
         {

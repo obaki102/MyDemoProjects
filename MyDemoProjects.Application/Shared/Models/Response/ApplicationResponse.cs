@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MyDemoProjects.Application.Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,6 +133,17 @@ namespace MyDemoProjects.Application.Shared.Models.Response
     // TODO: Implement Async methods
     public class ApplicationResponse<T> : ApplicationResponse, IApplicationResponse<T>
     {
+        public ApplicationResponse()
+        {
+
+        }
+        public ApplicationResponse(T? data, List<string> message)
+        {
+            Data = data;
+            Messages = message;
+        }
+       
+
         public T? Data { get; set; }
 
         public IEnumerable<T>? ListOfData { get; set; }

@@ -33,6 +33,7 @@ public class IdentityService :IIdentityService
         {
             return ApplicationResponse<bool>.Fail(isPasswordChanged.Errors.Select(s => s.Description).ToList());
         }
+       
         return ApplicationResponse<bool>.Success(isPasswordChanged.Succeeded);
     }
 
@@ -48,6 +49,7 @@ public class IdentityService :IIdentityService
         {
             ApplicationResponse<bool>.Fail(isNewUserCreated.Errors.Select(s => s.Description).ToList());
         }
+        
         return ApplicationResponse<bool>.Success(isNewUserCreated.Succeeded);
 
     }
@@ -78,7 +80,8 @@ public class IdentityService :IIdentityService
                 return ApplicationResponse<TokenResponse>.Fail("Invalid Credentials.");
             }
             var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
-            var token = new TokenResponse(CreateToken(identityCreatedFromUser).Result);
+            var token = new TokenResponse(CreateToken(identityCreatedFromUser));
+            
             return ApplicationResponse<TokenResponse>.Success(token);
         }
         finally
@@ -116,7 +119,8 @@ public class IdentityService :IIdentityService
                 await _userManager.AddLoginAsync(user, new UserLoginInfo(externalUser.Provider, externalUser.EmailAddress, externalUser.AccessToken));
             }
             var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
-            var token = new TokenResponse(CreateToken(identityCreatedFromUser).Result);
+            var token = new TokenResponse(CreateToken(identityCreatedFromUser));
+           
             return ApplicationResponse<TokenResponse>.Success(token);
         }
         finally
@@ -178,7 +182,7 @@ public class IdentityService :IIdentityService
         return claimsIdentity;
     }
 
-    private Task<string> CreateToken(ClaimsIdentity claimsIdentity)
+    private string CreateToken(ClaimsIdentity claimsIdentity)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8
                .GetBytes(_configuration.GetSection("token_key").Value));
@@ -188,7 +192,8 @@ public class IdentityService :IIdentityService
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: signingCredential);
         var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-        return Task.FromResult(generatedJwtToken);
+       
+        return generatedJwtToken;
     }
 
     private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
