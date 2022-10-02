@@ -8,6 +8,7 @@ using MyDemoProjects.Application.Infastructure.Services.Identity;
 using MyDemoProjects.UI.Data;
 using MyDemoProjects.UI.Services.AnimeList;
 using MyDemoProjects.UI.Services.Authentication;
+using MyDemoProjects.UI.Services.Shared.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddUIApplicationDependencies(builder.Configuration, "https://localhost:7205");
 builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
+builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
@@ -34,6 +36,8 @@ builder.Services.AddMudServices(config =>
 });
 builder.Services.AddScoped<CustomAuthStateProvider>()
                .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthStateProvider>());
+
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

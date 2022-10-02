@@ -104,6 +104,7 @@ public class IdentityService :IIdentityService
                     Email = externalUser.EmailAddress,
                     Provider = externalUser.Provider,
                     DisplayName = externalUser.UserName,
+                    ProfilePictureDataUrl = externalUser.PictureUrl
                 };
                 var isNewUserCreated = await _userManager.CreateAsync(user);
                 if (isNewUserCreated.Succeeded is false)

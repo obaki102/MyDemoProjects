@@ -8,4 +8,5 @@ public static class ApplicationClaimTypes
     public const string TenantName = "TenantName";
     public const string Permission = "Permission";
     public const string ProfilePictureDataUrl = "ProfilePictureDataUrl";
+    public const string Expiration = "exp";
 }

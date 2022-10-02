@@ -25,19 +25,19 @@ namespace MyDemoProjects.Application.Infastructure.Identity.Extensions
             {
                 options.ClientId = googleAccountClientId;
                 options.ClientSecret = googleAccountClientSecret;
-                options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
-                {
-                    OnCreatingTicket = c =>
-                    {
-                        var identity = (ClaimsIdentity?)c?.Principal?.Identity;
-                        var avatar = c?.User.GetProperty("picture").GetString();
-                        if (!string.IsNullOrEmpty(avatar))
-                        {
-                            identity?.AddClaim(new Claim("avatar", avatar));
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
+                //options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+                //{
+                //    OnCreatingTicket = c =>
+                //    {
+                //        var identity = (ClaimsIdentity?)c?.Principal?.Identity;
+                //        var avatar = c?.User.GetProperty("picture").GetString();
+                //        if (!string.IsNullOrEmpty(avatar))
+                //        {
+                //            identity?.AddClaim(new Claim("avatar", avatar));
+                //        }
+                //        return Task.CompletedTask;
+                //    }
+                //};
             });
         }
     }

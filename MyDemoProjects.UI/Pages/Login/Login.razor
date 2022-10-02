@@ -82,14 +82,15 @@
         await JS.InvokeVoidAsync("externalLogin", provider, DotNetObjectReference.Create(this));
     }
     [JSInvokable]
-    public async Task ConfirmExternal(string provider, string email, string name, string accesstoken)
+    public async Task ConfirmExternal(string provider, string email, string name, string pictureUrl,string accesstoken)
     {
         var externalUser = new LoginExternalUserRequset
         {
                 AccessToken = accesstoken,
                 EmailAddress = email,
                 Provider = provider,
-                UserName = name
+                UserName = name,
+                PictureUrl = pictureUrl
         };
 
         var isExternlaUserAuthenticated = await Authentication.ExternalLoginAsync(externalUser);

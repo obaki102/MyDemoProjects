@@ -11,4 +11,5 @@ public  class LoginExternalUserRequset
     public string EmailAddress { get; init; } = string.Empty;
     public string UserName { get; init; } = string.Empty;
     public string AccessToken { get; init; } = string.Empty;
+    public string PictureUrl { get; init; } = string.Empty;
 }
