@@ -1,11 +1,5 @@
-﻿using Duende.IdentityServer.Models;
-using FluentValidation;
-using MyDemoProjects.Application.Shared.DTOs.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using ValidationException = FluentValidation.ValidationException;
 
 namespace MyDemoProjects.Application.Behaviours.Validation
 {
@@ -41,26 +35,26 @@ namespace MyDemoProjects.Application.Behaviours.Validation
             var errorLists = _validators
                 .Select(x => x.Validate(context))
                 .SelectMany(x => x.Errors)
-                .Where(x => x != null)
-                .Select(x => x.ErrorMessage)
-                .ToList();
+                .Where(x => x != null);
 
             if (errorLists.Any())
             {
-                //TODO: Check other ways to throw the validation error messages
-                //Check if respons is an application response type
-                if (typeof(TResponse) is IApplicationResponse iapplicationResponse)
-                {
-                    //Build the parameter to be pass
-                    var parameterType = new Type[] { typeof(List<string>) };
-                    //Find the method "fail" in Application Response object
-                    var failMethodInApplicationResponse = typeof(TResponse).GetMethod("Fail", parameterType);
-                    //Create the Application Response object
-                    var responseObject = (TResponse)Activator.CreateInstance(typeof(TResponse));
-                    //Pass the list of errors as a parameter
-                    object[] parameters = new object[] { errorLists };
-                    return (TResponse)failMethodInApplicationResponse.Invoke(responseObject, parameters);
-                }
+                //TODO: Check other ways to throw the validation error message
+                //Check if response is an application response type
+                //if (typeof(TResponse).Name.Contains(typeof(ApplicationResponse).Name))
+                //{
+                //    //Build the parameter to be pass
+                //    var parameterType = new Type[] { typeof(List<string>) };
+                //    //Find the method "fail" in Application Response object
+                //    var failMethodInApplicationResponse = typeof(TResponse).GetMethod("Fail", parameterType);
+                //    //Create the Application Response object
+                //    var responseObject = (TResponse)Activator.CreateInstance(typeof(TResponse));
+                //    //Pass the list of errors as a parameter
+                //    object[] parameters = new object[] { errorLists };
+                //    return (TResponse)failMethodInApplicationResponse.Invoke(responseObject, parameters);
+                //}
+
+                throw new ValidationException(errorLists);
             }
                                                     
             return await next();
