@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.Api", "MyDem
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{6AD25BCC-6135-4DFE-8A55-245F16268DA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyDemoProjects.TestProject", "..\MyDemoProjects.TestProject\MyDemoProjects.TestProject.csproj", "{AF0A59C3-B392-4B5E-BAB6-153C06452E2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.TestProject", "..\MyDemoProjects.TestProject\MyDemoProjects.TestProject.csproj", "{AF0A59C3-B392-4B5E-BAB6-153C06452E2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
