@@ -1,5 +1,5 @@
 ﻿
-namespace MyDemoProjects.Application.Features.RandomGOTQuotes.Queries
+namespace MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Queries
 {
 
     public record GetRandomQuotes() : IRequest<ApplicationResponse<RandomGOTQuotesResponse>>;

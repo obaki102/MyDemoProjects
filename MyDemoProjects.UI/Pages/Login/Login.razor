@@ -39,15 +39,13 @@
 @code {
 
     MudForm form;
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get;}
     private LoginUserRequest _user = new LoginUserRequest();
     private LoginUserRequestFluentValidator _loginValidator = new LoginUserRequestFluentValidator();
 
-
     public async Task LoginUser()
     {
-        form.Validate();
-
+        await form.Validate();
         if (form.IsValid)
         {
             var isUserAuthenticated = await Authentication.LoginAsync(_user);
@@ -63,20 +61,19 @@
                 NavigationManager.NavigateTo("/");
             }
         }
-
     }
 
     public void Register()
     {
         MudDialog.Close();
         DialogService.Show<Register>("Register", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
-
     }
 
     private async Task SignInExternal(string provider)
     {
         await JS.InvokeVoidAsync("externalLogin", provider, DotNetObjectReference.Create(this));
     }
+
     [JSInvokable]
     public async Task ConfirmExternal(string provider, string email, string name, string pictureUrl,string accesstoken)
     {

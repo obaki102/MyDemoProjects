@@ -1,6 +1,6 @@
 ﻿using MyDemoProjects.Application.Shared.Models.Response;
 
-namespace MyDemoProjects.Application.Features.AnimeList.Queries;
+namespace MyDemoProjects.Application.Features.ExternalApi.AnimeList.Queries;
 
 public record GetAnimeListBySeasonAndYear(Season Season) : IRequest<ApplicationResponse<AnimeListRoot>>;
 

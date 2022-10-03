@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using MyDemoProjects.Application.Features.RandomGOTQuotes.Queries;
+using MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;
 
 namespace MyDemoProjects.UI.Services.RandomGOTQuotes
@@ -18,8 +18,12 @@ namespace MyDemoProjects.UI.Services.RandomGOTQuotes
         public async Task<RandomGOTQuotesResponse> GetRandomGOTQuotes()
         {
             var randomGOTQuotes = await _mediator.Send(new GetRandomQuotes());
-            GOTQuotes = randomGOTQuotes.Data;
-            return randomGOTQuotes.Data;
+            if (randomGOTQuotes.Data is not null)
+            {
+                GOTQuotes = randomGOTQuotes.Data;
+            }
+
+            return GOTQuotes;
         }
     }
 }

@@ -32,7 +32,7 @@
 		<PackageReference Include="SendGrid" Version="9.28.1" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Features\AnimeList\Commands\" />
+	  <Folder Include="Features\ExternalApi\AnimeList\Commands\" />
 	  <Folder Include="Features\Authentication\Queries\" />
 	  <Folder Include="Infastructure\Data\Migrations\" />
 		<Folder Include="Infastructure\Identity\Models\" />

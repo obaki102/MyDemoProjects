@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyDemoProjects.Application.Features.RandomGOTQuotes.Queries;
+using MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;
 using MyDemoProjects.Application.Shared.Models.Response;
 

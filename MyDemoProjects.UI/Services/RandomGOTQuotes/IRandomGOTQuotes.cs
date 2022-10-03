@@ -8,3 +8,4 @@ namespace MyDemoProjects.UI.Services.RandomGOTQuotes
         Task<RandomGOTQuotesResponse> GetRandomGOTQuotes();
     }
 }
+
