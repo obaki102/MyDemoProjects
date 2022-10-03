@@ -4,15 +4,15 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using MyDemoProjects.Application.Shared.DTOs.Request;
 
-namespace MyDemoProjects.Application.Infastructure.Services.Identity;
+namespace MyDemoProjects.Application.Infastructure.Identity.Services;
 
-public class IdentityService :IIdentityService
+public class IdentityService : IIdentityService
 {
     private readonly SemaphoreSlim _semaphore = new(1, 1);
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IConfiguration _configuration;
-  
+
 
     public IdentityService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IConfiguration configuration)
     {
@@ -33,7 +33,7 @@ public class IdentityService :IIdentityService
         {
             return ApplicationResponse<bool>.Fail(isPasswordChanged.Errors.Select(s => s.Description).ToList());
         }
-       
+
         return ApplicationResponse<bool>.Success(isPasswordChanged.Succeeded);
     }
 
@@ -49,7 +49,7 @@ public class IdentityService :IIdentityService
         {
             ApplicationResponse<bool>.Fail(isNewUserCreated.Errors.Select(s => s.Description).ToList());
         }
-        
+
         return ApplicationResponse<bool>.Success(isNewUserCreated.Succeeded);
 
     }
@@ -63,7 +63,7 @@ public class IdentityService :IIdentityService
         }
         return ApplicationResponse<ApplicationUser>.Success(users);
     }
-    
+
     public async Task<ApplicationResponse<TokenResponse>> LoginUserAsync(string email, string password)
     {
         await _semaphore.WaitAsync();
@@ -81,7 +81,7 @@ public class IdentityService :IIdentityService
             }
             var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
             var token = new TokenResponse(CreateToken(identityCreatedFromUser));
-            
+
             return ApplicationResponse<TokenResponse>.Success(token);
         }
         finally
@@ -120,7 +120,7 @@ public class IdentityService :IIdentityService
             }
             var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
             var token = new TokenResponse(CreateToken(identityCreatedFromUser));
-           
+
             return ApplicationResponse<TokenResponse>.Success(token);
         }
         finally
@@ -165,6 +165,8 @@ public class IdentityService :IIdentityService
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
             });
         }
+        claimsIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Expiration, DateTime.Now.AddMinutes(30).ToShortTimeString())  });
         var roles = await _userManager.GetRolesAsync(user);
         foreach (var roleName in roles)
         {
@@ -192,7 +194,7 @@ public class IdentityService :IIdentityService
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: signingCredential);
         var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-       
+
         return generatedJwtToken;
     }
 

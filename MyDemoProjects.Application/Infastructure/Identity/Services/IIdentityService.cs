@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MyDemoProjects.Application.Shared.DTOs.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
 
-namespace MyDemoProjects.Application.Infastructure.Services.Identity;
+namespace MyDemoProjects.Application.Infastructure.Identity.Services;
 
 public interface IIdentityService
 {
@@ -31,5 +31,5 @@ public interface IIdentityService
     Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string password);
     Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword);
     Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync();
-   
+
 }

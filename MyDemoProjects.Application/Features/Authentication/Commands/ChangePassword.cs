@@ -1,7 +1,4 @@
-﻿using MyDemoProjects.Application.Shared.Models.Request;
-using MyDemoProjects.Application.Shared.Models.Response;
-
-namespace MyDemoProjects.Application.Features.Authentication.Commands;
+﻿namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
 public record ChangePassword(ChangePasswordRequest User) : IRequest<ApplicationResponse<bool>>;
 

@@ -1,12 +1,4 @@
-﻿using MyDemoProjects.Application.Shared.Models;
-using MyDemoProjects.Application.Shared.Models.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyDemoProjects.Application.Features.Authentication.Queries
+﻿namespace MyDemoProjects.Application.Features.Authentication.Queries
 {
     public record GetAllUsers() : IRequest<ApplicationResponse<UserDetailsResponse>>;
     public class GetAllUsersHandler : IRequestHandler<GetAllUsers, ApplicationResponse<UserDetailsResponse>>

@@ -30,7 +30,7 @@ namespace MyDemoProjects.UI.Services.Authentication
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);
             }
 
-            await customAuthStateProvider.SaveJwtToLocalStorageAndUpadteNotificationState(loginResponse.Data.Token);
+            await customAuthStateProvider.SaveJwtToLocalStorageAndUpdateAuthenticationState(loginResponse.Data.Token);
             return ApplicationResponse<bool>.Success(loginResponse.Messages);
         }
 
@@ -42,7 +42,7 @@ namespace MyDemoProjects.UI.Services.Authentication
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);
             }
 
-            await customAuthStateProvider.SaveJwtToLocalStorageAndUpadteNotificationState(loginResponse.Data.Token);
+            await customAuthStateProvider.SaveJwtToLocalStorageAndUpdateAuthenticationState(loginResponse.Data.Token);
             return ApplicationResponse<bool>.Success(loginResponse.Messages);
         }
     }

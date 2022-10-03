@@ -1,6 +1,4 @@
 ﻿
-using MyDemoProjects.Application.Shared.DTOs.Request;
-
 namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
 public record LoginWithExternalAuthService(LoginExternalUserRequset ExternalUser) : IRequest<ApplicationResponse<TokenResponse>>;

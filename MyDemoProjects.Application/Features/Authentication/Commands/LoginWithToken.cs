@@ -1,7 +1,4 @@
-﻿
-using MyDemoProjects.Application.Shared.Models.Security;
-
-namespace MyDemoProjects.Application.Features.Authentication.Commands
+﻿namespace MyDemoProjects.Application.Features.Authentication.Commands
 {
     public record LoginWithToken(LoginFormModel User) : IRequest<ApplicationResponse<TokenResponse>>;
 

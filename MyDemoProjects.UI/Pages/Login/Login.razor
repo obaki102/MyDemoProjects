@@ -10,7 +10,7 @@
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12" sm="7">
                     <MudPaper Class="pa-6 align-content-center">
-                        <MudForm Model="@_user" @ref="form" @bind-IsValid="@success" Validation="@(_loginValidator.ValidateValue)">
+                        <MudForm Model="@_user" @ref="form" Validation="@(_loginValidator.ValidateValue)">
                            
                             <MudTextField @bind-Value="_user.EmailAddress" T="string" For="@(() => _user.EmailAddress)"
                                           Label="Email" 

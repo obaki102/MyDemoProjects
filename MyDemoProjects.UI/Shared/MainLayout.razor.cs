@@ -1,5 +1,4 @@
-﻿using Duende.IdentityServer.Extensions;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using MyDemoProjects.UI.Pages.Login;

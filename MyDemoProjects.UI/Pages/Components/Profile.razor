@@ -1,19 +1,58 @@
-﻿<MudAvatar Size="Size.Large" Image="@picUrl"></MudAvatar>
+﻿@using System.Security.Claims
+<MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopLeft">
+    <ActivatorContent>
+        <MudAvatar Image="@picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem>
+            <MudCard Elevation="0" Square="true" Class="mt-n2">
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        @if (string.IsNullOrEmpty(picUrl))
+                        {
+                            <MudAvatar Color="Color.Secondary">@claims[ClaimTypes.Name][0]</MudAvatar>
+                        }
+                        else
+                        {
+                            <MudAvatar Image="@picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                        }
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.caption">@claims[ClaimTypes.Email]</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+            </MudCard>
+        </MudMenuItem>
+        <MudDivider Class="mb-2" />
+        <MudListItem Icon="@Icons.Material.Filled.Delete" Text="Sign Out" OnClick="SignOut" />
+    </ChildContent>
+</MudMenu>
+
+
 @code {
     [Inject] private IDialogService _dialogService { get; set; } = default!;
     [Inject] private IRetrieveAuthState _retrieveAuthState { get; set; } = default!;
-     private void OpenDialog()
+    [Inject] private CustomAuthStateProvider _customAuthStateProvider { get; set; } = default!;
+    private bool _drawerProfileOpen = true;
+    private bool _drawerOpen = true;
+    private void OpenDialog()
     {
         _dialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
     }
 
-    bool _drawerOpen = true;
 
-    void DrawerToggle()
+    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
-
+    private void ToggleProfileDrawer()
+    {
+        _drawerProfileOpen = !_drawerProfileOpen;
+    }
+    private async Task SignOut()
+    {
+        await _customAuthStateProvider.LogOutAndUpdateAuthenticationState();
+    }
     private Dictionary<string, string> claims = new Dictionary<string, string>();
     private string picUrl = string.Empty;
     protected override async Task OnInitializedAsync()

@@ -23,7 +23,7 @@ public class RetrieveAuthState : IRetrieveAuthState
             switch (claims.Type)
             {
                 case ApplicationClaimTypes.Status:
-                    claimValues.Add(ApplicationClaimTypes.Status, claims.Value);
+                    claimValues.Add(ApplicationClaimTypes.Status, userState.User.Identity.IsAuthenticated.ToString());
                     break;
                 case ClaimTypes.NameIdentifier:
                     claimValues.Add(ClaimTypes.NameIdentifier, claims.Value);
@@ -38,7 +38,7 @@ public class RetrieveAuthState : IRetrieveAuthState
                     claimValues.Add(ApplicationClaimTypes.ProfilePictureDataUrl, claims.Value);
                     break;
                 case ApplicationClaimTypes.Expiration:
-                    claimValues.Add(ApplicationClaimTypes.Expiration, claims.Value);
+                    claimValues.Add(ClaimTypes.Expiration, claims.Value);
                     break;
             }
         }

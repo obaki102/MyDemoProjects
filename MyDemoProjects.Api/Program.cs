@@ -43,7 +43,6 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseInfrastructure(builder.Configuration);
 app.MapControllers();
 app.Run();

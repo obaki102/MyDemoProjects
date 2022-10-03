@@ -1,9 +1,4 @@
-﻿using MyDemoProjects.Application.Infastructure.Services.Identity;
-using MyDemoProjects.Application.Shared.DTO;
-using MyDemoProjects.Application.Shared.Models.Request;
-using MyDemoProjects.Application.Shared.Models.Response;
-
-namespace MyDemoProjects.Application.Features.Authentication.Commands;
+﻿namespace MyDemoProjects.Application.Features.Authentication.Commands;
 
 public record CreateAccount(CreateAccountRequest User) : IRequest<ApplicationResponse<bool>>;
 

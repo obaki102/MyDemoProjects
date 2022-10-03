@@ -5,7 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using MyDemoProjects.Application.Infastructure.Identity.Extensions;
 using System.Reflection;
 using MyDemoProjects.Application.Behaviours.Validation;
-
+using MyDemoProjects.Application.Middlewares;
+using MyDemoProjects.Application.Infastructure.Identity.Services;
 
 namespace MyDemoProjects.Application;
 
@@ -25,7 +26,9 @@ public static class DIExtension
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        //Middleware
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient<ExceptionHandlingMiddleware>();
         //Services
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
         services.AddHttpClient<IHttpService, HttpService>(client =>
@@ -54,6 +57,23 @@ public static class DIExtension
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         services.AddTransient<IIdentityService, IdentityService>();
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(System.Text.Encoding.UTF8
+                    .GetBytes(configuration.GetSection("token_key").Value)),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
         services.AddAuthentication().TryConfigureGoogleAccount(configuration); 
 
         return services;
@@ -68,8 +88,10 @@ public static class DIExtension
         //3rd Party
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        //Middleware
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient<ExceptionHandlingMiddleware>();
         //Services
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
         services.AddHttpClient<IHttpService, HttpService>(client =>
@@ -126,12 +148,7 @@ public static class DIExtension
         {
             throw new ArgumentNullException("builder");
         }
-        app.UseEndpoints(endpoints =>
-        {
-
-            endpoints.MapHub<ChatRoomHub>(ChatRoomHub.HubUrl);
-        });
-
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
         return app;

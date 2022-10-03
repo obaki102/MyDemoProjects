@@ -47,8 +47,13 @@ namespace MyDemoProjects.UI.Services.Authentication
 
             return state;
         }
+        public async Task LogOutAndUpdateAuthenticationState()
+        {
+            await _protectedLocalStorage.DeleteAsync("authToken");
+            await GetAuthenticationStateAsync();
+        }
 
-        public async Task SaveJwtToLocalStorageAndUpadteNotificationState(string jwt)
+        public async Task SaveJwtToLocalStorageAndUpdateAuthenticationState(string jwt)
         {
             await _protectedLocalStorage.SetAsync("authToken", jwt);
             await GetAuthenticationStateAsync();

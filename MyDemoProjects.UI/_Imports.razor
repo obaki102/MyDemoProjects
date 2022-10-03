@@ -1,4 +1,5 @@
 ﻿@using System.Net.Http
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
@@ -19,8 +20,9 @@
 @using MyDemoProjects.Application.Shared.DTOs.Request
 @using MyDemoProjects.Application.Shared.Models.Security
 @using MyDemoProjects.Application.Shared.Constants
-@using MyDemoProjects.Application;
-@using MyDemoProjects.Application.Infastructure.Services.Identity;
-@using MyDemoProjects.UI.Data;
-@using MyDemoProjects.UI.Services.Shared.Utility;
+@using MyDemoProjects.Application
+@using MyDemoProjects.Application.Infastructure.Services.Identity
+@using MyDemoProjects.UI.Data
+@using MyDemoProjects.UI.Services.Shared.Utility
+
 @inject ISnackbar Snackbar
