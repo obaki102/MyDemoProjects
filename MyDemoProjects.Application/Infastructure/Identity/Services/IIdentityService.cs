@@ -32,4 +32,10 @@ public interface IIdentityService
     Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword);
     Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync();
 
+    /// <summary>
+    /// Validate jwt token , if valid  extract the claims principal.
+    /// </summary>
+    /// <param name="jwtToValidate">Token to be validated </param>
+    /// <returns>Claims Principal from  JWT</returns>
+   ApplicationResponse<ClaimsPrincipal> ValidateTokenAndGetClaimsPrincipal(string jwtToValidate);
 }

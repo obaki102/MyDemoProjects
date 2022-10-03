@@ -39,7 +39,7 @@
 @code {
 
     MudForm form;
-    [CascadingParameter] MudDialogInstance MudDialog { get;}
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     private LoginUserRequest _user = new LoginUserRequest();
     private LoginUserRequestFluentValidator _loginValidator = new LoginUserRequestFluentValidator();
 

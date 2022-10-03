@@ -198,7 +198,7 @@ public class IdentityService : IIdentityService
         return generatedJwtToken;
     }
 
-    private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    public ApplicationResponse<ClaimsPrincipal> ValidateTokenAndGetClaimsPrincipal(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
@@ -215,9 +215,9 @@ public class IdentityService : IIdentityService
         if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature,
             StringComparison.InvariantCultureIgnoreCase))
         {
-            throw new SecurityTokenException("Invalid token");
+            return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token");
         }
 
-        return principal;
+        return ApplicationResponse<ClaimsPrincipal>.Success(principal);
     }
 }

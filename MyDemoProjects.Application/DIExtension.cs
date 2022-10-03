@@ -57,23 +57,6 @@ public static class DIExtension
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         services.AddTransient<IIdentityService, IdentityService>();
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey =
-                    new SymmetricSecurityKey(System.Text.Encoding.UTF8
-                    .GetBytes(configuration.GetSection("token_key").Value)),
-                ValidateIssuer = false,
-                ValidateAudience = false
-            };
-        });
         services.AddAuthentication().TryConfigureGoogleAccount(configuration); 
 
         return services;
