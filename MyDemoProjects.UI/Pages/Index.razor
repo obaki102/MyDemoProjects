@@ -1,32 +1,40 @@
 ﻿@page "/index"
-@using System.Security.Claims
-@using MyDemoProjects.Application.Shared.Constants
-@inject IRetrieveAuthState RetrieveAuthState;
-<AuthorizeView>
+@inject IRandomGOTQuotes RandomGOTQuotes;
 
-    <Authorized>
-        <MudText Typo="Typo.h3" GutterBottom="true">Authorized!</MudText>
-        <MudAvatar Size="Size.Large" Image="@picUrl"></MudAvatar>
-        @foreach (var claim in claims)
-        {
-        <MudText Class="mb-8">@claim.Value</MudText>
-        }
-       
-    </Authorized>
-    <NotAuthorized>
-        <MudText Typo="Typo.h3" GutterBottom="true">NOT Authorized!</MudText>
-    </NotAuthorized>
+@if (RandomQuotes == null)
+{
+    <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+    </MudOverlay>
+}
+else
+{
+    <AuthorizeView>
+        <Authorized>
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText>Random GOT Quotes</MudText>
+                    <MudText Typo="Typo.body2"> @RandomQuotes.Sentence </MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudChip Color="Color.Dark">@RandomQuotes.Character.Name</MudChip>
+                </MudCardActions>
+            </MudCard>
+
+        </Authorized>
+        <NotAuthorized>
+            <MudText Typo="Typo.h3" GutterBottom="true">NOT Authorized!</MudText>
+        </NotAuthorized>
+    </AuthorizeView>
+}
 
 
-</AuthorizeView>
+@code {
+    private RandomGOTQuotesResponse RandomQuotes = default;
 
-@code{
-    private Dictionary<string, string> claims = new Dictionary<string, string>();
-    private string picUrl = string.Empty;
     protected override async Task OnInitializedAsync()
     {
-
-        claims = await RetrieveAuthState.GetClaimValues();
-        picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
+        await RandomGOTQuotes.GetRandomGOTQuotes();
+        RandomQuotes = RandomGOTQuotes.GOTQuotes;
     }
 }

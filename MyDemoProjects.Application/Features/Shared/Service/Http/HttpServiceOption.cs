@@ -32,7 +32,10 @@ public class HttpServiceOption
     /// Check if Authorization code is requried
     /// </summary>
     public bool IsAuthorization { get; set; } = false;
-
+    /// <summary>
+    /// Attach API key header if animelist API is called
+    /// </summary>
+    public bool IsAnimeList { get; set; } = false;
 
 }
 

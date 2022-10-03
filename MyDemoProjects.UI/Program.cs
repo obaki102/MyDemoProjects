@@ -8,6 +8,7 @@ using MyDemoProjects.Application.Infastructure.Services.Identity;
 using MyDemoProjects.UI.Data;
 using MyDemoProjects.UI.Services.AnimeList;
 using MyDemoProjects.UI.Services.Authentication;
+using MyDemoProjects.UI.Services.RandomGOTQuotes;
 using MyDemoProjects.UI.Services.Shared.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,14 +19,16 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
+//Services
 builder.Services.AddScoped<IAnimeList,AnimeList>();
+builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddUIApplicationDependencies(builder.Configuration, "https://localhost:7205");
 builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
 builder.Services.AddMudServices(config =>
 {
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
     config.SnackbarConfiguration.PreventDuplicates = false;
     config.SnackbarConfiguration.NewestOnTop = true;
     config.SnackbarConfiguration.ShowCloseIcon = true;

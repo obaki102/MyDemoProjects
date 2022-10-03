@@ -1,20 +1,27 @@
 ﻿@using System.Security.Claims
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopLeft">
     <ActivatorContent>
-        <MudAvatar Image="@picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+        @if (string.IsNullOrEmpty(_picUrl))
+        {
+            <MudAvatar Color="Color.Secondary">@_firstName[0]</MudAvatar>
+        }
+        else
+        {
+            <MudAvatar Image="@_picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+        }
     </ActivatorContent>
     <ChildContent>
         <MudMenuItem>
             <MudCard Elevation="0" Square="true" Class="mt-n2">
                 <MudCardHeader>
                     <CardHeaderAvatar>
-                        @if (string.IsNullOrEmpty(picUrl))
+                        @if (string.IsNullOrEmpty(_picUrl))
                         {
                             <MudAvatar Color="Color.Secondary">@claims[ClaimTypes.Name][0]</MudAvatar>
                         }
                         else
                         {
-                            <MudAvatar Image="@picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                            <MudAvatar Image="@_picUrl" Style="height:50px; width:50px;"> </MudAvatar>
                         }
                     </CardHeaderAvatar>
                     <CardHeaderContent>
@@ -35,6 +42,9 @@
     [Inject] private CustomAuthStateProvider _customAuthStateProvider { get; set; } = default!;
     private bool _drawerProfileOpen = true;
     private bool _drawerOpen = true;
+    private Dictionary<string, string> claims = new Dictionary<string, string>();
+    private string _picUrl = string.Empty;
+    private string _firstName = "Temp";
     private void OpenDialog()
     {
         _dialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
@@ -53,12 +63,19 @@
     {
         await _customAuthStateProvider.LogOutAndUpdateAuthenticationState();
     }
-    private Dictionary<string, string> claims = new Dictionary<string, string>();
-    private string picUrl = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
-
         claims = await _retrieveAuthState.GetClaimValues();
-        picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
+        if (claims.ContainsKey(ApplicationClaimTypes.ProfilePictureDataUrl))
+        {
+            _picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
+        }
+
+        if (claims.ContainsKey(ClaimTypes.Name))
+        {
+            _firstName = claims[ClaimTypes.Name];
+        }
+        
     }
 }
