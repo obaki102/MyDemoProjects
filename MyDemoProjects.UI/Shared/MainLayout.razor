@@ -36,27 +36,28 @@
     </AuthorizeView>
 </MudLayout>*@
 <MudLayout>
-   <MudAppBar Elevation="1">
-      <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-      <MudText Typo="Typo.h5" Class="ml-3">MyDemoProjects</MudText>
-      <MudSpacer />
-      <AuthorizeView>
-         <NotAuthorized>
-            <MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-               Login
-            </MudButton>
-         </NotAuthorized>
-         <Authorized>
-            <Profile></Profile>
-         </Authorized>
-      </AuthorizeView>
-   </MudAppBar>
-   <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Docked" Elevation="2">
-      <NavMenu />
-   </MudDrawer>
-   <MudMainContent>
-      <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mb-4 mt-4">
-         @Body
-      </MudContainer>
-   </MudMainContent>
+
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudChip Color="Color.Dark" OnClick="@ToHomePage">MyDemoProjects</MudChip>
+        <MudSpacer />
+        <AuthorizeView>
+            <NotAuthorized>
+                <MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                    Login
+                </MudButton>
+            </NotAuthorized>
+            <Authorized>
+                <Profile></Profile>
+            </Authorized>
+        </AuthorizeView>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Docked" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mb-4 mt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
 </MudLayout>

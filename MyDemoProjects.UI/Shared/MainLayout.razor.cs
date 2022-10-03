@@ -24,4 +24,9 @@ partial class MainLayout
         _drawerOpen = !_drawerOpen;
     }
 
+    void ToHomePage()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+
 }
