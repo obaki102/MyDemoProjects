@@ -2,7 +2,9 @@
 using System.Text;
 
 namespace MyDemoProjects.Application.Features.Shared.Service;
-
+/// <summary>
+/// A service that sends a customized HTTP request based on the defined  HttpServiceOptions
+/// </summary>
 public class HttpService : IHttpService
 {
     private readonly HttpClient _httpClient;
@@ -14,7 +16,11 @@ public class HttpService : IHttpService
         _configuration = configuration;
       
     }
-
+    /// <summary>
+    /// Send an asynchronous GET request.  
+    /// </summary>
+    /// <param name="options">Options contains the settings on how the GET request will be send.</param>
+    /// <returns>A  asynchronous task of HttpResponseMessage.</returns>
     public async Task<HttpResponseMessage> GetResponse(HttpServiceOption options)
     {
         if (options.IsTokenRequired)
@@ -30,6 +36,11 @@ public class HttpService : IHttpService
 
     }
 
+    /// <summary>
+    /// Send an asynchronous POST  request. 
+    /// </summary>
+    /// <param name="options">Options contains the settings on how the POST request will be send</param>
+    /// <returns>>A  asynchronous task of HttpResponseMessage.</returns>
     public async Task<HttpResponseMessage> PostRequest(HttpServiceOption options)
     {
         {

@@ -42,6 +42,7 @@
     CreateAccountRequest newUser = new CreateAccountRequest();
     private IEnumerable<string> PasswordStrength(string pw)
     {
+        //TODO move to fluent validation
         if (string.IsNullOrWhiteSpace(pw))
         {
             yield return "Password is required!";

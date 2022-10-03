@@ -1,6 +1,9 @@
 ﻿namespace MyDemoProjects.Application.Features.Shared.Service;
 
 # nullable disable
+/// <summary>
+/// Options definition for HttpService
+/// </summary>
 public class HttpServiceOption
 {
     /// <summary>
