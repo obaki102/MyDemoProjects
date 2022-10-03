@@ -24,21 +24,4 @@ partial class MainLayout
         _drawerOpen = !_drawerOpen;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            StateHasChanged();
-        }
-
-    }
-    protected override async Task OnInitializedAsync()
-    {
-        //var currentAuthState = await _authState.GetAuthenticationStateAsync();
-        //if (string.IsNullOrEmpty(currentAuthState.User.Identity?.Name))
-        //{
-        //    _navigationManager.NavigateTo("/login2");
-        //}
-      
-    }
 }

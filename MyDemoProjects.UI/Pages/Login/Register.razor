@@ -25,16 +25,6 @@
                         </MudForm>
                     </MudPaper>
                     <MudPaper>
-                        @*     TODO: Find way to make this cleaner*@
-                        @if (isError)
-                        {
-                            <MudText Color="@Color.Error"><MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" /> @errorMessage</MudText>
-                        }
-
-                        @if (isSuccess)
-                        {
-                            <MudText Color="@Color.Success"><MudIcon Icon="@Icons.Filled.CheckCircle" Color="Color.Success" /> Account susccesfully created</MudText>
-                        }
                     </MudPaper>
                 </MudItem>
             </MudGrid>
@@ -46,8 +36,6 @@
 </MudDialog>
 
 @code {
-    bool isSuccess = false;
-    bool isError = false;
     MudTextField<string> pwField1;
     private string errorMessage = string.Empty;
     MudForm form;
@@ -87,14 +75,9 @@
             if (!result.IsSuccess)
             {
                 errorMessage = result.Messages.FirstOrDefault();
-                isError = true;
-                isSuccess = false;
+                Snackbar.Add(errorMessage, MudBlazor.Severity.Error);
             }
-            else
-            {
-                isSuccess = true;
-                isError = false;
-            }
+           
         }
     }
 
