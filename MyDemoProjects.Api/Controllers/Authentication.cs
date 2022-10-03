@@ -29,7 +29,7 @@ namespace MyDemoProjects.Api.Controllers
         }
 
         [HttpPost("api/login")]
-        public async Task<ActionResult<ApplicationResponse<TokenResponse>>> Login(LoginFormModel user)
+        public async Task<ActionResult<ApplicationResponse<TokenResponse>>> Login(LoginUserRequest user)
         {
             return await _mediator.Send(new LoginWithToken(user));
         }

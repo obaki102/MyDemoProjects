@@ -22,7 +22,7 @@ namespace MyDemoProjects.UI.Services.Authentication
             return await _mediator.Send(new CreateAccount(newUser));
         }
 
-        public async Task<ApplicationResponse<bool>> LoginAsync(LoginFormModel loginUser)
+        public async Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser)
         {
             var loginResponse = await _mediator.Send(new LoginWithToken(loginUser));
             if(loginResponse.IsSuccess is false || loginResponse.Data is null)

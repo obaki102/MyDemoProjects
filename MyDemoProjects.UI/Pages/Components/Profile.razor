@@ -1,4 +1,7 @@
 ﻿@using System.Security.Claims
+@inject IDialogService DialogService
+@inject IRetrieveAuthState RetrieveAuthState
+@inject CustomAuthStateProvider CustomAuthStateProvider
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopLeft">
     <ActivatorContent>
         @if (string.IsNullOrEmpty(_picUrl))
@@ -37,9 +40,6 @@
 
 
 @code {
-    [Inject] private IDialogService _dialogService { get; set; } = default!;
-    [Inject] private IRetrieveAuthState _retrieveAuthState { get; set; } = default!;
-    [Inject] private CustomAuthStateProvider _customAuthStateProvider { get; set; } = default!;
     private bool _drawerProfileOpen = true;
     private bool _drawerOpen = true;
     private Dictionary<string, string> claims = new Dictionary<string, string>();
@@ -47,7 +47,7 @@
     private string _firstName = "Temp";
     private void OpenDialog()
     {
-        _dialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
+        DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
     }
 
 
@@ -61,12 +61,12 @@
     }
     private async Task SignOut()
     {
-        await _customAuthStateProvider.LogOutAndUpdateAuthenticationState();
+        await CustomAuthStateProvider.LogOutAndUpdateAuthenticationState();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        claims = await _retrieveAuthState.GetClaimValues();
+        claims = await RetrieveAuthState.GetClaimValues();
         if (claims.ContainsKey(ApplicationClaimTypes.ProfilePictureDataUrl))
         {
             _picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];

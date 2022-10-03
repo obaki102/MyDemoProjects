@@ -13,7 +13,7 @@ public class LoginWithTokenValidator : AbstractValidator<LoginWithToken>
 {
     public LoginWithTokenValidator()
     {
-        RuleFor(x => x.User.EmailAddress)
+        RuleFor(x => x.User.Email)
           .NotEmpty().WithMessage("Your email cannot be empty")
           .EmailAddress().WithMessage("A valid email is required.")
           .Length(2, 100);

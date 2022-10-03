@@ -9,7 +9,7 @@
 <MudPaper Class="pa-6 align-content-center">
     <MudForm Model="@_user" @ref="form" @bind-IsValid="@success" Validation="@(_loginValidator.ValidateValue)">
 
-        <MudTextField @bind-Value="_user.EmailAddress" T="string" For="@(() => _user.EmailAddress)"
+        <MudTextField @bind-Value="_user.Email" T="string" For="@(() => _user.Email)"
                       Label="Email"
                       OnlyValidateIfDirty="true"> </MudTextField>
         <MudTextField @bind-Value="_user.Password" T="string" Label="Password" For="@(() => _user.Password)"
@@ -35,15 +35,13 @@
 </MudPaper>
 
 
-
-
 @code {
 
     bool success;
     MudForm form;
     string errorMessage = string.Empty;
-    LoginFormModel _user = new LoginFormModel();
-    private LoginFormModelFluentValidator _loginValidator = new LoginFormModelFluentValidator();
+       LoginUserRequest _user = new LoginUserRequest();
+    private LoginUserRequestFluentValidator _loginValidator = new LoginUserRequestFluentValidator();
 
     public async Task LoginUser()
     {

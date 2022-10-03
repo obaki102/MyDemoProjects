@@ -84,7 +84,7 @@ else
     bool open;
     Anchor anchor;
     private int year = DateTime.Today.Year;
-    private Node node;
+    private Node node = default;
     protected override async Task OnInitializedAsync()
     {
         await AnimeListService.GetAnimeListBySeasonAndYear(new Season(year, GetCurrentSeason(DateTime.Today.Month)));

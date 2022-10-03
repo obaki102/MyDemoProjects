@@ -8,19 +8,11 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Application.Shared.Models.Security;
 
-public class LoginFormModel
+public class LoginUserRequestFluentValidator : AbstractValidator<LoginUserRequest>
 {
-    public string? EmailAddress { get; set; }
-    public string? Password { get; set; }
-    public bool RememberMe { get; set; } = false;
-}
-
-
-public class LoginFormModelFluentValidator : AbstractValidator<LoginFormModel>
-{
-    public LoginFormModelFluentValidator()
+    public LoginUserRequestFluentValidator()
     {
-        RuleFor(x => x.EmailAddress)
+        RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Your email cannot be empty")
             .EmailAddress().WithMessage("A valid email is required.")
             .Length(2, 100);
@@ -36,7 +28,7 @@ public class LoginFormModelFluentValidator : AbstractValidator<LoginFormModel>
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
-        var result = await ValidateAsync(ValidationContext<LoginFormModel>.CreateWithOptions((LoginFormModel)model, x => x.IncludeProperties(propertyName)));
+        var result = await ValidateAsync(ValidationContext<LoginUserRequest>.CreateWithOptions((LoginUserRequest)model, x => x.IncludeProperties(propertyName)));
         if (result.IsValid)
             return Array.Empty<string>();
         return result.Errors.Select(e => e.ErrorMessage);

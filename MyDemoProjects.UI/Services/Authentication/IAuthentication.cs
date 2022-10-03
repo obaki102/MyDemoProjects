@@ -7,7 +7,7 @@ namespace MyDemoProjects.UI.Services.Authentication
 {
     public interface IAuthentication
     {
-        Task<ApplicationResponse<bool>> LoginAsync(LoginFormModel loginUser);
+        Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser);
         Task<ApplicationResponse<bool>> ExternalLoginAsync(LoginExternalUserRequset externalLoginUser);
         Task<ApplicationResponse<bool>> CreateAccountAsync(CreateAccountRequest newUser);
     }
