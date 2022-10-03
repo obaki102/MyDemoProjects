@@ -24,26 +24,26 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-
-            var authToken = await _protectedLocalStorage.GetAsync<string>("auth_Token");
+            var authToken = string.Empty;
+            try
+            {
+                var authTokenFromLocalStorage = await _protectedLocalStorage.GetAsync<string>("auth_Token");
+                authToken = authTokenFromLocalStorage.Value;
+            }
+            catch (Exception)
+            {
+                await _protectedLocalStorage.DeleteAsync("auth_Token");
+            }
             var identity = new ClaimsIdentity();
             var principal = new ClaimsPrincipal(identity);
             _httpClient.DefaultRequestHeaders.Authorization = null;
 
-            if (!string.IsNullOrEmpty(authToken.Value))
+            if (!string.IsNullOrEmpty(authToken))
             {
-                try
-                {
-                    _httpClient.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", authToken.Value.Replace("\"", ""));
-                }
-                catch
-                {
-                    await _protectedLocalStorage.DeleteAsync("auth_Token");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
 
-                }
-
-                principal = _mediator.Send(new ValidateToken(authToken.Value)).Result.Data;
+                principal = _mediator.Send(new ValidateToken(authToken)).Result.Data;
             }
             var state = new AuthenticationState(principal);
             NotifyAuthenticationStateChanged(Task.FromResult(state));

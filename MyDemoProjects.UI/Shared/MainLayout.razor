@@ -57,7 +57,13 @@
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mb-4 mt-4">
-            @Body
+            <ErrorBoundary>
+                <ChildContent>  @Body </ChildContent>
+                <ErrorContent Context="Exception">
+                    <MudChip Color="Color.Secondary">@Exception.GetType()</MudChip>
+                      <MudChip Color="Color.Secondary">@Exception.Message</MudChip>
+                </ErrorContent>
+            </ErrorBoundary>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
