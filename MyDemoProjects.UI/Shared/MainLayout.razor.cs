@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using MyDemoProjects.UI.Pages.Login;
 
@@ -26,5 +27,5 @@ partial class MainLayout
     {
         _navigationManager.NavigateTo("/");
     }
-
+   
 }

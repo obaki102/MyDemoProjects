@@ -2,7 +2,6 @@
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
-
 @*<MudLayout>
     <AuthorizeView>
         <NotAuthorized>
@@ -36,7 +35,6 @@
     </AuthorizeView>
 </MudLayout>*@
 <MudLayout>
-
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudChip Color="Color.Dark" OnClick="@ToHomePage">MyDemoProjects</MudChip>
@@ -65,5 +63,7 @@
                 </ErrorContent>
             </ErrorBoundary>
         </MudContainer>
+        
     </MudMainContent>
+   
 </MudLayout>

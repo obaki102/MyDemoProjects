@@ -1,0 +1,46 @@
+﻿@page "/chatroom"
+@inject IRetrieveAuthState RetrieveAuthState
+<h3>ChatRoom</h3>
+<MudCard>
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            @if (string.IsNullOrEmpty(_picUrl))
+            {
+                <MudAvatar Color="Color.Secondary">@_firstName[0]</MudAvatar>
+            }
+            else
+            {
+                <MudAvatar Image="@_picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+            }
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+          
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudText Typo="Typo.body1">Istra Croatia</MudText>
+    <MudText Typo="Typo.body2">Peninsula in Europe</MudText>
+    <MudCardContent>
+        <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined"  Lines="3" />
+    </MudCardContent>
+    <MudCardActions>
+        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default" />
+        <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
+    </MudCardActions>
+</MudCard>
+@code {
+    private Dictionary<string, string> claims = new Dictionary<string, string>();
+    private string _picUrl = string.Empty;
+    private string _firstName = "Temp";
+    protected override async Task OnInitializedAsync()
+    {
+        claims = await RetrieveAuthState.GetClaimValues();
+        if (claims.ContainsKey(ApplicationClaimTypes.ProfilePictureDataUrl))
+        {
+            _picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
+        }
+
+    }
+}
