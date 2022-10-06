@@ -27,7 +27,7 @@ public interface IIdentityService
     /// <param name="name"></param>
     /// <param name="accessToken"></param>
     /// <returns></returns>
-    Task<ApplicationResponse<TokenResponse>> LoginExternalUserAsync(LoginExternalUserRequset externalUser);
+    Task<ApplicationResponse<TokenResponse>> LoginExternalUserAsync(LoginExternalUser externalUser);
     Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string password);
     Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword);
     Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync();

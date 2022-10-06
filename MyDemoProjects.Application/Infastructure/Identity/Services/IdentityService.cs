@@ -90,7 +90,7 @@ public class IdentityService : IIdentityService
         }
     }
 
-    public async Task<ApplicationResponse<TokenResponse>> LoginExternalUserAsync(LoginExternalUserRequset externalUser)
+    public async Task<ApplicationResponse<TokenResponse>> LoginExternalUserAsync(LoginExternalUser externalUser)
     {
         await _semaphore.WaitAsync();
         try

@@ -19,7 +19,7 @@ namespace MyDemoProjects.Application.Middlewares
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                await HandleExceptionAsync(context, e);
+                 await HandleExceptionAsync(context, e);
             }
         }
 

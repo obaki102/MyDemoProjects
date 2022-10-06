@@ -37,9 +37,9 @@ namespace MyDemoProjects.UI.Services.Authentication
             return ApplicationResponse<bool>.Success(loginResponse.Messages);
         }
 
-        public async Task<ApplicationResponse<bool>> ExternalLoginAsync(LoginExternalUserRequset externalLoginUser)
+        public async Task<ApplicationResponse<bool>> ExternalLoginAsync(LoginExternalUser externalLoginUser)
         {
-            var loginResponse = await _mediator.Send(new LoginWithExternalAuthService(externalLoginUser));
+            var loginResponse = await _mediator.Send(externalLoginUser);
             if (loginResponse.IsSuccess is false || loginResponse.Data is null)
             {
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);

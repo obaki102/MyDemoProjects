@@ -9,7 +9,7 @@ namespace MyDemoProjects.UI.Services.Authentication
     public interface IAuthentication
     {
         Task<ApplicationResponse<bool>> LoginAsync(LoginUser loginUser);
-        Task<ApplicationResponse<bool>> ExternalLoginAsync(LoginExternalUserRequset externalLoginUser);
+        Task<ApplicationResponse<bool>> ExternalLoginAsync(LoginExternalUser externalLoginUser);
         Task<ApplicationResponse<bool>> CreateAccountAsync(CreateAccount newUser);
         Task<GoogleAuth2Config> GetGoogleExternalAuthConfig();
     }

@@ -78,7 +78,7 @@
     [JSInvokable]
     public async Task ConfirmExternal(string provider, string email, string name, string accesstoken)
     {
-        var externalUser = new LoginExternalUserRequset
+        var externalUser = new LoginExternalUser
             {
                 AccessToken = accesstoken,
                 EmailAddress = email,
