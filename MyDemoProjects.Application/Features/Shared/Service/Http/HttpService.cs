@@ -25,11 +25,12 @@ public class HttpService : IHttpService
     {
         if (options.IsTokenRequired)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", options.Token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AppSecrets.Bearer, options.Token);
         }
         if(options.IsAnimeList)
         {
-            _httpClient.DefaultRequestHeaders.Add("X-MAL-CLIENT-ID", _configuration.GetSection("client_id").Value);
+            //_httpClient.DefaultRequestHeaders.Add(AppSecrets.AnimeList.XmalClientId, _configuration.GetSection(AppSecrets.AnimeList.AnimelistClientId).Value);
+            _httpClient.DefaultRequestHeaders.Add(AppSecrets.AnimeList.XmalClientId, "2f848d07a66b8222b6f65096ca703d8a");
         }
 
         return await _httpClient.GetAsync(options.Endpoint);
@@ -59,6 +60,7 @@ public class HttpService : IHttpService
                 properties.Add("code", _configuration.GetSection("code").Value);
             }
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+            //TODO: Review
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
             Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_configuration.GetSection("client_id").Value}:{_configuration.GetSection("client_secret").Value}")));
 

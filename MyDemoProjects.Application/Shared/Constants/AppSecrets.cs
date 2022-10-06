@@ -9,10 +9,9 @@ namespace MyDemoProjects.Application.Shared.Constants
 {
     public static class AppSecrets
     {
-        public const string GoogleClientId = "google_client_id";
-        public const string GoogleClientSecret = "google_client_secret";
-        public const string AnimelistClientId = "client_id";
-        public const string TokenKey = "token_key";
+        public const string GoogleClientId = "googleClientId";
+        public const string GoogleClientSecret = "googleClientSecret";
+        public const string TokenKey = "tokenKey";
         public const string DefaultConnectionString = "DefaultConnection";
         public const string Bearer = "Bearer";
 
@@ -20,6 +19,12 @@ namespace MyDemoProjects.Application.Shared.Constants
         public static class LocalStorage
         {
             public const string  AuthToken = "auth_Token";
+        }
+
+        public static class AnimeList
+        {
+            public const string XmalClientId = "X-MAL-CLIENT-ID";
+            public const string AnimelistClientId = "clientId";
         }
     }
 }

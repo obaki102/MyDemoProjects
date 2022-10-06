@@ -20,10 +20,10 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 //Services
+builder.Services.AddUIApplicationDependencies(builder.Configuration, "http://mydemoprojects.com:9090/");
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
-builder.Services.AddUIApplicationDependencies(builder.Configuration, "https://localhost:7205");
 builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
 builder.Services.AddMudServices(config =>

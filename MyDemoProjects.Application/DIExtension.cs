@@ -20,7 +20,7 @@ public static class DIExtension
         }
         //UI
         services.AddRazorPages();
-        services.AddServerSideBlazor();
+        services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });
         services.AddSignalR();
         //3rd Party
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -57,7 +57,7 @@ public static class DIExtension
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         services.AddTransient<IIdentityService, IdentityService>();
-        services.AddAuthentication().TryConfigureGoogleAccount(configuration); 
+        //services.AddAuthentication().TryConfigureGoogleAccount(configuration); 
 
         return services;
     }

@@ -20,14 +20,14 @@ namespace MyDemoProjects.UI.Services.Authentication
             _config = config;
         }
 
-        public async Task<ApplicationResponse<bool>> CreateAccountAsync(CreateAccountRequest newUser)
+        public async Task<ApplicationResponse<bool>> CreateAccountAsync(CreateAccount newUser)
         {
-            return await _mediator.Send(new CreateAccount(newUser));
+            return await _mediator.Send(newUser);
         }
 
-        public async Task<ApplicationResponse<bool>> LoginAsync(LoginUserRequest loginUser)
+        public async Task<ApplicationResponse<bool>> LoginAsync(LoginUser loginUser)
         {
-            var loginResponse = await _mediator.Send(new LoginWithToken(loginUser));
+            var loginResponse = await _mediator.Send(loginUser);
             if(loginResponse.IsSuccess is false || loginResponse.Data is null)
             {
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);

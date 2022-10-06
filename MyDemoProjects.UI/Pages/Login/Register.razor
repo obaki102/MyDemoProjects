@@ -1,6 +1,4 @@
-﻿@using System.ComponentModel.DataAnnotations
-@using MyDemoProjects.Application.Shared.DTO
-@inject IAuthentication Authentication
+﻿@inject IAuthentication Authentication
 @inject NavigationManager NavigationManager
 
 <MudDialog>
@@ -37,9 +35,8 @@
 
 @code {
     MudForm form = new MudForm();
-    private CreateAccountRequestFluentValidator _registerNewAccountValidator = new CreateAccountRequestFluentValidator();
-    CreateAccountRequest? newUser = new CreateAccountRequest();
-
+    private CreateAccountValdiator _registerNewAccountValidator = new CreateAccountValdiator();
+    CreateAccount? newUser = new CreateAccount();
     private async Task CreateAccount()
     {
        await form.Validate();

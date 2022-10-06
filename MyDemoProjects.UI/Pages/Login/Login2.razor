@@ -40,8 +40,8 @@
     bool success;
     MudForm form;
     string errorMessage = string.Empty;
-       LoginUserRequest _user = new LoginUserRequest();
-    private LoginUserRequestFluentValidator _loginValidator = new LoginUserRequestFluentValidator();
+   LoginUser _user = new LoginUser();
+    private LoginUserValidator _loginValidator = new LoginUserValidator();
 
     public async Task LoginUser()
     {
