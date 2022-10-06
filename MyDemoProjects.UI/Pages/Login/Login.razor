@@ -9,11 +9,11 @@
                 <MudItem xs="12" sm="7">
                     <MudPaper Class="pa-6 align-content-center">
                         <MudForm Model="@_user" @ref="form" Validation="@(_loginValidator.ValidateValue)">
-                           
+
                             <MudTextField @bind-Value="_user.Email" T="string" For="@(() => _user.Email)"
-                                          Label="Email" 
+                                          Label="Email"
                                           OnlyValidateIfDirty="true"> </MudTextField>
-                            <MudTextField @bind-Value="_user.Password" T="string" Label="Password"  For="@(() => _user.Password)"
+                            <MudTextField @bind-Value="_user.Password" T="string" Label="Password" For="@(() => _user.Password)"
                                           InputType="InputType.Password"
                                           OnlyValidateIfDirty="true"> </MudTextField>
                         </MudForm>
@@ -31,9 +31,10 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
- 
     </DialogActions>
 </MudDialog>
+
+
 @code {
 
     MudForm form;
@@ -50,7 +51,7 @@
 
             if (!isUserAuthenticated.IsSuccess)
             {
-                foreach(var error in isUserAuthenticated.Messages)
+                foreach (var error in isUserAuthenticated.Messages)
                     Snackbar.Add(error, Severity.Error);
             }
             else
@@ -73,31 +74,38 @@
     }
 
     [JSInvokable]
-    public async Task ConfirmExternal(string provider, string email, string name, string pictureUrl,string accesstoken)
+    public async Task ConfirmExternal(string provider, string email, string name, string pictureUrl, string accesstoken)
     {
-        var externalUser = new LoginExternalUser
+        try
         {
-                AccessToken = accesstoken,
-                EmailAddress = email,
-                Provider = provider,
-                UserName = name,
-                PictureUrl = pictureUrl
-        };
+            var externalUser = new LoginExternalUser
+                {
+                    AccessToken = accesstoken,
+                    EmailAddress = email,
+                    Provider = provider,
+                    UserName = name,
+                    PictureUrl = pictureUrl
+                };
 
-        var isExternlaUserAuthenticated = await Authentication.ExternalLoginAsync(externalUser);
-        if (isExternlaUserAuthenticated.IsSuccess is false)
-        {
-            Snackbar.Add("Please check your username and password. If you are still unable to log in, contact your administrator.", MudBlazor.Severity.Error);
+            var isExternlaUserAuthenticated = await Authentication.ExternalLoginAsync(externalUser);
+            if (isExternlaUserAuthenticated.IsSuccess is false)
+            {
+                Snackbar.Add("Please check your username and password. If you are still unable to log in, contact your administrator.", MudBlazor.Severity.Error);
+            }
+            else
+            {
+                MudDialog.Close();
+                NavigationManager.NavigateTo("/");
+            }
         }
-        else
+        catch (Exception e)
         {
-            MudDialog.Close();
-            NavigationManager.NavigateTo("/");
+            Snackbar.Add(e.Message, MudBlazor.Severity.Error);
         }
     }
 
     [JSInvokable]
-    public Task<GoogleAuth2Config> GetGoogleExternalAuthConfig() => Authentication.GetGoogleExternalAuthConfig(); 
+    public Task<GoogleAuth2Config> GetGoogleExternalAuthConfig() => Authentication.GetGoogleExternalAuthConfig();
 
 
 
