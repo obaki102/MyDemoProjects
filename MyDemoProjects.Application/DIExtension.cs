@@ -38,7 +38,7 @@ public static class DIExtension
         //DB
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetSection("DefaultConnection").Value,
+            options.UseSqlServer(configuration.GetSection(AppSecrets.DefaultConnectionString).Value,
                 builder =>
                     {
                         builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
@@ -83,7 +83,7 @@ public static class DIExtension
         });
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetSection("DefaultConnection").Value,
+            options.UseSqlServer(configuration.GetSection(AppSecrets.DefaultConnectionString).Value,
                 builder =>
                 {
                     builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
@@ -114,7 +114,7 @@ public static class DIExtension
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey =
                         new SymmetricSecurityKey(System.Text.Encoding.UTF8
-                        .GetBytes(configuration.GetSection("token_key").Value)),
+                        .GetBytes(configuration.GetSection(AppSecrets.TokenKey).Value)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };

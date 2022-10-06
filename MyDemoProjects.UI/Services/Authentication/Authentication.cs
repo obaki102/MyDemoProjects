@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MyDemoProjects.Application.Features.Authentication.Commands;
+using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Shared.DTOs;
 using MyDemoProjects.Application.Shared.DTOs.Request;
 using MyDemoProjects.Application.Shared.Models.Request;
@@ -51,10 +52,10 @@ namespace MyDemoProjects.UI.Services.Authentication
         public  Task<GoogleAuth2Config> GetGoogleExternalAuthConfig()
         {
             var buildConfig = new GoogleAuth2Config {
-                AccessToken = "access_token",
-                ClientId = _config.GetSection("google_client_id").Value,
-                Scope = "https://www.googleapis.com/auth/userinfo.email",
-                DiscoveryDocs = "https://people.googleapis.com/$discovery/rest?version=v1"
+                AccessToken = Auth2Config.AccessToken,
+                ClientId = _config.GetSection(AppSecrets.GoogleClientId).Value,
+                Scope = Auth2Config.Scope,
+                DiscoveryDocs = Auth2Config.DiscoveryDocs
             };
             return Task.FromResult(buildConfig);
         }

@@ -132,7 +132,7 @@ public class IdentityService : IIdentityService
     private async Task<ClaimsIdentity> GenerateClaimsIdentityFromUser(ApplicationUser user)
     {
         //TODO: Store key to users-secrets
-        var claimsIdentity = new ClaimsIdentity("Bearer");
+        var claimsIdentity = new ClaimsIdentity(AppSecrets.Bearer);
         claimsIdentity.AddClaim(new(ClaimTypes.NameIdentifier, user.Id));
         claimsIdentity.AddClaim(new(ApplicationClaimTypes.Status, user.IsActive.ToString()));
         if (!string.IsNullOrEmpty(user.UserName))
@@ -187,7 +187,7 @@ public class IdentityService : IIdentityService
     private string CreateToken(ClaimsIdentity claimsIdentity)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8
-               .GetBytes(_configuration.GetSection("token_key").Value));
+               .GetBytes(_configuration.GetSection(AppSecrets.TokenKey).Value));
         var signingCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
         var token = new JwtSecurityToken(
                 claims: claimsIdentity.Claims,
@@ -203,7 +203,7 @@ public class IdentityService : IIdentityService
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("token_key").Value)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection(AppSecrets.TokenKey).Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
             RoleClaimType = ClaimTypes.Role,

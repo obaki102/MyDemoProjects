@@ -16,8 +16,8 @@ namespace MyDemoProjects.Application.Infastructure.Identity.Extensions
     {
         public static AuthenticationBuilder TryConfigureGoogleAccount(this AuthenticationBuilder authenticationBuilder, IConfiguration configuration)
         {
-            var googleAccountClientId = configuration.GetSection("google_client_id").Value;
-            var googleAccountClientSecret = configuration.GetSection("google_client_secret").Value;
+            var googleAccountClientId = configuration.GetSection(AppSecrets.GoogleClientId).Value;
+            var googleAccountClientSecret = configuration.GetSection(AppSecrets.GoogleClientSecret).Value;
             if (string.IsNullOrWhiteSpace(googleAccountClientId) || string.IsNullOrWhiteSpace(googleAccountClientSecret))
                 return authenticationBuilder;
 

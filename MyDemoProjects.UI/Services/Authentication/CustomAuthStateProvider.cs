@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MyDemoProjects.Application.Features.Authentication.Commands;
+using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Shared.Models.Request;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -27,12 +28,12 @@ namespace MyDemoProjects.UI.Services.Authentication
             var authToken = string.Empty;
             try
             {
-                var authTokenFromLocalStorage = await _protectedLocalStorage.GetAsync<string>("auth_Token");
+                var authTokenFromLocalStorage = await _protectedLocalStorage.GetAsync<string>(AppSecrets.LocalStorage.AuthToken);
                 authToken = authTokenFromLocalStorage.Value;
             }
             catch (Exception)
             {
-                await _protectedLocalStorage.DeleteAsync("auth_Token");
+                await _protectedLocalStorage.DeleteAsync(AppSecrets.LocalStorage.AuthToken);
             }
             var identity = new ClaimsIdentity();
             var principal = new ClaimsPrincipal(identity);
@@ -41,7 +42,7 @@ namespace MyDemoProjects.UI.Services.Authentication
             if (!string.IsNullOrEmpty(authToken))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
+                    new AuthenticationHeaderValue(AppSecrets.Bearer, authToken.Replace("\"", ""));
 
                 principal = _mediator.Send(new ValidateToken(authToken)).Result.Data;
             }
@@ -51,15 +52,14 @@ namespace MyDemoProjects.UI.Services.Authentication
         }
         public async Task LogOutAndUpdateAuthenticationState()
         {
-            await _protectedLocalStorage.DeleteAsync("auth_Token");
+            await _protectedLocalStorage.DeleteAsync(AppSecrets.LocalStorage.AuthToken);
             await GetAuthenticationStateAsync();
         }
 
         public async Task SaveJwtToLocalStorageAndUpdateAuthenticationState(string jwt)
         {
-            await _protectedLocalStorage.SetAsync("auth_Token", jwt);
+            await _protectedLocalStorage.SetAsync(AppSecrets.LocalStorage.AuthToken, jwt);
             await GetAuthenticationStateAsync();
-
         }
     }
 }
