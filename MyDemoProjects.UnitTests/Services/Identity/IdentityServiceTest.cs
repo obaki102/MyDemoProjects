@@ -4,9 +4,15 @@ using Moq;
 using MyDemoProjects.Application.Features.Authentication.Commands;
 using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Infastructure.Identity.Services;
+using MyDemoProjects.Application.Shared.Constants;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using Xunit.Abstractions;
 using static Humanizer.In;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using MyDemoProjects.UnitTests;
 
 namespace MyDemoProjectsUnitTests.Services.Identity;
 public class IdentityServiceFixture : IDisposable
@@ -65,7 +71,7 @@ public class IdentityServiceFixture : IDisposable
 
         var configuration = new Mock<IConfiguration>();
         var configurationSection = new Mock<IConfigurationSection>();
-        configurationSection.Setup(a => a.Value).Returns("testestestestsestokenKey");
+        configurationSection.Setup(a => a.Value).Returns(Constants.TokenKey);
         configuration.Setup(a => a.GetSection("tokenKey")).Returns(configurationSection.Object);
 
         _identityService = new IdentityService(_userManager, _roleManager, configuration.Object);
@@ -227,7 +233,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
             UserName = "test2@test.com"
 
         };
-        string dummyPassword = "dummyPaswerd123";
+        string dummyPassword = "dummyPasword123";
 
         //Act
         var result = await identityService.CreateUserAsync(dummyUserName,dummyPassword);
@@ -250,7 +256,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
             UserName = "test@test.com"
 
         };
-        string dummyPassword = "dummyPaswerd123";
+        string dummyPassword = "dummyPasword123";
 
         //Act
         var result = await identityService.CreateUserAsync(dummyUserName, dummyPassword);
@@ -274,7 +280,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
             UserName = "test@test.com"
 
         };
-        string dummyPassword = "dummyPaswerd123";
+        string dummyPassword = "dummyPasword123";
 
         //Act
         var result = await identityService.CreateUserAsync(dummyUserName, dummyPassword);
@@ -294,8 +300,8 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         //Arrange
         var identityService = _identityServiceFixture._identityService;
         string dummyEmail = "test1@test.com";
-        string dummyCurrentPassword = "dummyPaswerd123";
-        string dummyNewPassword = "dummyPaswerd123";
+        string dummyCurrentPassword = "dummyPasword123";
+        string dummyNewPassword = "dummyPasword123";
 
         //Act
         var result = await identityService.ChangePasswordAsync(dummyEmail, dummyCurrentPassword, dummyNewPassword);
@@ -314,7 +320,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         var identityService = _identityServiceFixture._identityService;
         string dummyEmail = "test1@test.com";
         string dummyCurrentPassword = "dummyPaswerd123";
-        string dummyNewPassword = "dummyPaswerd123";
+        string dummyNewPassword = "dummyPasword123";
 
         //Act
         var result = await identityService.ChangePasswordAsync(dummyEmail, dummyCurrentPassword, dummyNewPassword);
@@ -333,7 +339,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         var identityService = _identityServiceFixture._identityService;
         string dummyEmail = "test@test.com";
         string dummyCurrentPassword = "dummyPaswerd123";
-        string dummyNewPassword = "dummyPaswerd123";
+        string dummyNewPassword = "dummyPasword123";
 
         //Act
         var result = await identityService.ChangePasswordAsync(dummyEmail, dummyCurrentPassword, dummyNewPassword);
@@ -344,6 +350,47 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         Assert.True(result.IsSuccess);
     }
     #endregion
+    #region ValidateTokenAndGetClaimsPrincipal
+    [Fact]
+    [Trait("IdentityServiceTest", "ValidateTokenAndGetClaimsPrincipal")]
+    public  void ValidateTokenAndGetClaimsPrincipal_ValidToken_ShouldReturnTrue()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        var dummyClaimsIdentity = new ClaimsIdentity(AppSecrets.Bearer);
+        dummyClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, "testDummy"));
+        dummyClaimsIdentity.AddClaim(new(ApplicationClaimTypes.Status, "Active"));
+        dummyClaimsIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Email,"test@test.com")
+            });
+        dummyClaimsIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Expiration, DateTime.Now.AddMinutes(30).ToShortTimeString())  });
+        string validDummyToken = HelperMethods.GenerateDummyToken(dummyClaimsIdentity);
+        _output.WriteLine($"DummyToken:{validDummyToken}");
+        //Act
+        var result =  identityService.ValidateTokenAndGetClaimsPrincipal(validDummyToken);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
 
+        //Assert
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "ValidateTokenAndGetClaimsPrincipal")]
+    public void ValidateTokenAndGetClaimsPrincipal_InValidToken_ShouldReturnFalse()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        string inValidDummyToken = "InvalidToken";
+        //Act
+        var result = identityService.ValidateTokenAndGetClaimsPrincipal(inValidDummyToken);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.False(result.IsSuccess);
+    }
+    #endregion
 }
 

@@ -79,9 +79,7 @@ public class IdentityService : IIdentityService
                 return ApplicationResponse<TokenResponse>.Fail("Invalid Credentials.");
             }
             var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
-            var token = new TokenResponse(CreateToken(identityCreatedFromUser));
-
-            return ApplicationResponse<TokenResponse>.Success(token);
+            return CreateToken(identityCreatedFromUser);
         }
         finally
         {
@@ -118,9 +116,7 @@ public class IdentityService : IIdentityService
                 await _userManager.AddLoginAsync(user, new UserLoginInfo(externalUser.Provider, externalUser.EmailAddress, externalUser.AccessToken));
             }
             var identityCreatedFromUser = await GenerateClaimsIdentityFromUser(user);
-            var token = new TokenResponse(CreateToken(identityCreatedFromUser));
-
-            return ApplicationResponse<TokenResponse>.Success(token);
+            return CreateToken(identityCreatedFromUser);
         }
         finally
         {
@@ -183,40 +179,54 @@ public class IdentityService : IIdentityService
         return claimsIdentity;
     }
 
-    private string CreateToken(ClaimsIdentity claimsIdentity)
+    private ApplicationResponse<TokenResponse> CreateToken(ClaimsIdentity claimsIdentity)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8
-               .GetBytes(_configuration.GetSection(AppSecrets.TokenKey).Value));
-        var signingCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-        var token = new JwtSecurityToken(
-                claims: claimsIdentity.Claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: signingCredential);
-        var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+        try
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8
+                   .GetBytes(_configuration.GetSection(AppSecrets.TokenKey).Value));
+            var signingCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var token = new JwtSecurityToken(
+                    claims: claimsIdentity.Claims,
+                    expires: DateTime.Now.AddMinutes(30),
+                    signingCredentials: signingCredential);
+            var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return generatedJwtToken;
+            return ApplicationResponse<TokenResponse>.Success(generatedJwtToken);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return ApplicationResponse<TokenResponse>.Fail("An Error occured. Token was not generated.");
+        }
     }
 
     public ApplicationResponse<ClaimsPrincipal> ValidateTokenAndGetClaimsPrincipal(string token)
     {
-        var tokenValidationParameters = new TokenValidationParameters
+        try
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection(AppSecrets.TokenKey).Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            RoleClaimType = ClaimTypes.Role,
-            ClockSkew = TimeSpan.Zero,
-            ValidateLifetime = false
-        };
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature,
-            StringComparison.InvariantCultureIgnoreCase))
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection(AppSecrets.TokenKey).Value)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RoleClaimType = ClaimTypes.Role,
+                ClockSkew = TimeSpan.Zero,
+                ValidateLifetime = false
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature,
+                StringComparison.InvariantCultureIgnoreCase))
+            {
+                return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token");
+            }
+
+            return ApplicationResponse<ClaimsPrincipal>.Success(principal);
+        }
+        catch (Exception)
         {
             return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token");
         }
-
-        return ApplicationResponse<ClaimsPrincipal>.Success(principal);
     }
 }
