@@ -16,7 +16,7 @@ public static class DIExtension
     {
         if (services == null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(services));
         }
         //UI
         services.AddRazorPages();
@@ -66,7 +66,7 @@ public static class DIExtension
     {
         if (services == null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(services));
         }
         //3rd Party
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -125,11 +125,11 @@ public static class DIExtension
 
 
 
-    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app, IConfiguration configuration)
+    public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
     {
         if (app == null)
         {
-            throw new ArgumentNullException("builder");
+            throw new ArgumentNullException(nameof(app));
         }
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseAuthentication();

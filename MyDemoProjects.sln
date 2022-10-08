@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.Api", "MyDem
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{6AD25BCC-6135-4DFE-8A55-245F16268DA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.TestProject", "MyDemoProjects.TestProject\MyDemoProjects.TestProject.csproj", "{9D4F1333-4FF8-497D-80AB-A0C5EAA271C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjectsUnitTests", "MyDemoProjects.TestProject\MyDemoProjectsUnitTests.csproj", "{9D4F1333-4FF8-497D-80AB-A0C5EAA271C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CD354DDD-AF80-4B8C-8DFF-E7441A581917}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9D4F1333-4FF8-497D-80AB-A0C5EAA271C0} = {CD354DDD-AF80-4B8C-8DFF-E7441A581917}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22805527-EF6C-4D4D-9EDD-DB5F24213180}

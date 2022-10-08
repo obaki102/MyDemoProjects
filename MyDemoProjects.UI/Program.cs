@@ -54,7 +54,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseInfrastructure(builder.Configuration);
+app.UseInfrastructure();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 //using (var scope = app.Services.CreateScope())
