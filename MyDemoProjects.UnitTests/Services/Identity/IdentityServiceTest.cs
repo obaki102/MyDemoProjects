@@ -1,29 +1,21 @@
-using Castle.Core.Configuration;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using MyDemoProjects.Application.Features.Authentication.Commands;
-using MyDemoProjects.Application.Infastructure.Data;
 using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Infastructure.Identity.Services;
-using MyDemoProjectsUnitTests.Services.Identity;
-using System.Numerics;
 using Xunit.Abstractions;
 using static Humanizer.In;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace MyDemoProjectsUnitTests.Services.Identity;
-
 public class IdentityServiceFixture : IDisposable
 {
-
-    public readonly IdentityService _identityService;
+    public readonly IIdentityService _identityService;
     public readonly UserManager<ApplicationUser> _userManager;
     public readonly RoleManager<ApplicationRole> _roleManager;
     public IdentityServiceFixture()
     {
-
         var users = new List<ApplicationUser>
         {
             new ApplicationUser
@@ -49,6 +41,8 @@ public class IdentityServiceFixture : IDisposable
         fakeUserManager.Setup(x => x.AddLoginAsync(It.IsAny<ApplicationUser>(), It.IsAny<UserLoginInfo>()))
             .ReturnsAsync(IdentityResult.Success);
         fakeUserManager.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string>());
+        fakeUserManager.Setup(x => x.ChangePasswordAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
         fakeUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(
                         (string email) =>
@@ -93,7 +87,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         _identityServiceFixture = identityServiceFixture;
         _output = output;
     }
-
+    #region LoginUserAsync
     [Fact]
     [Trait("IdentityServiceTest", "LoginUserAsync")]
     public async Task LoginUserAsync_InValidCredentials_ShouldReturnFalse()
@@ -168,8 +162,8 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         //Assert
         Assert.True(result.IsSuccess);
     }
-
-
+    #endregion
+    #region LoginExternalUserAsync
     [Fact]
     [Trait("IdentityServiceTest", "LoginExternalUserAsync")]
     public async Task LoginExternalUserAsync_ValidCredentials_ShouldReturnTrue()
@@ -219,5 +213,137 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         //Assert
         Assert.True(result.IsSuccess);
     }
+    #endregion
+    #region CreateUserAsync
+    [Fact]
+    [Trait("IdentityServiceTest", "CreateUserAsync")]
+    public async Task CreateUserAsync_NewUser_ShouldReturnTrue()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        var dummyUserName = new ApplicationUser
+        {
+            Email = "test2@test.com",
+            UserName = "test2@test.com"
+
+        };
+        string dummyPassword = "dummyPaswerd123";
+
+        //Act
+        var result = await identityService.CreateUserAsync(dummyUserName,dummyPassword);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "CreateUserAsync")]
+    public async Task CreateUserAsync_ExistingUser_ShouldReturnFalse()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        var dummyUserName = new ApplicationUser
+        {
+            Email = "test@test.com",
+            UserName = "test@test.com"
+
+        };
+        string dummyPassword = "dummyPaswerd123";
+
+        //Act
+        var result = await identityService.CreateUserAsync(dummyUserName, dummyPassword);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.Messages[0].Equals("User already exist"));
+        Assert.False(result.IsSuccess);
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "CreateUserAsync")]
+    public async Task CreateUserAsync_ExistingUser_ShouldReturnErrorMessage()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        var dummyUserName = new ApplicationUser
+        {
+            Email = "test@test.com",
+            UserName = "test@test.com"
+
+        };
+        string dummyPassword = "dummyPaswerd123";
+
+        //Act
+        var result = await identityService.CreateUserAsync(dummyUserName, dummyPassword);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.Messages[0].Equals("User already exist"));
+    }
+    #endregion
+
+    #region ChangePasswordAsync
+    [Fact]
+    [Trait("IdentityServiceTest", "ChangePasswordAsync")]
+    public async Task ChangePasswordAsync_InvalidUser_ShouldReturnFalse()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        string dummyEmail = "test1@test.com";
+        string dummyCurrentPassword = "dummyPaswerd123";
+        string dummyNewPassword = "dummyPaswerd123";
+
+        //Act
+        var result = await identityService.ChangePasswordAsync(dummyEmail, dummyCurrentPassword, dummyNewPassword);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.False(result.IsSuccess);
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "ChangePasswordAsync")]
+    public async Task ChangePasswordAsync_InvalidUser_ShouldReturnErrorMessage()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        string dummyEmail = "test1@test.com";
+        string dummyCurrentPassword = "dummyPaswerd123";
+        string dummyNewPassword = "dummyPaswerd123";
+
+        //Act
+        var result = await identityService.ChangePasswordAsync(dummyEmail, dummyCurrentPassword, dummyNewPassword);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.Messages[0].Equals("User not found.Please check your username and password."));
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "ChangePasswordAsync")]
+    public async Task ChangePasswordAsync_ValidUser_ShouldReturnFalse()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        string dummyEmail = "test@test.com";
+        string dummyCurrentPassword = "dummyPaswerd123";
+        string dummyNewPassword = "dummyPaswerd123";
+
+        //Act
+        var result = await identityService.ChangePasswordAsync(dummyEmail, dummyCurrentPassword, dummyNewPassword);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+    }
+    #endregion
 
 }
+
