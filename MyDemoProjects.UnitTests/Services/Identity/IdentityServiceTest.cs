@@ -2,10 +2,8 @@ using Castle.Core.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Moq;
+using MyDemoProjects.Application.Features.Authentication.Commands;
 using MyDemoProjects.Application.Infastructure.Data;
 using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Infastructure.Identity.Services;
@@ -43,10 +41,12 @@ public class IdentityServiceFixture : IDisposable
             .ReturnsAsync(IdentityResult.Success);
         fakeUserManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
-        fakeUserManager.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>()))
+        fakeUserManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>()))
             .ReturnsAsync(IdentityResult.Success);
         fakeUserManager.Setup(x =>
                 x.ChangeEmailAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
+        fakeUserManager.Setup(x => x.AddLoginAsync(It.IsAny<ApplicationUser>(), It.IsAny<UserLoginInfo>()))
             .ReturnsAsync(IdentityResult.Success);
         fakeUserManager.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string>());
         fakeUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
@@ -95,6 +95,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
     }
 
     [Fact]
+    [Trait("IdentityServiceTest", "LoginUserAsync")]
     public async Task LoginUserAsync_InValidCredentials_ShouldReturnFalse()
     {
         //Arrange
@@ -111,6 +112,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
     }
 
     [Fact]
+    [Trait("IdentityServiceTest", "LoginUserAsync")]
     public async Task LoginUserAsync_NoUserFound_ShouldReturnAnErrorMessage()
     {
         //Arrange
@@ -122,13 +124,15 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         var result = await identityService.LoginUserAsync(dummyEmail, dummyPasssword);
         foreach (var msg in result.Messages)
             _output.WriteLine(msg);
+
         //Assert
+        Assert.NotEmpty(result.Messages[0]);
         Assert.True(result.Messages[0].Equals("Please check your username and password."));
 
     }
 
-
     [Fact]
+    [Trait("IdentityServiceTest", "LoginUserAsync")]
     public async Task LoginUserAsync_WrongPassword_ShouldReturnAnErrorMessage()
     {
         //Arrange
@@ -147,9 +151,8 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
 
     }
 
-
-
     [Fact]
+    [Trait("IdentityServiceTest", "LoginUserAsync")]
     public async Task LoginUserAsync_ValidCredentials_ShouldReturnTrue()
     {
         //Arrange
@@ -164,6 +167,57 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
 
         //Assert
         Assert.True(result.IsSuccess);
-
     }
+
+
+    [Fact]
+    [Trait("IdentityServiceTest", "LoginExternalUserAsync")]
+    public async Task LoginExternalUserAsync_ValidCredentials_ShouldReturnTrue()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        var dummyExternalUser = new LoginExternalUser
+        {
+            AccessToken = "dummyToken",
+            EmailAddress = "test@test.com",
+            PictureUrl = String.Empty,
+            Provider = "Google",
+            UserName = "test@test.com"
+
+        }; 
+
+        //Act
+        var result = await identityService.LoginExternalUserAsync(dummyExternalUser);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "LoginExternalUserAsync")]
+    public async Task LoginExternalUserAsync_InValidCredentials_CreateNewAccountAndShouldReturnTrue()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        var dummyExternalUser = new LoginExternalUser
+        {
+            AccessToken = "dummyToken",
+            EmailAddress = "test1@test.com",
+            PictureUrl = String.Empty,
+            Provider = "Google",
+            UserName = "test1@test.com"
+
+        };
+
+        //Act
+        var result = await identityService.LoginExternalUserAsync(dummyExternalUser);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.IsSuccess);
+    }
+
 }
