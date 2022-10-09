@@ -219,14 +219,14 @@ public class IdentityService : IIdentityService
             if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature,
                 StringComparison.InvariantCultureIgnoreCase))
             {
-                return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token");
+                return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token.");
             }
 
             return ApplicationResponse<ClaimsPrincipal>.Success(principal);
         }
         catch (Exception)
         {
-            return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token");
+            return ApplicationResponse<ClaimsPrincipal>.Fail("Invalid token.");
         }
     }
 }

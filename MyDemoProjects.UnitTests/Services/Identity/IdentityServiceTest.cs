@@ -333,7 +333,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
 
     [Fact]
     [Trait("IdentityServiceTest", "ChangePasswordAsync")]
-    public async Task ChangePasswordAsync_ValidUser_ShouldReturnFalse()
+    public async Task ChangePasswordAsync_ValidUser_ShouldReturnTrue()
     {
         //Arrange
         var identityService = _identityServiceFixture._identityService;
@@ -364,7 +364,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
                 new Claim(ClaimTypes.Email,"test@test.com")
             });
         dummyClaimsIdentity.AddClaims(new[] {
-                new Claim(ClaimTypes.Expiration, DateTime.Now.AddMinutes(30).ToShortTimeString())  });
+                new Claim(ClaimTypes.Expiration, DateTime.Now.AddMinutes(30).ToShortTimeString()) });
         string validDummyToken = HelperMethods.GenerateDummyToken(dummyClaimsIdentity);
         _output.WriteLine($"DummyToken:{validDummyToken}");
         //Act
@@ -390,6 +390,22 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
 
         //Assert
         Assert.False(result.IsSuccess);
+    }
+
+    [Fact]
+    [Trait("IdentityServiceTest", "ValidateTokenAndGetClaimsPrincipal")]
+    public void ValidateTokenAndGetClaimsPrincipal_InValidToken_ShouldReturnErrorMessage()
+    {
+        //Arrange
+        var identityService = _identityServiceFixture._identityService;
+        string inValidDummyToken = "InvalidToken";
+        //Act
+        var result = identityService.ValidateTokenAndGetClaimsPrincipal(inValidDummyToken);
+        foreach (var msg in result.Messages)
+            _output.WriteLine(msg);
+
+        //Assert
+        Assert.True(result.Messages[0].Equals("Invalid token."));
     }
     #endregion
 }

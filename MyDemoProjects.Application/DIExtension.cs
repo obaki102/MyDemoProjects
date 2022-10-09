@@ -7,6 +7,8 @@ using System.Reflection;
 using MyDemoProjects.Application.Behaviours.Validation;
 using MyDemoProjects.Application.Middlewares;
 using MyDemoProjects.Application.Infastructure.Identity.Services;
+using MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList;
+using MyDemoProjects.Application.Features.Shared.Service.Http.RandomGOTQuotes;
 
 namespace MyDemoProjects.Application;
 
@@ -31,10 +33,8 @@ public static class DIExtension
         services.AddTransient<ExceptionHandlingMiddleware>();
         //Services
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
-        services.AddHttpClient<IHttpService, HttpService>(client =>
-        {
-            client.BaseAddress = new Uri(baseUrl);
-        });
+        services.AddHttpClient<IAnimeListHttpService, AnimeListHttpService>();
+        services.AddHttpClient<IRandomGotQuotesHttpService, RandomGotQuotesHttpService>();
         //DB
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -77,10 +77,9 @@ public static class DIExtension
         services.AddTransient<ExceptionHandlingMiddleware>();
         //Services
         services.AddSingleton<IJsonStreamSerializer, JsonStreamSerializer>();
-        services.AddHttpClient<IHttpService, HttpService>(client =>
-        {
-            client.BaseAddress = new Uri(baseUrl);
-        });
+        services.AddHttpClient<IAnimeListHttpService, AnimeListHttpService>();
+        services.AddHttpClient<IRandomGotQuotesHttpService, RandomGotQuotesHttpService>();
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetSection(AppSecrets.DefaultConnectionString).Value,

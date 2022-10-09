@@ -1,4 +1,6 @@
 ﻿
+using MyDemoProjects.Application.Features.Shared.Service.Http.RandomGOTQuotes;
+
 namespace MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Queries
 {
 
@@ -6,27 +8,15 @@ namespace MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Querie
 
     public class GetRandomQuotesHandler : IRequestHandler<GetRandomQuotes, ApplicationResponse<RandomGOTQuotesResponse>>
     {
-        private readonly IHttpService _httpService;
-        private readonly IJsonStreamSerializer _jsonSerializer;
-        public GetRandomQuotesHandler(IHttpService httpService, IJsonStreamSerializer jsonSerializer)
+        private readonly IRandomGotQuotesHttpService _randomGotQuotesHttpService;
+        public GetRandomQuotesHandler(IRandomGotQuotesHttpService randomGotQuotesHttpService)
         {
-            _httpService = httpService;
-            _jsonSerializer = jsonSerializer;
+            _randomGotQuotesHttpService = randomGotQuotesHttpService;
         }
 
         public async Task<ApplicationResponse<RandomGOTQuotesResponse>> Handle(GetRandomQuotes request, CancellationToken cancellationToken)
         {
-            var options = new HttpServiceOption
-            {
-                IsTokenRequired = false,
-                Endpoint = new Uri("https://api.gameofthronesquotes.xyz/v1/random")
-
-            };
-
-            var randomQuotes = await _httpService.GetResponse(options);
-            var randomQuotesStream = await randomQuotes.Content.ReadAsStreamAsync();
-            var randomQuotesSerialized = _jsonSerializer.DeserializeStream<RandomGOTQuotesResponse>(randomQuotesStream);
-            return ApplicationResponse<RandomGOTQuotesResponse>.Success(randomQuotesSerialized);
+            return await _randomGotQuotesHttpService.GetRandomQuotes();
         }
     }
 }
