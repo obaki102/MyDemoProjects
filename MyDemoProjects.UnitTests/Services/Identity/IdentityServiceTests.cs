@@ -6,11 +6,7 @@ using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Infastructure.Identity.Services;
 using MyDemoProjects.Application.Shared.Constants;
 using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using Xunit.Abstractions;
-using static Humanizer.In;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using MyDemoProjects.UnitTests;
 
@@ -49,23 +45,18 @@ public class IdentityServiceFixture : IDisposable
         fakeUserManager.Setup(x => x.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(new List<string>());
         fakeUserManager.Setup(x => x.ChangePasswordAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
-        fakeUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+        fakeUserManager.Setup(x => x.FindByEmailAsync(It.Is<string>(s => s == "test@test.com")))
                 .ReturnsAsync(
-                        (string email) =>
-                        email == "test@test.com" ?
                         new ApplicationUser
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Email = email,
-                            UserName = email,
+                            Email = "test@test.com",
+                            UserName = "test@test.com",
                             IsActive = true,
                             DisplayName = "Test",
-                        } : null);
-        fakeUserManager.Setup(x => x.CheckPasswordAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
-                        .ReturnsAsync(
-                        (ApplicationUser user, string password) =>
-                         user.Email == "test@test.com" && password == "validPassword" ? true : false
-                        );
+                        });
+        fakeUserManager.Setup(x => x.CheckPasswordAsync(It.Is<ApplicationUser>(a => a.Email == "test@test.com"), It.Is<string>(p => p == "validPassword")))
+                        .ReturnsAsync(true);
         _userManager = fakeUserManager.Object;
         _roleManager = Mock.Of<FakeRoleManager>();
 
@@ -84,13 +75,12 @@ public class IdentityServiceFixture : IDisposable
     }
 }
 
-public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
+public class IdentityServiceTests : IClassFixture<IdentityServiceFixture>
 {
-    IdentityServiceFixture _identityServiceFixture;
-    private readonly ITestOutputHelper _output;
-    public IdentityServiceTest(IdentityServiceFixture identityServiceFixture, ITestOutputHelper output)
+    public readonly IdentityServiceFixture _identityServiceFixture = new();
+    public readonly ITestOutputHelper _output;
+    public IdentityServiceTests(ITestOutputHelper output)
     {
-        _identityServiceFixture = identityServiceFixture;
         _output = output;
     }
     #region LoginUserAsync
@@ -169,6 +159,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         Assert.True(result.IsSuccess);
     }
     #endregion
+
     #region LoginExternalUserAsync
     [Fact]
     [Trait("IdentityServiceTest", "LoginExternalUserAsync")]
@@ -184,7 +175,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
             Provider = "Google",
             UserName = "test@test.com"
 
-        }; 
+        };
 
         //Act
         var result = await identityService.LoginExternalUserAsync(dummyExternalUser);
@@ -220,6 +211,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         Assert.True(result.IsSuccess);
     }
     #endregion
+
     #region CreateUserAsync
     [Fact]
     [Trait("IdentityServiceTest", "CreateUserAsync")]
@@ -236,7 +228,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         string dummyPassword = "dummyPasword123";
 
         //Act
-        var result = await identityService.CreateUserAsync(dummyUserName,dummyPassword);
+        var result = await identityService.CreateUserAsync(dummyUserName, dummyPassword);
         foreach (var msg in result.Messages)
             _output.WriteLine(msg);
 
@@ -350,10 +342,11 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         Assert.True(result.IsSuccess);
     }
     #endregion
+
     #region ValidateTokenAndGetClaimsPrincipal
     [Fact]
     [Trait("IdentityServiceTest", "ValidateTokenAndGetClaimsPrincipal")]
-    public  void ValidateTokenAndGetClaimsPrincipal_ValidToken_ShouldReturnTrue()
+    public void ValidateTokenAndGetClaimsPrincipal_ValidToken_ShouldReturnTrue()
     {
         //Arrange
         var identityService = _identityServiceFixture._identityService;
@@ -368,7 +361,7 @@ public class IdentityServiceTest : IClassFixture<IdentityServiceFixture>
         string validDummyToken = HelperMethods.GenerateDummyToken(dummyClaimsIdentity);
         _output.WriteLine($"DummyToken:{validDummyToken}");
         //Act
-        var result =  identityService.ValidateTokenAndGetClaimsPrincipal(validDummyToken);
+        var result = identityService.ValidateTokenAndGetClaimsPrincipal(validDummyToken);
         foreach (var msg in result.Messages)
             _output.WriteLine(msg);
 

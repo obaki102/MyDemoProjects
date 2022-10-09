@@ -20,9 +20,13 @@ namespace MyDemoProjects.Application.Features.Shared.Service.Http.RandomGOTQuote
         public async Task<ApplicationResponse<RandomGOTQuotesResponse>> GetRandomQuotes()
         {
             var response = await _httpClient.GetAsync("v1/random");
-            var result =  await response.Content.ReadAsStreamAsync();
-            var data = _jsonSerializer.DeserializeStream<RandomGOTQuotesResponse>(result);
-            return ApplicationResponse<RandomGOTQuotesResponse>.Success(data);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStreamAsync();
+                var data = _jsonSerializer.DeserializeStream<RandomGOTQuotesResponse>(result);
+                return ApplicationResponse<RandomGOTQuotesResponse>.Success(data);
+            }
+            return ApplicationResponse<RandomGOTQuotesResponse>.Fail(response.StatusCode.ToString());
         }
     }
 }

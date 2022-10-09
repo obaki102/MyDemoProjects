@@ -29,10 +29,13 @@ namespace MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList
         {
             var uriRequest = $"v2/anime/season/{season.Year}/{season.SeasonOfTheYear}?limit=100&fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics";
             var response = await _httpClient.GetAsync(uriRequest);
-            var result = await response.Content.ReadAsStreamAsync();
-            var data = _jsonSerializer.DeserializeStream<AnimeListRoot>(result);
-            return ApplicationResponse<AnimeListRoot>.Success(data);
-
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStreamAsync();
+                var data = _jsonSerializer.DeserializeStream<AnimeListRoot>(result);
+                return ApplicationResponse<AnimeListRoot>.Success(data);
+            }
+            return ApplicationResponse<AnimeListRoot>.Fail(response.StatusCode.ToString());
         }
     }
 }
