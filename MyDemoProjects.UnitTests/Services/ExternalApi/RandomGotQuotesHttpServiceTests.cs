@@ -9,8 +9,6 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
 {
     public class RandomGotQuotesHttpServiceTests
     {
-        public IRandomGotQuotesHttpService? _randomGotQuotesHttpService;
-
 
         [Fact]
         [Trait("RandomGotQuotesHttpService", "GetRandomQuotes")]
@@ -26,7 +24,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                           .Respond(HttpStatusCode.OK);
 
             var mockHttpClient = mockHttpHander.ToHttpClient();
-            _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
+            var _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
 
             //Act
             var result = await _randomGotQuotesHttpService.GetRandomQuotes();
@@ -49,7 +47,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                           .Respond(HttpStatusCode.Unauthorized);
 
             var mockHttpClient = mockHttpHander.ToHttpClient();
-            _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
+            var _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
 
             //Act
             var result = await _randomGotQuotesHttpService.GetRandomQuotes();
@@ -72,7 +70,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                           .Respond(HttpStatusCode.PartialContent);
 
             var mockHttpClient = mockHttpHander.ToHttpClient();
-            _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
+            var _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
 
             //Act
             var result = await _randomGotQuotesHttpService.GetRandomQuotes();
@@ -95,7 +93,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                           .Respond(HttpStatusCode.BadRequest);
 
             var mockHttpClient = mockHttpHander.ToHttpClient();
-            _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
+            var _randomGotQuotesHttpService = new RandomGotQuotesHttpService(mockHttpClient, mockJsonSerializer.Object);
 
             //Act
             var result = await _randomGotQuotesHttpService.GetRandomQuotes();

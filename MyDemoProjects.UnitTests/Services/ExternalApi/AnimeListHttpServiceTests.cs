@@ -15,7 +15,6 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
 {
     public class AnimeListHttpServiceTests 
     {
-        public  IAnimeListHttpService? _animeListHttpService;
         public  IConfiguration _configuration;
         public  ITestOutputHelper _output;
 
@@ -45,7 +44,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.OK);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+           var  _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022,"fall");
 
             //Act
@@ -70,7 +69,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.Unauthorized);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022, "fall");
 
             //Act
@@ -95,7 +94,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.Forbidden);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022, "fall");
 
             //Act
@@ -119,7 +118,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.NotFound);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022, "fall");
 
             //Act
@@ -143,7 +142,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.OK);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022, "fall");
 
             //Act
@@ -168,7 +167,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.OK);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022, "fall");
 
             //Act
@@ -193,7 +192,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                     .Respond(HttpStatusCode.OK);
 
             var httpClient = mockHttp.ToHttpClient();
-            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
             var season = new Season(2022, "fall");
 
             //Act
