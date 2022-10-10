@@ -1,12 +1,4 @@
-﻿using FluentValidation;
-using MyDemoProjects.Application.Features.Authentication.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyDemoProjects.Application.Features.Authentication.Validators;
+﻿namespace MyDemoProjects.Application.Features.Authentication.Validators;
 
 public class LoginUserValidator : AbstractValidator<LoginUser>
 {

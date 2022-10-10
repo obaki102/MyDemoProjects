@@ -1,12 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList
+﻿namespace MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList
 {
     public class AnimeListHttpService : IAnimeListHttpService
     {
@@ -22,7 +14,7 @@ namespace MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList
 
             _httpClient.BaseAddress = new Uri("https://api.myanimelist.net/");
             _httpClient.DefaultRequestHeaders.Add(AppSecrets.AnimeList.XmalClientId, _configuration.GetSection(AppSecrets.AnimeList.AnimelistClientId).Value);
-            
+
         }
 
         public async Task<ApplicationResponse<AnimeListRoot>> GetAnimeListBySeasonAndYear(Season season)

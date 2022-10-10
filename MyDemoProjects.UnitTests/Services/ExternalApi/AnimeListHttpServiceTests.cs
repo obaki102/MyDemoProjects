@@ -13,7 +13,7 @@ using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace MyDemoProjects.UnitTests.Services.ExternalApi
 {
-    public class AnimeListHttpServiceTests
+    public class AnimeListHttpServiceTests 
     {
         public  IAnimeListHttpService? _animeListHttpService;
         public  IConfiguration _configuration;
@@ -30,6 +30,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
             _configuration = mockConfiguration.Object;
         }
 
+
         [Fact]
         [Trait("AnimeListHttpServiceTests", "GetAnimeListBySeasonAndYear")]
         public async Task GetAnimeListBySeasonAndYear_Http200_ShouldReturnTrue()
@@ -40,7 +41,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                 .Returns(ApplicationResponse<AnimeListRoot>.Success());
 
             var mockHttp = new MockHttpMessageHandler();
-            mockHttp.Expect("https://api.myanimelist.net/*")
+            mockHttp.When("https://api.myanimelist.net/*")
                     .Respond(HttpStatusCode.OK);
 
             var httpClient = mockHttp.ToHttpClient();
@@ -49,11 +50,10 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
 
             //Act
             var response = await _animeListHttpService.GetAnimeListBySeasonAndYear(season);
-            _output.WriteLine(response.Messages[0]);
 
             //Assert
             Assert.True(response.IsSuccess);
-            mockHttp.VerifyNoOutstandingExpectation();
+           // mockHttp.VerifyNoOutstandingExpectation();
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                 .Returns(ApplicationResponse<AnimeListRoot>.Success());
 
             var mockHttp = new MockHttpMessageHandler();
-            mockHttp.Expect("https://api.myanimelist.net/*")
+            mockHttp.When("https://api.myanimelist.net/*")
                     .Respond(HttpStatusCode.Unauthorized);
 
             var httpClient = mockHttp.ToHttpClient();
@@ -76,10 +76,9 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
             //Act
             var response = await _animeListHttpService.GetAnimeListBySeasonAndYear(season);
             _output.WriteLine(response.Messages[0]);
+
             //Assert
             Assert.False(response.IsSuccess);
-            Assert.Equal(response.Messages[0], "Unauthorized");
-            mockHttp.VerifyNoOutstandingExpectation();
         }
 
         [Fact]
@@ -92,7 +91,7 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
                 .Returns(ApplicationResponse<AnimeListRoot>.Success());
 
             var mockHttp = new MockHttpMessageHandler();
-            mockHttp.Expect("https://api.myanimelist.net/*")
+            mockHttp.When("https://api.myanimelist.net/*")
                     .Respond(HttpStatusCode.Forbidden);
 
             var httpClient = mockHttp.ToHttpClient();
@@ -104,10 +103,105 @@ namespace MyDemoProjects.UnitTests.Services.ExternalApi
             _output.WriteLine(response.Messages[0]);
             //Assert
             Assert.False(response.IsSuccess);
-            mockHttp.VerifyNoOutstandingExpectation();
         }
 
+        [Fact]
+        [Trait("AnimeListHttpServiceTests", "GetAnimeListBySeasonAndYear")]
+        public async Task GetAnimeListBySeasonAndYear_Http404__ShouldReturnFalse()
+        {
+            //Arrange
+            var mockJsonSerializer = new Mock<IJsonStreamSerializer>();
+            mockJsonSerializer.Setup(x => x.DeserializeStream<ApplicationResponse<AnimeListRoot>>(It.IsAny<Stream>()))
+                .Returns(ApplicationResponse<AnimeListRoot>.Success());
 
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp.When("https://api.myanimelist.net/*")
+                    .Respond(HttpStatusCode.NotFound);
+
+            var httpClient = mockHttp.ToHttpClient();
+            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var season = new Season(2022, "fall");
+
+            //Act
+            var response = await _animeListHttpService.GetAnimeListBySeasonAndYear(season);
+            _output.WriteLine(response.Messages[0]);
+            //Assert
+            Assert.False(response.IsSuccess);
+        }
+
+        [Fact]
+        [Trait("AnimeListHttpServiceTests", "GetAnimeListBySeasonAndYear")]
+        public async Task GetAnimeListBySeasonAndYear_DeserializationFailed_ShouldReturnNullData()
+        {
+            //Arrange
+            var mockJsonSerializer = new Mock<IJsonStreamSerializer>();
+            mockJsonSerializer.Setup(x => x.DeserializeStream<ApplicationResponse<AnimeListRoot>>(It.IsAny<Stream>()))
+                .Throws(new Exception("Exception occured"));
+
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp.When("https://api.myanimelist.net/*")
+                    .Respond(HttpStatusCode.OK);
+
+            var httpClient = mockHttp.ToHttpClient();
+            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var season = new Season(2022, "fall");
+
+            //Act
+            var response = await _animeListHttpService.GetAnimeListBySeasonAndYear(season);
+
+            //Assert
+            Assert.Null(response.Data);
+        }
+
+        [Fact]
+        [Trait("AnimeListHttpServiceTests", "GetAnimeListBySeasonAndYear")]
+        public async Task GetAnimeListBySeasonAndYear_WithValidHeaders_ShouldReturnTrue()
+        {
+            //Arrange
+            var mockJsonSerializer = new Mock<IJsonStreamSerializer>();
+            mockJsonSerializer.Setup(x => x.DeserializeStream<ApplicationResponse<AnimeListRoot>>(It.IsAny<Stream>()))
+               .Returns(ApplicationResponse<AnimeListRoot>.Success());
+
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp.When("https://api.myanimelist.net/*")
+                    .WithHeaders(AppSecrets.AnimeList.XmalClientId, _configuration.GetSection(AppSecrets.AnimeList.AnimelistClientId).Value)
+                    .Respond(HttpStatusCode.OK);
+
+            var httpClient = mockHttp.ToHttpClient();
+            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var season = new Season(2022, "fall");
+
+            //Act
+            var response = await _animeListHttpService.GetAnimeListBySeasonAndYear(season);
+
+            //Assert
+            Assert.True(response.IsSuccess);
+        }
+
+        [Fact]
+        [Trait("AnimeListHttpServiceTests", "GetAnimeListBySeasonAndYear")]
+        public async Task GetAnimeListBySeasonAndYear_WithInValidHeaders_ShouldReturnFalse()
+        {
+            //Arrange
+            var mockJsonSerializer = new Mock<IJsonStreamSerializer>();
+            mockJsonSerializer.Setup(x => x.DeserializeStream<ApplicationResponse<AnimeListRoot>>(It.IsAny<Stream>()))
+               .Returns(ApplicationResponse<AnimeListRoot>.Success());
+
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp.When("https://api.myanimelist.net/*")
+                    .WithHeaders("DummyHeader", "DummyHeaderValue")
+                    .Respond(HttpStatusCode.OK);
+
+            var httpClient = mockHttp.ToHttpClient();
+            _animeListHttpService = new AnimeListHttpService(httpClient, mockJsonSerializer.Object, _configuration);
+            var season = new Season(2022, "fall");
+
+            //Act
+            var response = await _animeListHttpService.GetAnimeListBySeasonAndYear(season);
+
+            //Assert
+            Assert.False(response.IsSuccess);
+        }
 
     }
 }

@@ -27,5 +27,18 @@ namespace MyDemoProjects.UnitTests
 
             return generatedJwtToken;
         }
+
+        public static AnimeListRoot ReturnAnimeListDummyData()
+        {
+            //var node = new Node(
+            //    23,
+            //    "test", 
+            //    new MainPicture("small","large"),
+            //    "test",
+            //    );
+            //var Data = new Datum(node);
+
+            return new AnimeListRoot(null,null,null);
+        }
     }
 }
