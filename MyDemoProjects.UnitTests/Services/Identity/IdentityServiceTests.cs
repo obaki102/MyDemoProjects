@@ -350,15 +350,7 @@ public class IdentityServiceTests : IClassFixture<IdentityServiceFixture>
     {
         //Arrange
         var identityService = _identityServiceFixture._identityService;
-        var dummyClaimsIdentity = new ClaimsIdentity(AppSecrets.Bearer);
-        dummyClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, "testDummy"));
-        dummyClaimsIdentity.AddClaim(new(ApplicationClaimTypes.Status, "Active"));
-        dummyClaimsIdentity.AddClaims(new[] {
-                new Claim(ClaimTypes.Email,"test@test.com")
-            });
-        dummyClaimsIdentity.AddClaims(new[] {
-                new Claim(ClaimTypes.Expiration, DateTime.Now.AddMinutes(30).ToShortTimeString()) });
-        string validDummyToken = HelperMethods.GenerateDummyToken(dummyClaimsIdentity);
+        string validDummyToken = HelperMethods.GenerateDummyToken();
         _output.WriteLine($"DummyToken:{validDummyToken}");
         //Act
         var result = identityService.ValidateTokenAndGetClaimsPrincipal(validDummyToken);

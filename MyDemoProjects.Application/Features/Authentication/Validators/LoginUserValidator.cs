@@ -4,7 +4,7 @@ public class LoginUserValidator : AbstractValidator<LoginUser>
 {
     public LoginUserValidator()
     {
-        RuleFor(x => x.Email)
+        RuleFor(x => x.EmailAddress)
           .NotEmpty().WithMessage("Your email cannot be empty")
           .EmailAddress().WithMessage("A valid email is required.")
           .Length(2, 100);

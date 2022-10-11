@@ -14,13 +14,21 @@ namespace MyDemoProjects.UnitTests
 {
     public static class HelperMethods
     {
-        public static string GenerateDummyToken(ClaimsIdentity claimsIdentity)
+        public static string GenerateDummyToken()
         {
+            var dummyClaimsIdentity = new ClaimsIdentity(AppSecrets.Bearer);
+            dummyClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, "testDummy"));
+            dummyClaimsIdentity.AddClaim(new(ApplicationClaimTypes.Status, "Active"));
+            dummyClaimsIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Email,"test@test.com")
+            });
+            dummyClaimsIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Expiration, DateTime.Now.AddMinutes(30).ToShortTimeString()) });
             var key = new SymmetricSecurityKey(Encoding.UTF8
                    .GetBytes(Constants.TokenKey));
             var signingCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
-                    claims: claimsIdentity.Claims,
+                    claims: dummyClaimsIdentity.Claims,
                     expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: signingCredential);
             var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);

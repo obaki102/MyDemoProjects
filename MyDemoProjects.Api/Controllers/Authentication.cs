@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyDemoProjects.Application.Features.Authentication.Commands;
 using MyDemoProjects.Application.Features.Authentication.Queries;
-using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Shared.DTOs.Response;
-using MyDemoProjects.Application.Shared.Models;
-using MyDemoProjects.Application.Shared.Models.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Api.Controllers
@@ -34,9 +31,9 @@ namespace MyDemoProjects.Api.Controllers
         }
 
         [HttpPost("api/changepassword")]
-        public async Task<ActionResult<ApplicationResponse<bool>>> ChangePassword(ChangePasswordRequest user)
+        public async Task<ActionResult<ApplicationResponse<bool>>> ChangePassword(ChangePassword user)
         {
-            return await _mediator.Send(new ChangePassword(user));
+            return await _mediator.Send(user);
         }
 
        

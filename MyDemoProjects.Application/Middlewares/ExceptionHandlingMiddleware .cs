@@ -54,7 +54,7 @@ namespace MyDemoProjects.Application.Middlewares
         private static IReadOnlyList<string> GetErrors(Exception exception)
         {
             IReadOnlyList<string> errors = default;
-            if (exception is FluentValidation.ValidationException validationException)
+            if (exception is ValidationException validationException)
             {
                 errors = validationException.Errors.Select(e => e.ErrorMessage).ToList();
             }

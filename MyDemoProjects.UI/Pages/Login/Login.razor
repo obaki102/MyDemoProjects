@@ -10,7 +10,7 @@
                     <MudPaper Class="pa-6 align-content-center">
                         <MudForm Model="@_user" @ref="form" Validation="@(_loginValidator.ValidateValue)">
 
-                            <MudTextField @bind-Value="_user.Email" T="string" For="@(() => _user.Email)"
+                            <MudTextField @bind-Value="_user.EmailAddress" T="string" For="@(() => _user.EmailAddress)"
                                           Label="Email"
                                           OnlyValidateIfDirty="true"> </MudTextField>
                             <MudTextField @bind-Value="_user.Password" T="string" Label="Password" For="@(() => _user.Password)"

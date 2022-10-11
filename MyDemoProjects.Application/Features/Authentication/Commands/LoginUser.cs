@@ -2,7 +2,7 @@
 {
     public class LoginUser: IRequest<ApplicationResponse<TokenResponse>>
     {
-        public string Email { get; set; } = string.Empty;
+        public string EmailAddress { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 
@@ -16,7 +16,7 @@
 
         public async Task<ApplicationResponse<TokenResponse>> Handle(LoginUser request, CancellationToken cancellationToken)
         {
-            return await _identityService.LoginUserAsync(request.Email, request.Password);
+            return await _identityService.LoginUserAsync(request.EmailAddress, request.Password);
         }
     }
 
