@@ -38,7 +38,7 @@ namespace MyDemoProjects.Api.Controllers
 
        
         [HttpPost("api/getallusers")]
-        public async Task<ActionResult<ApplicationResponse<UserDetailsResponse>>> GetAllUsers()
+        public async Task<ActionResult<ApplicationResponse<IEnumerable<UserDetailsResponse>>>> GetAllUsers()
         {
             return await _mediator.Send(new GetAllUsers());
         }

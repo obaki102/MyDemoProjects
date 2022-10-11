@@ -192,7 +192,7 @@ public class IdentityService : IIdentityService
                     signingCredentials: signingCredential);
             var generatedJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return ApplicationResponse<TokenResponse>.Success(generatedJwtToken);
+            return ApplicationResponse<TokenResponse>.Success(new TokenResponse(generatedJwtToken));
         }
         catch (ArgumentOutOfRangeException)
         {

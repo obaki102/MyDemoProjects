@@ -90,7 +90,8 @@
             var isExternlaUserAuthenticated = await Authentication.ExternalLoginAsync(externalUser);
             if (isExternlaUserAuthenticated.IsSuccess is false)
             {
-                Snackbar.Add("Please check your username and password. If you are still unable to log in, contact your administrator.", MudBlazor.Severity.Error);
+                foreach (var error in isExternlaUserAuthenticated.Messages)
+                    Snackbar.Add(error);
             }
             else
             {

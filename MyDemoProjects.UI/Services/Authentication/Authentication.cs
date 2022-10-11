@@ -44,7 +44,6 @@ namespace MyDemoProjects.UI.Services.Authentication
             {
                 return ApplicationResponse<bool>.Fail(loginResponse.Messages);
             }
-
             await _customAuthStateProvider.SaveJwtToLocalStorageAndUpdateAuthenticationState(loginResponse.Data.Token);
             return ApplicationResponse<bool>.Success(loginResponse.Messages);
         }
