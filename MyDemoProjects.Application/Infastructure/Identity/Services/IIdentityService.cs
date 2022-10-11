@@ -30,7 +30,7 @@ public interface IIdentityService
     Task<ApplicationResponse<TokenResponse>> LoginExternalUserAsync(LoginExternalUser externalUser);
     Task<ApplicationResponse<bool>> CreateUserAsync(ApplicationUser newUser, string password);
     Task<ApplicationResponse<bool>> ChangePasswordAsync(string email, string currentPassword, string newPassword);
-    Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync();
+    Task<ApplicationResponse<IEnumerable<ApplicationUser>>> GetAllUsersAsync();
 
     /// <summary>
     /// Validate jwt token , if valid  extract the claims principal.

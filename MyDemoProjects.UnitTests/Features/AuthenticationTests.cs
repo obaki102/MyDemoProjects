@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Moq;
 using MyDemoProjects.Application.Features.Authentication.Commands;
+using MyDemoProjects.Application.Features.Authentication.Queries;
 using MyDemoProjects.Application.Infastructure.Identity.Models;
 using MyDemoProjects.Application.Infastructure.Identity.Services;
 using MyDemoProjects.Application.Shared.DTOs.Response;
@@ -16,7 +17,7 @@ namespace MyDemoProjects.UnitTests.Features
 
         #region LoginUser
         [Fact]
-        [Trait("AuthenticationTests", "LoginUser")]
+        [Trait("Commands", "LoginUser")]
         public async Task LoginUser_ValidCredentials_ShouldReturnTrue()
         {
             //Arrange
@@ -35,7 +36,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "LoginUser")]
+        [Trait("Commands", "LoginUser")]
         public async Task LoginUser_InValidCredentials_ShouldReturnFalse()
         {
             //Arrange
@@ -54,7 +55,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "LoginUser")]
+        [Trait("Commands", "LoginUser")]
         public async Task LoginUser_ValidCredentials_ShouldReturnToken()
         {
             //Arrange
@@ -75,7 +76,7 @@ namespace MyDemoProjects.UnitTests.Features
 
         #region LoginExternalUserHandler
         [Fact]
-        [Trait("AuthenticationTests", "LoginExternalUser")]
+        [Trait("Commands", "LoginExternalUser")]
         public async Task LoginExternalUser_InValidCredentials_ShouldReturnFalse()
         {
             //Arrange
@@ -94,7 +95,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "LoginExternalUser")]
+        [Trait("Commands", "LoginExternalUser")]
         public async Task LoginExternalUser_ValidCredentials_ShouldReturnTrue()
         {
             //Arrange
@@ -113,7 +114,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "LoginExternalUser")]
+        [Trait("Commands", "LoginExternalUser")]
         public async Task LoginExternalUser_ValidCredentials_ShouldReturnToken()
         {
             //Arrange
@@ -134,7 +135,7 @@ namespace MyDemoProjects.UnitTests.Features
 
         #region ValidateToken
         [Fact]
-        [Trait("AuthenticationTests", "ValidateToken")]
+        [Trait("Commands", "ValidateToken")]
         public  void ValidateToken_ValidToken_ShouldReturnTrue()
         {
             //Arrange
@@ -153,7 +154,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "ValidateToken")]
+        [Trait("Commands", "ValidateToken")]
         public void ValidateToken_InValidToken_ShouldReturnFalse()
         {
             //Arrange
@@ -174,7 +175,7 @@ namespace MyDemoProjects.UnitTests.Features
 
         #region ChangePassword
         [Fact]
-        [Trait("AuthenticationTests", "ChangePassword")]
+        [Trait("Commands", "ChangePassword")]
         public async Task ChangePassword_ValidPassword_ShouldReturnTrue()
         {
             //Arrange
@@ -197,7 +198,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "ChangePassword")]
+        [Trait("Commands", "ChangePassword")]
         public async Task ChangePassword_InValidPassword_ShouldReturnFalse()
         {
             //Arrange
@@ -223,7 +224,7 @@ namespace MyDemoProjects.UnitTests.Features
         #region CreateAccount
 
         [Fact]
-        [Trait("AuthenticationTests", "CreateAccount")]
+        [Trait("Commands", "CreateAccount")]
         public async Task CreateAccount_ValidAccount_ShouldReturnTrue()
         {
             //Arrange
@@ -249,7 +250,7 @@ namespace MyDemoProjects.UnitTests.Features
         }
 
         [Fact]
-        [Trait("AuthenticationTests", "CreateAccount")]
+        [Trait("Commands", "CreateAccount")]
         public async Task CreateAccount_InValidAccount_ShouldReturnFalse()
         {
             //Arrange
@@ -274,5 +275,59 @@ namespace MyDemoProjects.UnitTests.Features
             Assert.False(result.IsSuccess);
         }
         #endregion
+
+        #region GetAllUsers
+        [Fact]
+        [Trait("Queries", "GetAllUsers")]
+        public async Task CGetAllUsers_UsersFound_ShouldReturnTrue()
+        {
+            //Arrange
+            var mockIdentityService = new Mock<IIdentityService>();
+            mockIdentityService.Setup(x => x.GetAllUsersAsync())
+                        .ReturnsAsync(ApplicationResponse<IEnumerable<ApplicationUser>>.Success());
+
+            var mockImapper = new Mock<IMapper>();
+            mockImapper.Setup(x => x.Map(It.IsAny<IEnumerable<ApplicationUser>>(), It.IsAny<IEnumerable<UserDetailsResponse>>()))
+                        .Returns(new List<UserDetailsResponse>
+                        { 
+                            new UserDetailsResponse{ },
+                            new UserDetailsResponse { }
+                        });
+
+            var handler = new GetAllUsersHandler(mockIdentityService.Object, mockImapper.Object);
+            //Act
+            var result = await handler.Handle(new GetAllUsers(),default);
+
+            //Assert
+            Assert.NotNull(result.Data);
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        [Trait("Queries", "GetAllUsers")]
+        public async Task CGetAllUsers_NoUsersFound_ShouldReturnFalse()
+        {
+            //Arrange
+            var mockIdentityService = new Mock<IIdentityService>();
+            mockIdentityService.Setup(x => x.GetAllUsersAsync())
+                        .ReturnsAsync(ApplicationResponse<IEnumerable<ApplicationUser>>.Fail());
+
+            var mockImapper = new Mock<IMapper>();
+            mockImapper.Setup(x => x.Map(It.IsAny<IEnumerable<ApplicationUser>>(), It.IsAny<IEnumerable<UserDetailsResponse>>()))
+                        .Returns(new List<UserDetailsResponse>
+                        {
+                            new UserDetailsResponse{ },
+                            new UserDetailsResponse { }
+                        });
+
+            var handler = new GetAllUsersHandler(mockIdentityService.Object, mockImapper.Object);
+            //Act
+            var result = await handler.Handle(new GetAllUsers(), default);
+
+            //Assert
+            Assert.Null(result.Data);
+            Assert.False(result.IsSuccess);
+        }
+        #endregion region
     }
 }

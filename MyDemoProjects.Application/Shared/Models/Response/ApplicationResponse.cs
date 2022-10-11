@@ -146,8 +146,6 @@ namespace MyDemoProjects.Application.Shared.Models.Response
 
         public T? Data { get; set; }
 
-        public IEnumerable<T>? ListOfData { get; set; }
-
         /// <summary>
         /// Returns a succesful synchronous response but with no messages. No data is attached.
         /// </summary>
@@ -185,14 +183,6 @@ namespace MyDemoProjects.Application.Shared.Models.Response
             return new ApplicationResponse<T> { IsSuccess = true, Data = data };
         }
 
-        /// <summary>
-        /// Returns a succesful synchronous response but with no messages. Data is attached.
-        /// </summary>
-        /// <returns></returns>
-        public static ApplicationResponse<T> Success(IEnumerable<T> data)
-        {
-            return new ApplicationResponse<T> { IsSuccess = true, ListOfData = data };
-        }
 
         /// <summary>
         /// Returns a succesful synchronous response with one message. Data is attached.

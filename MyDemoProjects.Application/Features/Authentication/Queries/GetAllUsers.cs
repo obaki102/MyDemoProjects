@@ -1,7 +1,7 @@
 ﻿namespace MyDemoProjects.Application.Features.Authentication.Queries
 {
-    public record GetAllUsers() : IRequest<ApplicationResponse<UserDetailsResponse>>;
-    public class GetAllUsersHandler : IRequestHandler<GetAllUsers, ApplicationResponse<UserDetailsResponse>>
+    public record GetAllUsers() : IRequest<ApplicationResponse<IEnumerable<UserDetailsResponse>>>;
+    public class GetAllUsersHandler : IRequestHandler<GetAllUsers, ApplicationResponse<IEnumerable<UserDetailsResponse>>>
     {
         private readonly IIdentityService _identityService;
         private readonly IMapper _mapper;
@@ -11,11 +11,15 @@
             _mapper = mapper;
         }
 
-        public async Task<ApplicationResponse<UserDetailsResponse>> Handle(GetAllUsers request, CancellationToken cancellationToken)
+        public async Task<ApplicationResponse<IEnumerable<UserDetailsResponse>>> Handle(GetAllUsers request, CancellationToken cancellationToken)
         {
             var users = await _identityService.GetAllUsersAsync();
-            var usersMappedToDto = _mapper.Map<IEnumerable<UserDetailsResponse>>(users.ListOfData);
-            return ApplicationResponse<UserDetailsResponse>.Success(usersMappedToDto);
+            if (users.IsSuccess is false)
+            {
+                return ApplicationResponse<IEnumerable<UserDetailsResponse>>.Fail();
+            }
+            var usersMappedToDto = _mapper.Map<IEnumerable<UserDetailsResponse>>(users.Data);
+            return ApplicationResponse<IEnumerable<UserDetailsResponse>>.Success(usersMappedToDto);
         }
 
       

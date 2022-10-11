@@ -53,14 +53,14 @@ public class IdentityService : IIdentityService
 
     }
 
-    public async Task<ApplicationResponse<ApplicationUser>> GetAllUsersAsync()
+    public async Task<ApplicationResponse<IEnumerable<ApplicationUser>>> GetAllUsersAsync()
     {
         var users = await _userManager.Users.ToListAsync();
         if (users is null)
         {
-            return ApplicationResponse<ApplicationUser>.Success("No users found");
+            return ApplicationResponse<IEnumerable<ApplicationUser>>.Fail("No users found");
         }
-        return ApplicationResponse<ApplicationUser>.Success(users);
+        return ApplicationResponse<IEnumerable<ApplicationUser>>.Success(users);
     }
 
     public async Task<ApplicationResponse<TokenResponse>> LoginUserAsync(string email, string password)
