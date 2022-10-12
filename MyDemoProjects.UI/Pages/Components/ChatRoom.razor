@@ -1,5 +1,6 @@
 ﻿@page "/chatroom"
 @inject IRetrieveAuthState RetrieveAuthState
+@inject NavigationManager NavigationManager
 <h3>ChatRoom</h3>
 <MudCard>
     <MudCardHeader>
@@ -14,26 +15,34 @@
             }
         </CardHeaderAvatar>
         <CardHeaderContent>
-          
+
         </CardHeaderContent>
         <CardHeaderActions>
             <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
         </CardHeaderActions>
     </MudCardHeader>
-    <MudText Typo="Typo.body1">Istra Croatia</MudText>
-    <MudText Typo="Typo.body2">Peninsula in Europe</MudText>
+
+    @foreach (var message in _messages)
+    {
+        <MudText Typo="Typo.body1">@message</MudText>
+    }
     <MudCardContent>
-        <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined"  Lines="3" />
+        <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
     </MudCardContent>
     <MudCardActions>
-        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default" />
-        <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
+        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default" OnClick="@SendMessage" />
     </MudCardActions>
 </MudCard>
 @code {
+
     private Dictionary<string, string> claims = new Dictionary<string, string>();
+    private HubConnection _hubConnection { get; set; }
     private string _picUrl = string.Empty;
+    private string _currentUser = string.Empty;
+    private string _enteredMessage = string.Empty;
     private string _firstName = "Temp";
+    private List<string> _messages = new List<string>();
+
     protected override async Task OnInitializedAsync()
     {
         claims = await RetrieveAuthState.GetClaimValues();
@@ -42,5 +51,28 @@
             _picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
         }
 
+        if (claims.ContainsKey(ClaimTypes.Name))
+        {
+            _currentUser = claims[ClaimTypes.Name];
+        }
+
+        //Establish hub connection
+        _hubConnection = _hubConnection.TryInitialize(NavigationManager);
+        if (_hubConnection.State == HubConnectionState.Disconnected)
+        {
+            await _hubConnection.StartAsync();
+        }
+
+        _hubConnection.On<string, string, string>("SendMessage", async (from, to, message) =>
+        {
+            _messages.Add($"Message received from{from} :{message}");
+            StateHasChanged();
+        });
+
+    }
+
+    private async Task SendMessage()
+    {
+        await _hubConnection.SendAsync("SendMessage", _currentUser, "Qwerty@test.com", _enteredMessage);
     }
 }

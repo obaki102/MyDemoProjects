@@ -51,12 +51,14 @@
     public async Task LoginUser()
     {
         await form.Validate();
+        _isLaoding = true;
         if (form.IsValid)
         {
             var isUserAuthenticated = await Authentication.LoginAsync(_user);
 
             if (!isUserAuthenticated.IsSuccess)
             {
+                _isLaoding = false;
                 foreach (var error in isUserAuthenticated.Messages)
                     Snackbar.Add(error, Severity.Error);
             }
@@ -86,7 +88,6 @@
         {
             _isLaoding = true;
             StateHasChanged();
-
             var externalUser = new LoginExternalUser
                 {
                     AccessToken = accesstoken,
@@ -101,6 +102,9 @@
             {
                 foreach (var error in isExternlaUserAuthenticated.Messages)
                     Snackbar.Add(error);
+
+                _isLaoding = false;
+                StateHasChanged();
             }
             else
             {
@@ -111,6 +115,7 @@
         catch (Exception e)
         {
             Snackbar.Add(e.Message, MudBlazor.Severity.Error);
+            _isLaoding = false;
         }
     }
 

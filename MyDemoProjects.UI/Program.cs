@@ -5,7 +5,9 @@ using MudBlazor;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
 using MyDemoProjects.Application.Infastructure.Services.Identity;
+using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.UI.Data;
+using MyDemoProjects.UI.Hubs;
 using MyDemoProjects.UI.Services.AnimeList;
 using MyDemoProjects.UI.Services.Authentication;
 using MyDemoProjects.UI.Services.RandomGOTQuotes;
@@ -55,8 +57,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseInfrastructure();
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+    endpoints.MapHub<ChatHub>(HubConstants.ChatHubUrl);
+});
 //using (var scope = app.Services.CreateScope())
 //{
 //    var services = scope.ServiceProvider;
