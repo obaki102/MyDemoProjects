@@ -31,14 +31,20 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
+        @if (_isLaoding)
+        {
+            <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            </MudOverlay>
+        }
     </DialogActions>
 </MudDialog>
-
 
 @code {
 
     MudForm form;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    private bool _isLaoding = false;
     private LoginUser _user = new LoginUser();
     private LoginUserValidator _loginValidator = new LoginUserValidator();
 
@@ -78,6 +84,9 @@
     {
         try
         {
+            _isLaoding = true;
+            StateHasChanged();
+
             var externalUser = new LoginExternalUser
                 {
                     AccessToken = accesstoken,

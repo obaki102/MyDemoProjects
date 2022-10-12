@@ -2,8 +2,6 @@
 using MyDemoProjects.Application.Features.Authentication.Commands;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Shared.DTOs;
-using MyDemoProjects.Application.Shared.DTOs.Request;
-using MyDemoProjects.Application.Shared.Models.Request;
 using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.UI.Services.Authentication
