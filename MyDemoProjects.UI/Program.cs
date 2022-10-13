@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.AspNetCore.SignalR;
 using MudBlazor;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
@@ -18,11 +19,11 @@ var builder = WebApplication.CreateBuilder(args);
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add services to the container.
+builder.Services.AddUIApplicationDependencies(builder.Configuration);
 
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
 //Services
-builder.Services.AddUIApplicationDependencies(builder.Configuration, "http://mydemoprojects.com:9090/");
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
@@ -85,5 +86,4 @@ app.UseEndpoints(endpoints =>
 //        throw;
 //    }
 //}
-
 await app.RunAsync();

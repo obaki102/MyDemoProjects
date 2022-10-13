@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MyDemoProjects.UI.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         public override Task OnConnectedAsync()
         {
             Console.WriteLine($"{Context.ConnectionId} connected");
+            Console.WriteLine($"{Context.User?.FindFirst(ClaimTypes.Email)?.Value!} * *** connected");
             return base.OnConnectedAsync();
         }
 
@@ -17,8 +23,8 @@ namespace MyDemoProjects.UI.Hubs
         }
         public async Task SendMessage(string from, string to, string message)
         {
-            Console.WriteLine($"Mesasge from {from} to{to} : {message}");
-            await Clients.All.SendAsync("SendMessage", from, to, message);
+            Console.WriteLine($"Message from {from} to {to} : {message}");
+            await Clients.Users(from, to).SendAsync("SendMessage", from, to, message);
         }
 
     }

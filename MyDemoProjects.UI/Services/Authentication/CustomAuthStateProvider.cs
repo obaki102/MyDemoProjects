@@ -61,5 +61,19 @@ namespace MyDemoProjects.UI.Services.Authentication
             await _protectedLocalStorage.SetAsync(AppSecrets.LocalStorage.AuthToken, jwt);
             await GetAuthenticationStateAsync();
         }
+
+        public  async Task<string> GetAccessToken()
+        {
+            var authToken = string.Empty;
+            try
+            {
+                var authTokenFromLocalStorage = await _protectedLocalStorage.GetAsync<string>(AppSecrets.LocalStorage.AuthToken);
+                return authTokenFromLocalStorage.Value ?? string.Empty; 
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
     }
 }

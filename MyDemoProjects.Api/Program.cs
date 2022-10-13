@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(opt =>
          }
      });
 });
-builder.Services.AddAPiApplicationDependencies(builder.Configuration, builder.Configuration["applicationUrl"]);
+builder.Services.AddAPiApplicationDependencies(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

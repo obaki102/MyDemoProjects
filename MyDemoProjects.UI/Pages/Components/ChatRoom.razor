@@ -1,6 +1,8 @@
 ﻿@page "/chatroom"
 @inject IRetrieveAuthState RetrieveAuthState
 @inject NavigationManager NavigationManager
+@inject CustomAuthStateProvider CustomAuthStateProvider
+@implements IDisposable
 <h3>ChatRoom</h3>
 <MudCard>
     <MudCardHeader>
@@ -30,13 +32,13 @@
         <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
     </MudCardContent>
     <MudCardActions>
-        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default" OnClick="@SendMessage" />
+        <MudButton  Color="Color.Default" OnClick="@SendMessage"> Enter</MudButton>
     </MudCardActions>
 </MudCard>
 @code {
 
     private Dictionary<string, string> claims = new Dictionary<string, string>();
-    private HubConnection _hubConnection { get; set; }
+    private HubConnection _hubConnection { get; set; } = default;
     private string _picUrl = string.Empty;
     private string _currentUser = string.Empty;
     private string _enteredMessage = string.Empty;
@@ -51,13 +53,13 @@
             _picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
         }
 
-        if (claims.ContainsKey(ClaimTypes.Name))
+        if (claims.ContainsKey(ClaimTypes.NameIdentifier))
         {
-            _currentUser = claims[ClaimTypes.Name];
+            _currentUser = claims[ClaimTypes.NameIdentifier];
         }
 
         //Establish hub connection
-        _hubConnection = _hubConnection.TryInitialize(NavigationManager);
+        _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
             await _hubConnection.StartAsync();
@@ -65,7 +67,7 @@
 
         _hubConnection.On<string, string, string>("SendMessage", async (from, to, message) =>
         {
-            _messages.Add($"Message received from{from} :{message}");
+            _messages.Add($"Message received from {from} :{message}");
             StateHasChanged();
         });
 
@@ -73,6 +75,11 @@
 
     private async Task SendMessage()
     {
-        await _hubConnection.SendAsync("SendMessage", _currentUser, "Qwerty@test.com", _enteredMessage);
+        await _hubConnection.SendAsync("SendMessage", _currentUser, _currentUser.Equals("102407d8-3d3f-46c9-8654-122f325b090a") ? "fc7df3c0-9266-4146-9c4c-d513dafd3f2f" : _currentUser, _enteredMessage);
+    }
+
+    public void Dispose()
+    {
+        _ =_hubConnection.DisposeAsync();
     }
 }
