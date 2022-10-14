@@ -74,11 +74,6 @@ public static class DIExtension
                 ValidateAudience = false
             };
         });
-        //UI
-        services.AddRazorPages();
-        services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });
-        services.AddSignalR();
-
         services.AddAuthorization();
         return services;
     }

@@ -22,27 +22,23 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 builder.Services.AddUIApplicationDependencies(builder.Configuration);
 
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddMudServices();
+
 //Services
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
-builder.Services.AddMudServices(config =>
-{
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
-    config.SnackbarConfiguration.PreventDuplicates = false;
-    config.SnackbarConfiguration.NewestOnTop = true;
-    config.SnackbarConfiguration.ShowCloseIcon = true;
-    config.SnackbarConfiguration.VisibleStateDuration = 4000;
-    config.SnackbarConfiguration.HideTransitionDuration = 500;
-    config.SnackbarConfiguration.ShowTransitionDuration = 500;
-    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-});
+
+//UI
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });
+builder.Services.AddSignalR().AddMessagePackProtocol();
+builder.Services.AddMudServices();
+
+//Must placed after AddServerSideBlazor()
 builder.Services.AddScoped<CustomAuthStateProvider>()
                .AddScoped<AuthenticationStateProvider>(provider => provider.GetService<CustomAuthStateProvider>());
-
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

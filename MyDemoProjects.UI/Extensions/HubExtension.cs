@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.UI.Services.Authentication;
 
@@ -20,6 +21,13 @@ namespace MyDemoProjects.UI.Extensions
                                           return accessTokenResult;
                                       };
                                   })
+                                  .ConfigureLogging(logging =>
+                                  {
+                                      logging.ClearProviders();
+                                      logging.AddConsole();
+                                  })
+                                  .AddMessagePackProtocol()
+                                  .WithAutomaticReconnect()
                                   .Build();
             }
             return hubConnection;
