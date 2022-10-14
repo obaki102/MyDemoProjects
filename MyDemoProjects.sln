@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.UnitTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.AzureFunctions", "MyDemoProjects.AzureFunctions\MyDemoProjects.AzureFunctions.csproj", "{56ABF4FF-4501-46E6-B596-B41FB3C7E794}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyDemoProjects.DiscordBot", "MyDemoProjects.DiscordBot\MyDemoProjects.DiscordBot.csproj", "{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{56ABF4FF-4501-46E6-B596-B41FB3C7E794}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56ABF4FF-4501-46E6-B596-B41FB3C7E794}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56ABF4FF-4501-46E6-B596-B41FB3C7E794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

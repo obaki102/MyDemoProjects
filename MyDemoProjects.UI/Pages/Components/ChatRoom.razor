@@ -65,6 +65,7 @@
             await _hubConnection.StartAsync();
         }
 
+        //TODO : Strongly type client?
         _hubConnection.On<string, string, string>("ReceiveMessage", async (from, to, message) =>
         {
             _messages.Add($"Message received from {from} :{message}");
