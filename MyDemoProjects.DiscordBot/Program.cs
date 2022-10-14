@@ -11,10 +11,7 @@ using MyDemoProjects.DiscordBot.Handlers;
 using MyDemoProjects.DiscordBot.Modules;
 using MyDemoProjects.DiscordBot.Services;
 
-//var config = new ConfigurationBuilder()
-//    .AddJsonFile($"appsettings.json")
-//    .AddEnvironmentVariables()
-//    .Build();
+
 var client = new DiscordShardedClient(new DiscordSocketConfig
 {
     GatewayIntents  = Discord.GatewayIntents.All,
@@ -34,10 +31,17 @@ var commands = new CommandService(new CommandServiceConfig
     CaseSensitiveCommands = false,
 });
 
+IConfiguration config = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddEnvironmentVariables()
+    .AddUserSecrets<Program>()
+    .Build();
+
 // Setup your DI container.
 Initializer.Init();
 Initializer.RegisterInstance(client);
 Initializer.RegisterInstance(commands);
+Initializer.RegisterInstance(config);
 Initializer.RegisterType<ICommandHandler,CommandHandler>();
 
 await MainAsync();
@@ -51,11 +55,19 @@ async Task MainAsync()
         Console.WriteLine($"Shard Number {shard.ShardId} is connected and ready!");
     };
 
+    var token = config.GetSection("DiscordTokenKey").Value;
+
+    if (string.IsNullOrWhiteSpace(token))
+    {
+        Console.WriteLine("Token is null or empty.");
+        return;
+    }
+
     client.Log += async (LogMessage log) =>
     {
         Console.WriteLine(log.Message);
     };
-    await client.LoginAsync(TokenType.Bot, "MTAyNzQwNjQwNDE0OTA3MTk1Mg.GEEroy.1Mmjg0sa7cmfl9engwWIB0Q5Od1Rdk2-VhYN7Q");
+    await client.LoginAsync(TokenType.Bot, token);
     await client.StartAsync();
 
     // Wait infinitely so your bot actually stays connected.
