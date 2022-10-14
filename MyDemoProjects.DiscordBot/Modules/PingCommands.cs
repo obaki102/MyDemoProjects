@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
+using Microsoft.VisualBasic;
 using MyDemoProjects.DiscordBot.DTOs;
+using System.Net.Http;
 using System.Text.Json;
 using RunMode = Discord.Commands.RunMode;
 
@@ -44,6 +46,40 @@ namespace MyDemoProjects.DiscordBot.Modules
                     //.WithCurrentTimestamp();
 
                 //Your embed needs to be built before it is able to be sent
+                await Context.Message.ReplyAsync(embed: embed.Build());
+            }
+        }
+
+
+        [Command("D2HotFix", RunMode = RunMode.Async)]
+        public async Task LatestHotFix()
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("X-API-Key", "d617e0bcd81e41b4b99ed95325ecdf70");
+                var response = await client.GetStreamAsync("https://www.bungie.net/Platform//Trending/Categories");
+                if (response == null)
+                {
+                    Console.WriteLine("Response not found");
+                    return;
+                }
+                var result = JsonSerializer.Deserialize<GetTrendingCategoriesResponse>(response);
+                if(result == null)
+                {
+                    Console.WriteLine("No result.");
+                    return;
+                }
+                var latestHotFix = result.Response.Categories
+                    .FirstOrDefault(c => c.CategoryName.Equals("Latest")).Entries.Results
+                    .FirstOrDefault(f => f.DisplayName.Contains("Destiny 2 Hotfix"));
+                var embed = new EmbedBuilder();
+                embed.AddField(latestHotFix.DisplayName,
+                    $"[Hot Fix](https://www.bungie.net{latestHotFix.Link})")
+                    .WithImageUrl($"https://www.bungie.net{latestHotFix.FeatureImage}")
+                    .WithAuthor(Context.Client.CurrentUser)
+                    .WithColor(Color.Blue);
+
+              
                 await Context.Message.ReplyAsync(embed: embed.Build());
             }
         }
