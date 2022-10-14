@@ -65,7 +65,7 @@
             await _hubConnection.StartAsync();
         }
 
-        _hubConnection.On<string, string, string>("SendMessage", async (from, to, message) =>
+        _hubConnection.On<string, string, string>("ReceiveMessage", async (from, to, message) =>
         {
             _messages.Add($"Message received from {from} :{message}");
             StateHasChanged();
@@ -75,7 +75,7 @@
 
     private async Task SendMessage()
     {
-        await _hubConnection.SendAsync("SendMessage", _currentUser, _currentUser.Equals("102407d8-3d3f-46c9-8654-122f325b090a") ? "fc7df3c0-9266-4146-9c4c-d513dafd3f2f" : _currentUser, _enteredMessage);
+        await _hubConnection.SendAsync("ReceiveMessage", _currentUser, _currentUser.Equals("102407d8-3d3f-46c9-8654-122f325b090a") ? "fc7df3c0-9266-4146-9c4c-d513dafd3f2f" : _currentUser, _enteredMessage);
     }
 
     public void Dispose()

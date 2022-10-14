@@ -7,7 +7,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace MyDemoProjects.UI.Hubs
 {
     [Authorize]
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IChatHub>
     {
         public override Task OnConnectedAsync()
         {
@@ -21,10 +21,10 @@ namespace MyDemoProjects.UI.Hubs
             Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
             await base.OnDisconnectedAsync(e);
         }
-        public async Task SendMessage(string from, string to, string message)
+        public async Task ReceiveMessage(string from, string to, string message)
         {
             Console.WriteLine($"Message from {from} to {to} : {message}");
-            await Clients.Users(from, to).SendAsync("SendMessage", from, to, message);
+            await Clients.Users(from, to).ReceiveMessage(from, to, message);  
         }
 
     }
