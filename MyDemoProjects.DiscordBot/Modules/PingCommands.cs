@@ -11,7 +11,6 @@ namespace MyDemoProjects.DiscordBot.Modules
 {
     public class PingCommands : ModuleBase<ShardedCommandContext>
     {
-        public CommandService CommandService { get; set; }
 
         [Command("ping", RunMode = RunMode.Async)]
         public async Task Hello()
@@ -42,10 +41,7 @@ namespace MyDemoProjects.DiscordBot.Modules
                     .WithAuthor(Context.Client.CurrentUser)
                     .WithFooter(footer => footer.Text = gotQuotesResult.Character.Name)
                     .WithColor(Color.Blue);
-                    //.WithUrl("https://example.com")
-                    //.WithCurrentTimestamp();
-
-                //Your embed needs to be built before it is able to be sent
+                
                 await Context.Message.ReplyAsync(embed: embed.Build());
             }
         }
@@ -64,13 +60,14 @@ namespace MyDemoProjects.DiscordBot.Modules
                     return;
                 }
                 var result = JsonSerializer.Deserialize<GetTrendingCategoriesResponse>(response);
-                if(result == null)
+                if(result == null ) 
                 {
                     Console.WriteLine("No result.");
                     return;
                 }
                 var latestHotFix = result.Response.Categories
                     .FirstOrDefault(c => c.CategoryName.Equals("Latest")).Entries.Results
+                    .OrderByDescending(o => o.CreationDate)
                     .FirstOrDefault(f => f.DisplayName.Contains("Destiny 2 Hotfix"));
                 var embed = new EmbedBuilder();
                 embed.AddField(latestHotFix.DisplayName,
@@ -78,10 +75,11 @@ namespace MyDemoProjects.DiscordBot.Modules
                     .WithImageUrl($"https://www.bungie.net{latestHotFix.FeatureImage}")
                     .WithAuthor(Context.Client.CurrentUser)
                     .WithColor(Color.Blue);
-
               
                 await Context.Message.ReplyAsync(embed: embed.Build());
             }
         }
+
+
     }
 }

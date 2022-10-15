@@ -28,24 +28,22 @@ namespace MyDemoProjects.DiscordBot
             }
         }
 
-        public static void RegisterType<TInterface, TImplementation>()
+        public static void RegisterSingletonType<TInterface, TImplementation>()
             where TInterface : class
             where TImplementation : class, TInterface
         {
             _serviceCollection.AddSingleton<TInterface, TImplementation>();
         }
 
-        public static void RegisterInstance<TInterface>(TInterface instance)
+        public static void RegisterSingletonInstance<TInterface>(TInterface instance)
             where TInterface : class
         {
             _serviceCollection.AddSingleton(instance);
-           
         }
 
         public static void BuildServiceProvider()
         {
-            ServiceProvider = _serviceCollection
-                               .BuildServiceProvider();
+            ServiceProvider = _serviceCollection.BuildServiceProvider();
         }
     }
 }

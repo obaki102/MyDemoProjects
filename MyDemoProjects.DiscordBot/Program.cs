@@ -1,33 +1,28 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 using MyDemoProjects.DiscordBot;
 using MyDemoProjects.DiscordBot.Handlers;
-using MyDemoProjects.DiscordBot.Modules;
 using MyDemoProjects.DiscordBot.Services;
 
 
 var client = new DiscordShardedClient(new DiscordSocketConfig
 {
-    GatewayIntents  = Discord.GatewayIntents.All,
+    GatewayIntents  = GatewayIntents.All,
     LogGatewayIntentWarnings = false,
     AlwaysDownloadUsers = true,
     LogLevel = LogSeverity.Debug
 });
 
-
 var commands = new CommandService(new CommandServiceConfig
 {
-    // Again, log level:
     LogLevel = LogSeverity.Info,
-
-    // There's a few more properties you can set,
-    // for example, case-insensitive commands.
     CaseSensitiveCommands = false,
 });
+var interactionCommand = new InteractionService(client);
 
 IConfiguration config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
@@ -37,10 +32,12 @@ IConfiguration config = new ConfigurationBuilder()
 
 // Setup your DI container.
 Initializer.Init();
-Initializer.RegisterInstance(client);
-Initializer.RegisterInstance(commands);
-Initializer.RegisterInstance(config);
-Initializer.RegisterType<ICommandHandler,CommandHandler>();
+Initializer.RegisterSingletonInstance(client);
+Initializer.RegisterSingletonInstance(commands);
+Initializer.RegisterSingletonInstance(interactionCommand);
+Initializer.RegisterSingletonInstance(config);
+Initializer.RegisterSingletonType<ICommandHandler,CommandHandler>();
+Initializer.RegisterSingletonType<IInteractionHandler, InteractionHandler>();
 Initializer.BuildServiceProvider();
 
 await MainAsync();
@@ -48,10 +45,13 @@ await MainAsync();
 async Task MainAsync()
 {
     await Initializer.ServiceProvider.GetRequiredService<ICommandHandler>().InitializeAsync();
+    await Initializer.ServiceProvider.GetRequiredService<IInteractionHandler>().InitializeAsync();
 
     client.ShardReady += async shard =>
     {
         Console.WriteLine($"Shard Number {shard.ShardId} is connected and ready!");
+        //Register slash commands to guild
+        await interactionCommand.RegisterCommandsToGuildAsync(UInt64.Parse(config.GetSection("RoninGuildId").Value), true);
     };
 
     var token = config.GetSection("DiscordTokenKey").Value;
