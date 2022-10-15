@@ -18,6 +18,8 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         private ClaimsPrincipal Principal { get; set; } = new ClaimsPrincipal();
 
+        public UserSettings UserSettings { get; private set; } = new UserSettings();
+
         public string Status { get; private set; } = string.Empty;
         public string NameIdentifier { get; private set; } = string.Empty;
         public string Name { get; private set; } = string.Empty;
@@ -106,6 +108,8 @@ namespace MyDemoProjects.UI.Services.Authentication
                     NameIdentifier = NameIdentifier,
                     ProfileUrl = ProfilePictureDataUrl
                 };
+
+                UserSettings = userSettings;
                 await _protectedLocalStorage.SetAsync(AppSecrets.LocalStorage.UserSettings, userSettings);
             }
             catch (Exception)
@@ -118,16 +122,8 @@ namespace MyDemoProjects.UI.Services.Authentication
         {
             try
             {
-                var userSettings = new UserSettings
-                {
-                    Email = Email,
-                    Name = Name,
-                    NameIdentifier = NameIdentifier,
-                    ProfileUrl = ProfilePictureDataUrl
-                };
-
                 var result = await _protectedLocalStorage.GetAsync<UserSettings>(AppSecrets.LocalStorage.UserSettings);
-                return result.Value;
+                return result.Value??new UserSettings();
             }
             catch (Exception)
             {

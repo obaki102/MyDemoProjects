@@ -65,8 +65,8 @@
         await CustomAuthStateProvider.LogOutAndUpdateAuthenticationState();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        userSettings = await CustomAuthStateProvider.GetUserSettings();
+        userSettings =  CustomAuthStateProvider.UserSettings;
     }
 }

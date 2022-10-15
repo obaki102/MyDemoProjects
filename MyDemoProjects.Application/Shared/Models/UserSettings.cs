@@ -8,7 +8,8 @@ namespace MyDemoProjects.Application.Shared.Models
 {
     public class UserSettings
     {
-        public string  Name { get; set; } = string.Empty;
+        private char _initials;
+        public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string ProfileUrl { get; set; } = string.Empty;
         public string NameIdentifier { get; set; } = string.Empty;
@@ -16,11 +17,14 @@ namespace MyDemoProjects.Application.Shared.Models
         {
             get
             {
-                if(!string.IsNullOrEmpty(Email))
+                if (!string.IsNullOrEmpty(Email))
                     return Email.ToUpper()[0];
 
                 return 'D';
-
+            }
+            set
+            {
+                _initials = value;
             }
         }
     }
