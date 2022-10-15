@@ -33,16 +33,19 @@ namespace MyDemoProjects.DiscordBot
             where TImplementation : class, TInterface
         {
             _serviceCollection.AddSingleton<TInterface, TImplementation>();
-            ServiceProvider = _serviceCollection
-                                .BuildServiceProvider();
         }
 
         public static void RegisterInstance<TInterface>(TInterface instance)
             where TInterface : class
         {
-            _serviceCollection.AddSingleton<TInterface>(instance);
+            _serviceCollection.AddSingleton(instance);
+           
+        }
+
+        public static void BuildServiceProvider()
+        {
             ServiceProvider = _serviceCollection
-                                .BuildServiceProvider();
+                               .BuildServiceProvider();
         }
     }
 }

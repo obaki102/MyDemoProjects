@@ -41,6 +41,7 @@ Initializer.RegisterInstance(client);
 Initializer.RegisterInstance(commands);
 Initializer.RegisterInstance(config);
 Initializer.RegisterType<ICommandHandler,CommandHandler>();
+Initializer.BuildServiceProvider();
 
 await MainAsync();
 
