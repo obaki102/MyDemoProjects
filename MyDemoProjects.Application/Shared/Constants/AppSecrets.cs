@@ -19,6 +19,8 @@ namespace MyDemoProjects.Application.Shared.Constants
         public static class LocalStorage
         {
             public const string  AuthToken = "auth_Token";
+            public const string UserSettings = "user_Settings";
+
         }
 
         public static class AnimeList

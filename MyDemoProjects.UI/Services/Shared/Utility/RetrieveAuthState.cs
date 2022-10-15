@@ -23,7 +23,7 @@ public class RetrieveAuthState : IRetrieveAuthState
             switch (claims.Type)
             {
                 case ApplicationClaimTypes.Status:
-                    claimValues.Add(ApplicationClaimTypes.Status, userState.User.Identity.IsAuthenticated.ToString());
+                    claimValues.Add(ApplicationClaimTypes.Status, claims.Value);
                     break;
                 case ClaimTypes.NameIdentifier:
                     claimValues.Add(ClaimTypes.NameIdentifier, claims.Value);

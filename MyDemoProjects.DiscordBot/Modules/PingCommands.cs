@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
 using MyDemoProjects.DiscordBot.DTOs;
 using System.Net.Http;
@@ -11,6 +12,11 @@ namespace MyDemoProjects.DiscordBot.Modules
 {
     public class PingCommands : ModuleBase<ShardedCommandContext>
     {
+        private readonly IConfiguration _configuration;
+        public PingCommands(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         [Command("ping", RunMode = RunMode.Async)]
         public async Task Hello()
@@ -52,7 +58,7 @@ namespace MyDemoProjects.DiscordBot.Modules
         {
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("X-API-Key", "d617e0bcd81e41b4b99ed95325ecdf70");
+                client.DefaultRequestHeaders.Add("X-API-Key", _configuration.GetSection("XApiKey").Value);
                 var response = await client.GetStreamAsync("https://www.bungie.net/Platform//Trending/Categories");
                 if (response == null)
                 {

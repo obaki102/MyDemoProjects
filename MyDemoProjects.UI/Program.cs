@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
-using Microsoft.AspNetCore.SignalR;
-using MudBlazor;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
 using MyDemoProjects.Application.Infastructure.Services.Identity;

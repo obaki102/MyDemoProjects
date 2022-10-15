@@ -1,16 +1,18 @@
 ﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using MyDemoProjects.Application.Shared.Models
 @inject IDialogService DialogService
 @inject IRetrieveAuthState RetrieveAuthState
 @inject CustomAuthStateProvider CustomAuthStateProvider
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopLeft">
     <ActivatorContent>
-        @if (string.IsNullOrEmpty(_picUrl))
+        @if (string.IsNullOrEmpty(userSettings.ProfileUrl))
         {
-            <MudAvatar Color="Color.Secondary">@_firstName[0]</MudAvatar>
+            <MudAvatar Color="Color.Secondary">@userSettings.Initials</MudAvatar>
         }
         else
         {
-            <MudAvatar Image="@_picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+            <MudAvatar Image="@userSettings.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
         }
     </ActivatorContent>
     <ChildContent>
@@ -18,17 +20,17 @@
             <MudCard Elevation="0" Square="true" Class="mt-n2">
                 <MudCardHeader>
                     <CardHeaderAvatar>
-                        @if (string.IsNullOrEmpty(_picUrl))
+                        @if (string.IsNullOrEmpty(userSettings.ProfileUrl))
                         {
-                            <MudAvatar Color="Color.Secondary">@claims[ClaimTypes.Name][0]</MudAvatar>
+                            <MudAvatar Color="Color.Secondary">@userSettings.Name</MudAvatar>
                         }
                         else
                         {
-                            <MudAvatar Image="@_picUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                            <MudAvatar Image="@userSettings.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
                         }
                     </CardHeaderAvatar>
                     <CardHeaderContent>
-                        <MudText Typo="Typo.caption">@claims[ClaimTypes.Email]</MudText>
+                        <MudText Typo="Typo.caption">@userSettings.Email</MudText>
                     </CardHeaderContent>
                 </MudCardHeader>
             </MudCard>
@@ -43,8 +45,7 @@
     private bool _drawerProfileOpen = true;
     private bool _drawerOpen = true;
     private Dictionary<string, string> claims = new Dictionary<string, string>();
-    private string _picUrl = string.Empty;
-    private string _firstName = "Temp";
+    private UserSettings userSettings = new UserSettings();
     private void OpenDialog()
     {
         DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
@@ -66,16 +67,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        claims = await RetrieveAuthState.GetClaimValues();
-        if (claims.ContainsKey(ApplicationClaimTypes.ProfilePictureDataUrl))
-        {
-            _picUrl = claims[ApplicationClaimTypes.ProfilePictureDataUrl];
-        }
-
-        if (claims.ContainsKey(ClaimTypes.Name))
-        {
-            _firstName = claims[ClaimTypes.Name];
-        }
-        
+        userSettings = await CustomAuthStateProvider.GetUserSettings();
     }
 }
