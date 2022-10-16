@@ -1,16 +1,15 @@
 ﻿@page "/"
 @inject IRandomGOTQuotes RandomGOTQuotes;
-
-@if (RandomQuotes == null)
-{
-    <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
-        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
-    </MudOverlay>
-}
-else
-{
-    <AuthorizeView>
-        <Authorized>
+<AuthorizeView>
+    <Authorized>
+        @if (RandomQuotes == null)
+        {
+            <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            </MudOverlay>
+        }
+        else
+        {
             <MudCard Outlined="true">
                 <MudCardContent>
                     <MudText>Random GOT Quotes</MudText>
@@ -20,13 +19,13 @@ else
                     <MudChip Color="Color.Dark">@RandomQuotes.Character.Name</MudChip>
                 </MudCardActions>
             </MudCard>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <MudText Typo="Typo.h3" GutterBottom="true">NOT Authorized!</MudText>
+    </NotAuthorized>
+</AuthorizeView>
 
-        </Authorized>
-        <NotAuthorized>
-            <MudText Typo="Typo.h3" GutterBottom="true">NOT Authorized!</MudText>
-        </NotAuthorized>
-    </AuthorizeView>
-}
 
 
 @code {
@@ -36,5 +35,6 @@ else
     {
         await RandomGOTQuotes.GetRandomGOTQuotes();
         RandomQuotes = RandomGOTQuotes.GOTQuotes;
+
     }
 }

@@ -6,7 +6,6 @@ using MyDemoProjects.Application.Features.Authentication.Commands;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using MyDemoProjects.Application.Shared.Models;
-using System.Text.Json;
 
 namespace MyDemoProjects.UI.Services.Authentication
 {
@@ -21,6 +20,7 @@ namespace MyDemoProjects.UI.Services.Authentication
         public UserSettings UserSettings { get; private set; } = new UserSettings();
 
         public string Status { get; private set; } = string.Empty;
+        public bool IsAuthenticated { get; private set; } = false;
         public string NameIdentifier { get; private set; } = string.Empty;
         public string Name { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
@@ -68,9 +68,11 @@ namespace MyDemoProjects.UI.Services.Authentication
             UpdateProperties();
             await SetUserSettings();
             var state = new AuthenticationState(principal);
+            IsAuthenticated = state.User.Identity.IsAuthenticated;
             NotifyAuthenticationStateChanged(Task.FromResult(state));
             return state;
         }
+        
         public async Task LogOutAndUpdateAuthenticationState()
         {
             await _protectedLocalStorage.DeleteAsync(AppSecrets.LocalStorage.AuthToken);

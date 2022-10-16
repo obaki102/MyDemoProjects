@@ -1,20 +1,11 @@
-﻿<MudPaper  Class="py-3" Elevation="0">
-    <MudNavMenu>
-        <AuthorizeView>
-            <Authorized>
-                <MudNavLink Href="/animelist" Icon="@Icons.Filled.List" IconColor="Color.Success">Anime List</MudNavLink>
-                <MudDivider Class="my-2" />
-                <MudNavLink Href="/chatroom" Icon="@Icons.Filled.Chat" IconColor="Color.Primary">Chat Room</MudNavLink>
-                <MudDivider Class="my-2" />
-                <MudNavLink Href="/login2" Icon="@Icons.Filled.People" IconColor="Color.Primary"> About </MudNavLink>
-            </Authorized>
-            <NotAuthorized>
-                <MudNavLink Href="/animelist" Icon="@Icons.Filled.List" IconColor="Color.Success">Anime List</MudNavLink>
-                <MudDivider Class="my-2" />
-                <MudNavLink Href="/chatroom" Icon="@Icons.Filled.Chat" IconColor="Color.Primary">Chat Room</MudNavLink>
-                <MudDivider Class="my-2" />
-                <MudNavLink Href="/login2" Icon="@Icons.Filled.People" IconColor="Color.Primary"> About </MudNavLink>
-            </NotAuthorized>
-        </AuthorizeView>
-    </MudNavMenu>
-</MudPaper>
+﻿<MudNavMenu>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/animelist" Icon="@Icons.Filled.List" IconColor="Color.Success">Anime List</MudNavLink>
+            <MudNavLink Href="/chatroom" Icon="@Icons.Filled.Chat" IconColor="Color.Primary">Chat Room</MudNavLink>
+            <MudNavLink Href="/login2" Icon="@Icons.Filled.People" IconColor="Color.Primary"> About </MudNavLink>
+        </Authorized>
+        <NotAuthorized>
+        </NotAuthorized>
+    </AuthorizeView>
+</MudNavMenu>

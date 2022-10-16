@@ -1,9 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;
 
 namespace MyDemoProjects.UI.Services.RandomGOTQuotes
 {
+    [Authorize]
     public class RandomGOTQuotes : IRandomGOTQuotes
     {
         private readonly ISender _mediator;

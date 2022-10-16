@@ -30,12 +30,13 @@
         </div>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
         @if (_isLaoding)
         {
-            <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
-            </MudOverlay>
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+        }
+        else
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@LoginUser">Login</MudButton>
         }
     </DialogActions>
 </MudDialog>

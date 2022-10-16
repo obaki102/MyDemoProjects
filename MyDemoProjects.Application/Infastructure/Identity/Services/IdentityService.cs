@@ -211,8 +211,7 @@ public class IdentityService : IIdentityService
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 RoleClaimType = ClaimTypes.Role,
-                ClockSkew = TimeSpan.Zero,
-                ValidateLifetime = false
+                ClockSkew = TimeSpan.Zero
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
