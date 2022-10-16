@@ -1,24 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using MyDemoProjects.Application.Shared.Models;
-using System.Security.Claims;
-
 namespace MyDemoProjects.UI.Hubs
 {
     [Authorize]
     public class ChatHub : Hub<IChatHub>
     {
-        public override Task OnConnectedAsync()
+        public async override Task OnConnectedAsync()
         {
             Console.WriteLine($"{Context.ConnectionId} connected");
-            Console.WriteLine($"{Context.User.Identity.Name} connected");
-            Console.WriteLine($"{Context.User?.FindFirst(ClaimTypes.Email)?.Value!} * *** connected");
-            return base.OnConnectedAsync();
+            Console.WriteLine($"{Context.User.Identity.Name} Hub connected");
+            await Clients.All.UserOnline(Context.User.Identity.Name);
+            await base.OnConnectedAsync();
         }
-
         public override async Task OnDisconnectedAsync(Exception e)
         {
             Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
+            await Clients.All.UserOffline(Context.User.Identity.Name);
             await base.OnDisconnectedAsync(e);
         }
         public async Task ReceiveMessage(string from, string to, string message)
@@ -27,11 +24,6 @@ namespace MyDemoProjects.UI.Hubs
             await Clients.Users(from, to).ReceiveMessage(from, to, message);  
         }
 
-        public async Task OnlineUsers(UserSettings onlineUser)
-        {
-            Console.WriteLine($"{onlineUser.Email} is online");
-            await Clients.All.OnlineUsers(onlineUser);
-        }
 
     }
 }

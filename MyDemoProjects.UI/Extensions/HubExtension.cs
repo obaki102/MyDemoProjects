@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.SignalR.Protocol;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.UI.Services.Authentication;
 

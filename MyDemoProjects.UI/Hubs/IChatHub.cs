@@ -5,7 +5,8 @@ namespace MyDemoProjects.UI.Hubs
     public interface IChatHub
     {
         Task ReceiveMessage(string to, string from, string message);
-        Task OnlineUsers(UserSettings onlineUser);
+        Task UserOnline(string onlineUser);
+        Task UserOffline(string offlineUser);
 
     }
 }

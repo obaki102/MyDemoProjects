@@ -28,9 +28,9 @@ builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
+builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddSingleton<IOnlineUsers, OnlineUsers>();
 builder.Services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
-builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 
 //UI
 builder.Services.AddRazorPages();

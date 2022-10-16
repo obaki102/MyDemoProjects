@@ -76,6 +76,7 @@ namespace MyDemoProjects.UI.Services.Authentication
         public async Task LogOutAndUpdateAuthenticationState()
         {
             await _protectedLocalStorage.DeleteAsync(AppSecrets.LocalStorage.AuthToken);
+            await _protectedLocalStorage.DeleteAsync(AppSecrets.LocalStorage.UserSettings);
             await GetAuthenticationStateAsync();
         }
 
@@ -112,7 +113,7 @@ namespace MyDemoProjects.UI.Services.Authentication
                 };
 
                 UserSettings = userSettings;
-                await _protectedLocalStorage.SetAsync(AppSecrets.LocalStorage.UserSettings, userSettings);
+              //  await _protectedLocalStorage.SetAsync(AppSecrets.LocalStorage.UserSettings, userSettings);
             }
             catch (Exception)
             {

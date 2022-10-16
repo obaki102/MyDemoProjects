@@ -6,10 +6,10 @@ namespace MyDemoProjects.UI.Services.Shared.Utility.Interface
 {
     public interface IOnlineUsers
     {
-        public ConcurrentDictionary<string, UserSettings> UsersByCircuitId { get; }
+        public ConcurrentDictionary<string, UserSettings> UsersByNameIdentifier { get; }
 
         public event Action? OnChange;
-        public void AddOrUpdate(string circuitId, UserSettings? userSettings);
-        public void TryRemove(string circuitId);
+        public void AddOrUpdate(string nameIdentifier, UserSettings? userSettings);
+        public void TryRemove(string nameIdentifier);
     }
 }
