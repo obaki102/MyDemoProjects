@@ -6,18 +6,16 @@
     <AuthorizeView>
         <Authorized>
             <MudAppBar Elevation="1">
-               @* <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />*@
                 <MudChip Color="Color.Dark" OnClick="@ToHomePage">MyDemoProjects</MudChip>
                 <MudSpacer />
                 <Profile></Profile>
             </MudAppBar>
-            <MudDrawer @bind-Open="_drawerOpen" OpenMiniOnHover="true" Variant="@DrawerVariant.Mini" Elevation="1">
+            <MudDrawer @bind-Open="_drawerOpen" OpenMiniOnHover="true" Variant="@DrawerVariant.Mini" Elevation="1" >
                 <NavMenu />
             </MudDrawer>
-
         </Authorized>
         <NotAuthorized>
-            <MudAppBar Elevation="1" >
+            <MudAppBar Elevation="1">
                 <MudChip Color="Color.Dark" OnClick="@ToHomePage">MyDemoProjects</MudChip>
                 <MudSpacer />
                 <MudButton OnClick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
