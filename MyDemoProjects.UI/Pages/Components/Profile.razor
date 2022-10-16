@@ -43,7 +43,7 @@
     private bool _drawerProfileOpen = true;
     private bool _drawerOpen = true;
     private Dictionary<string, string> claims = new Dictionary<string, string>();
-    private UserSettings userSettings = new UserSettings();
+    private User userSettings = new User();
     private void OpenDialog()
     {
         DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });

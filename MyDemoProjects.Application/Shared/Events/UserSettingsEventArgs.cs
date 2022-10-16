@@ -10,6 +10,6 @@ namespace MyDemoProjects.Application.Shared.Events
 {
     public class UserSettingsEventArgs : EventArgs
     {
-        public UserSettings UserSettings { get; set; }
+        public User UserSettings { get; set; }
     }
 }

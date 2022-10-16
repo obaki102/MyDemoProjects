@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using MyDemoProjects.Application.Shared.Models;
+
 namespace MyDemoProjects.UI.Hubs
 {
     [Authorize]
@@ -18,10 +20,9 @@ namespace MyDemoProjects.UI.Hubs
             await Clients.All.UserOffline(Context.User.Identity.Name);
             await base.OnDisconnectedAsync(e);
         }
-        public async Task ReceiveMessage(string from, string to, string message)
+        public async Task ReceiveMessage(string from, ChatMessage chatMessage)
         {
-            Console.WriteLine($"Message from {from} to {to} : {message}");
-            await Clients.Users(from, to).ReceiveMessage(from, to, message);  
+            await Clients.All.ReceiveMessage(from, chatMessage);  
         }
 
 

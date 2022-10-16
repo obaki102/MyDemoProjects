@@ -5,7 +5,7 @@ namespace MyDemoProjects.UI.Services.Shared.Utility.Implementation
 {
     public class OnlineUsers : IOnlineUsers
     {
-        public ConcurrentDictionary<string, UserSettings> UsersByNameIdentifier { get; } = new ConcurrentDictionary<string, UserSettings>();
+        public ConcurrentDictionary<string, User> UsersByNameIdentifier { get; } = new ConcurrentDictionary<string, User>();
 
         public event Action?  OnChange;
 
@@ -15,9 +15,9 @@ namespace MyDemoProjects.UI.Services.Shared.Utility.Implementation
             NotifyStateChanged();
         }
 
-        public void AddOrUpdate(string nameIdentifier, UserSettings? userSettings)
+        public void AddOrUpdate(string nameIdentifier, User? userSettings)
         {
-            UsersByNameIdentifier.AddOrUpdate(nameIdentifier, userSettings ?? new UserSettings(), (key, oldValue) => userSettings ?? new UserSettings());
+            UsersByNameIdentifier.AddOrUpdate(nameIdentifier, userSettings ?? new User(), (key, oldValue) => userSettings ?? new User());
            
         }
 

@@ -17,7 +17,7 @@ namespace MyDemoProjects.UI.Services.Authentication
 
         private ClaimsPrincipal Principal { get; set; } = new ClaimsPrincipal();
 
-        public UserSettings UserSettings { get; private set; } = new UserSettings();
+        public User UserSettings { get; private set; } = new User();
 
         public string Status { get; private set; } = string.Empty;
         public bool IsAuthenticated { get; private set; } = false;
@@ -104,7 +104,7 @@ namespace MyDemoProjects.UI.Services.Authentication
         {
             try
             {
-                var userSettings = new UserSettings
+                var userSettings = new User
                 {
                     Email = Email,
                     Name = Name,
@@ -121,17 +121,17 @@ namespace MyDemoProjects.UI.Services.Authentication
             }
         }
 
-        public async Task<UserSettings> GetUserSettings()
+        public async Task<User> GetUserSettings()
         {
             try
             {
-                var result = await _protectedLocalStorage.GetAsync<UserSettings>(AppSecrets.LocalStorage.UserSettings);
-                return result.Value??new UserSettings();
+                var result = await _protectedLocalStorage.GetAsync<User>(AppSecrets.LocalStorage.UserSettings);
+                return result.Value??new User();
             }
             catch (Exception)
             {
                 await _protectedLocalStorage.DeleteAsync(AppSecrets.LocalStorage.UserSettings);
-                return new UserSettings();
+                return new User();
             }
         }
 

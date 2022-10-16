@@ -31,7 +31,15 @@
 
                     @foreach (var message in _messages)
                     {
-                        <MudText Typo="Typo.body1">@message</MudText>
+                        @if (string.IsNullOrEmpty(message.User.ProfileUrl))
+                        {
+                            <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
+                        }
+                        else
+                        {
+                            <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                        }
+                        <MudText Typo="Typo.body1">@message.Message</MudText>
                     }
                     <MudCardContent>
                         <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
@@ -69,9 +77,9 @@
 @code {
 
     private HubConnection _hubConnection { get; set; } = default;
-    private List<string> _messages = new List<string>();
+    private List<ChatMessage> _messages = new List<ChatMessage>();
     //TODO casecade it as a parameter
-    private UserSettings userSettings = new UserSettings();
+    private User userSettings = new User();
     private List<string> onlineActivity = new List<string>();
     private List<string> onlineUsers = new List<string>();
     private string _enteredMessage = string.Empty;
@@ -82,12 +90,12 @@
         OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
-       
+
         // await _hubConnection.SendAsync("OnlineUsers", CustomAuthStateProvider.UserSettings);
         //TODO : Strongly type client?
-        _hubConnection.On<string, string, string>("ReceiveMessage", async (from, to, message) =>
+        _hubConnection.On<string, ChatMessage>("ReceiveMessage", async (from, chatMessage) =>
         {
-            _messages.Add($"Message received from {from} :{message}");
+            _messages.Add(chatMessage);
             StateHasChanged();
         });
 
@@ -116,8 +124,9 @@
     {
         InvokeAsync(() =>
         {
-            foreach (var user in OnlineUsersService.UsersByNameIdentifier){
-                onlineUsers.Add(user.Value.NameIdentifier);
+            foreach (var user in OnlineUsersService.UsersByNameIdentifier)
+            {
+                onlineUsers.Add(user.Value.Email);
             }
             StateHasChanged();
         });
@@ -125,7 +134,12 @@
 
     private async Task SendMessage()
     {
-        await _hubConnection.SendAsync("ReceiveMessage", userSettings.Email, "", _enteredMessage);
+        var chatMessage = new ChatMessage
+            {
+                User = userSettings,
+                Message = _enteredMessage
+            };
+        await _hubConnection.SendAsync("ReceiveMessage", userSettings.Email, chatMessage);
     }
 
     public void Dispose()
@@ -133,4 +147,4 @@
         OnlineUsersService.OnChange -= HandleCircuitsChanged;
         _ = _hubConnection.DisposeAsync();
     }
-    }
+}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Application.Shared.Models
 {
-    public class UserSettings
+    public class User
     {
         private char _initials;
         public string Name { get; set; } = string.Empty;
