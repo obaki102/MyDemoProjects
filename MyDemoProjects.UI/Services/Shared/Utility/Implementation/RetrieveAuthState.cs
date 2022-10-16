@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using MyDemoProjects.Application.Shared.Constants;
+using MyDemoProjects.UI.Services.Shared.Utility.Interface;
 using System.Security.Claims;
 
-namespace MyDemoProjects.UI.Services.Shared.Utility;
+namespace MyDemoProjects.UI.Services.Shared.Utility.Implementation;
 public class RetrieveAuthState : IRetrieveAuthState
 {
     private readonly AuthenticationStateProvider _authenticationStateProvider;

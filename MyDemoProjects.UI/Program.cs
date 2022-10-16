@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.AspNetCore.SignalR;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
 using MyDemoProjects.Application.Infastructure.Services.Identity;
@@ -10,7 +11,8 @@ using MyDemoProjects.UI.Hubs;
 using MyDemoProjects.UI.Services.AnimeList;
 using MyDemoProjects.UI.Services.Authentication;
 using MyDemoProjects.UI.Services.RandomGOTQuotes;
-using MyDemoProjects.UI.Services.Shared.Utility;
+using MyDemoProjects.UI.Services.Shared.Utility.Implementation;
+using MyDemoProjects.UI.Services.Shared.Utility.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +27,10 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
-builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
+builder.Services.AddSingleton<IOnlineUsers, OnlineUsers>();
+builder.Services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
+builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 
 //UI
 builder.Services.AddRazorPages();

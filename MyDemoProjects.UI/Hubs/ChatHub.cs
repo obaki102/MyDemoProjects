@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using MyDemoProjects.Application.Shared.Models;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MyDemoProjects.UI.Hubs
 {
@@ -12,6 +11,7 @@ namespace MyDemoProjects.UI.Hubs
         public override Task OnConnectedAsync()
         {
             Console.WriteLine($"{Context.ConnectionId} connected");
+            Console.WriteLine($"{Context.User.Identity.Name} connected");
             Console.WriteLine($"{Context.User?.FindFirst(ClaimTypes.Email)?.Value!} * *** connected");
             return base.OnConnectedAsync();
         }
@@ -25,6 +25,12 @@ namespace MyDemoProjects.UI.Hubs
         {
             Console.WriteLine($"Message from {from} to {to} : {message}");
             await Clients.Users(from, to).ReceiveMessage(from, to, message);  
+        }
+
+        public async Task OnlineUsers(UserSettings onlineUser)
+        {
+            Console.WriteLine($"{onlineUser.Email} is online");
+            await Clients.All.OnlineUsers(onlineUser);
         }
 
     }

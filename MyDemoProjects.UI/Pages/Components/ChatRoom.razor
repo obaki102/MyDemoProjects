@@ -1,60 +1,75 @@
 ﻿@page "/chatroom"
-@using MyDemoProjects.Application.Shared.Models
-@inject IRetrieveAuthState RetrieveAuthState
+@using System.Collections.Concurrent
+@using MyDemoProjects.Application.Shared.Events
 @inject NavigationManager NavigationManager
 @inject CustomAuthStateProvider CustomAuthStateProvider
+@inject IOnlineUsers OnlineUsersService
 @implements IDisposable
 <h3>ChatRoom</h3>
-<MudCard>
-    <MudCardHeader>
-        <CardHeaderAvatar>
-            @if (string.IsNullOrEmpty(userSettings.ProfileUrl))
-            {
-                <MudAvatar Color="Color.Secondary">@userSettings.Initials</MudAvatar>
-            }
-            else
-            {
-                <MudAvatar Image="@userSettings.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
-            }
-        </CardHeaderAvatar>
-        <CardHeaderContent>
+<MudGrid>
+       <MudItem xs="6">
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    @if (string.IsNullOrEmpty(userSettings.ProfileUrl))
+                    {
+                        <MudAvatar Color="Color.Secondary">@userSettings.Initials</MudAvatar>
+                    }
+                    else
+                    {
+                        <MudAvatar Image="@userSettings.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                    }
+                </CardHeaderAvatar>
+                <CardHeaderContent>
 
-        </CardHeaderContent>
-        <CardHeaderActions>
-            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-        </CardHeaderActions>
-    </MudCardHeader>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                </CardHeaderActions>
+            </MudCardHeader>
 
-    @foreach (var message in _messages)
-    {
-        <MudText Typo="Typo.body1">@message</MudText>
-    }
-    <MudCardContent>
-        <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
-    </MudCardContent>
-    <MudCardActions>
-        <MudButton  Color="Color.Default" OnClick="@SendMessage"> Enter</MudButton>
-    </MudCardActions>
-</MudCard>
+            @foreach (var message in _messages)
+            {
+                <MudText Typo="Typo.body1">@message</MudText>
+            }
+            <MudCardContent>
+                <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Color="Color.Default" OnClick="@SendMessage"> Enter</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+      <MudItem xs="6">
+        <MudContainer>
+            <MudPaper Height="400px" Width="100%" Square="true" Class="mud-theme-primary">
+                @foreach (var user in onlineUsers){
+                    <MudText Typo="Typo.body1">@user.NameIdentifier</MudText>
+                }
+            </MudPaper>
+        </MudContainer>
+    </MudItem>
+</MudGrid>
 @code {
 
     private HubConnection _hubConnection { get; set; } = default;
     private List<string> _messages = new List<string>();
     //TODO casecade it as a parameter
     private UserSettings userSettings = new UserSettings();
+    private List<UserSettings> onlineUsers = new List<UserSettings>();
     private string _enteredMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         userSettings = CustomAuthStateProvider.UserSettings;
-
+        OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
             await _hubConnection.StartAsync();
         }
-
+        await _hubConnection.SendAsync("OnlineUsers", CustomAuthStateProvider.UserSettings);
         //TODO : Strongly type client?
         _hubConnection.On<string, string, string>("ReceiveMessage", async (from, to, message) =>
         {
@@ -62,15 +77,32 @@
             StateHasChanged();
         });
 
+
+        _hubConnection.On<UserSettings>("OnlineUsers", async (user) =>
+       {
+           onlineUsers.Add(user);
+           StateHasChanged();
+       });
+
+    }
+
+    private void HandleCircuitsChanged()
+    {
+        InvokeAsync(() =>
+        {
+           
+            StateHasChanged();
+        });
     }
 
     private async Task SendMessage()
     {
-        await _hubConnection.SendAsync("ReceiveMessage", userSettings.NameIdentifier,"", _enteredMessage);
+        await _hubConnection.SendAsync("ReceiveMessage", userSettings.Email, "", _enteredMessage);
     }
 
     public void Dispose()
     {
+        OnlineUsersService.OnChange -= HandleCircuitsChanged;
         _ = _hubConnection.DisposeAsync();
     }
 }

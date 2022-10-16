@@ -38,6 +38,7 @@
 	  <Folder Include="Infastructure\Data\Migrations\" />
 		<Folder Include="Infastructure\Identity\Models\" />
 		<Folder Include="Shared\Models\Security\" />
+		<Folder Include="Shared\Utility\NewFolder\" />
 		<Folder Include="Shared\Utility\" />
 	</ItemGroup>
 </Project>
