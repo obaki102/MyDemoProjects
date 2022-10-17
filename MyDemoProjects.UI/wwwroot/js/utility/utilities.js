@@ -1,7 +1,4 @@
-﻿window.Div = {
-    scrollToView: function () {
-        var currentElement = document.getElementById('scrollableDiv').lastElementChild;
-        currentElement.focus()
-        currentElement.scrollIntoView(false);
-    }
-} 
+﻿window.ScrollToBottom = (elementName) => {
+    element = document.getElementById(elementName);
+    element.scrollTop = element.scrollHeight - element.clientHeight;
+}

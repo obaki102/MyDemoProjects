@@ -25,7 +25,6 @@
                             </CardHeaderAvatar>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.body1">@message.User.Email</MudText>
-                                <MudText Typo="Typo.body2">@DateTime.Now</MudText>
                             </CardHeaderContent>
                             <CardHeaderActions>
                                 <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
@@ -41,55 +40,71 @@
             </div>
         </div>
         <br />
-        <div class="mud-toolbar-gutters">
-            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
-            <MudButton Color="Color.Default" OnClick="@SendMessage"> Enter</MudButton>
+        <div Class="d-flex flex-row px-2 mx-4" Height="100">
+            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage" Immediate="true" @onkeydown="OnEnterKeyPress"  TextUpdateSuppression="false" DisableUnderLine="true" />
+            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudButton>
         </div>
 
     </Authorized>
 </AuthorizeView>
 
 @code {
-
-    private HubConnection _hubConnection { get; set; } = default;
-    private List<ChatMessage> _messages = new List<ChatMessage>();
+    private HubConnection _hubConnection { get; set; }
+    private List<ChatMessage> _messages = new();
     //TODO casecade it as a parameter
-    private User userSettings = new User();
-    private List<string> onlineActivity = new List<string>();
-    private List<string> onlineUsers = new List<string>();
-    private string _enteredMessage = string.Empty;
+    private User _userSettings = new();
+    private List<string> _onlineActivity = new();
+    private List<string> _onlineUsers = new();
+    private string _enteredMessage { get; set; } = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        userSettings = CustomAuthStateProvider.UserSettings;
+        _userSettings = CustomAuthStateProvider.UserSettings;
         //OnlineUsersService.OnChange += HandleCircuitsChanged;
-
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
         //TODO : Strongly type client?
-        _hubConnection.On<string, ChatMessage>("ReceiveMessage", (from, chatMessage) =>
+        _hubConnection.On<string, ChatMessage>(HubHandler.ReceivedMessage, async (from, chatMessage) =>
         {
             _messages.Add(chatMessage);
+            await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
+            _enteredMessage = string.Empty;
             StateHasChanged();
         });
 
-        _hubConnection.On<string>("UserOnline", (user) =>
+        _hubConnection.On<string>(HubHandler.UserOnline, (user) =>
         {
-
             Snackbar.Add($"{user} has entered the chat", Severity.Success);
             StateHasChanged();
         });
 
-        _hubConnection.On<string>("UserOffline", (user) =>
+        _hubConnection.On<string>(HubHandler.UserOffline, (user) =>
        {
            Snackbar.Add($"{user} has left the chat", Severity.Warning);
            StateHasChanged();
        });
 
-        //Leasons learned kick start your hub connecion after you defined your handlers.
+        //Lessons learned kick start your hub connecion after you defined your handlers.
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
             await _hubConnection.StartAsync();
+        }
+    }
+    private void ClearText()
+    {
+        _enteredMessage = string.Empty;
+    }
+
+    private async Task OnEnterKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SendMessage();
         }
     }
 
@@ -97,16 +112,15 @@
     {
         var chatMessage = new ChatMessage
             {
-                User = userSettings,
+                User = _userSettings,
                 Message = _enteredMessage
             };
-        await _hubConnection.SendAsync("ReceiveMessage", userSettings.Email, chatMessage);
-        await JsRuntime.InvokeAsync<string>("Div.scrollToView");
+        await _hubConnection.SendAsync(HubHandler.ReceivedMessage, _userSettings.Email, chatMessage);
+
     }
 
     public void Dispose()
     {
-        //OnlineUsersService.OnChange -= HandleCircuitsChanged;
         _ = _hubConnection?.DisposeAsync();
     }
 }
