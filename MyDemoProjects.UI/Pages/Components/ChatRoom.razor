@@ -7,41 +7,33 @@
 @implements IDisposable
 <AuthorizeView>
     <Authorized>
-        <div id="scrollableDiv" class="ma-0" style="height:700px;overflow: auto;">
+        <div id="scrollableDiv" style="height:800px;overflow: auto;">
             <div Class="d-flex flex-column flex-grow-1 gap-4" Elevation="0">
                 @foreach (var message in _messages)
                 {
-                    <MudCard>
-                        <MudCardHeader>
-                            <CardHeaderAvatar>
-                                @if (string.IsNullOrEmpty(message.User.ProfileUrl))
-                                {
-                                    <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
-                                }
-                                else
-                                {
-                                    <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
-                                }
-                            </CardHeaderAvatar>
-                            <CardHeaderContent>
-                                <MudText Typo="Typo.body1">@message.User.Email</MudText>
-                            </CardHeaderContent>
-                            <CardHeaderActions>
-                                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-                            </CardHeaderActions>
-                        </MudCardHeader>
-                        <MudCardContent>
-                            <MudText Typo="Typo.body2">@message.Message</MudText>
-                        </MudCardContent>
-                        <MudCardActions>
-                        </MudCardActions>
-                    </MudCard>
+                      <div class="d-flex @((IsMyMessage(message.User.Email)? "justify-end" : "justify-start")) flex-row flex-grow-1 gap-4">
+                            @if (string.IsNullOrEmpty(message.User.ProfileUrl))
+                            {
+                                <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
+                            }
+                            else
+                            {
+                                <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                            }
+                            <MudPaper Class="pa-4 mr-16 overflow-auto">
+                            <div class="d-flex flex-row">
+                                <MudChip Size="Size.Small" Color="Color.Dark">@message.User.Email</MudChip>
+                                <MudChip Size="Size.Small">@message.MessageCreateDate</MudChip>
+                            </div>
+                            <MudText Typo="Typo.body1">@message.Message</MudText>
+                        </MudPaper>
+                    </div>
                 }
             </div>
         </div>
         <br />
-        <div Class="d-flex flex-row px-2 mx-4" Height="100">
-            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage" Immediate="true" @onkeydown="OnEnterKeyPress"  TextUpdateSuppression="false" DisableUnderLine="true" />
+        <div Class="d-flex  flex-row px-2 mx-4">
+            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage" Immediate="true" @onkeydown="OnEnterKeyPress" TextUpdateSuppression="false" DisableUnderLine="true" />
             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudButton>
         </div>
 
@@ -117,6 +109,13 @@
             };
         await _hubConnection.SendAsync(HubHandler.ReceivedMessage, _userSettings.Email, chatMessage);
 
+    }
+
+    public bool IsMyMessage(string email)
+    {
+        if (_userSettings == null)
+            return false;
+        return email.ToLower().Equals(_userSettings.Email.ToLower());
     }
 
     public void Dispose()
