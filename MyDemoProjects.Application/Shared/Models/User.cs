@@ -13,6 +13,7 @@ namespace MyDemoProjects.Application.Shared.Models
         public string Email { get; set; } = string.Empty;
         public string ProfileUrl { get; set; } = string.Empty;
         public string NameIdentifier { get; set; } = string.Empty;
+        public bool Status { get; set; } = false; // TODO implement api to track user status
         public char Initials
         {
             get

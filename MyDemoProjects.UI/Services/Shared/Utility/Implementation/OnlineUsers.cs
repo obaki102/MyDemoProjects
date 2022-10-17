@@ -12,7 +12,6 @@ namespace MyDemoProjects.UI.Services.Shared.Utility.Implementation
         public void TryRemove(string nameIdentifier)
         {
             UsersByNameIdentifier.TryRemove(nameIdentifier, out var _);
-            NotifyStateChanged();
         }
 
         public void AddOrUpdate(string nameIdentifier, User? userSettings)

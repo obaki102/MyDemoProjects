@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using MyDemoProjects.Application.Shared.Models;
+using System.Collections.Concurrent;
 
 namespace MyDemoProjects.UI.Hubs
 {
@@ -14,7 +15,7 @@ namespace MyDemoProjects.UI.Hubs
             await Clients.All.UserOnline(Context.User.Identity.Name);
             await base.OnConnectedAsync();
         }
-        public override async Task OnDisconnectedAsync(Exception e)
+        public override async Task OnDisconnectedAsync(Exception? e)
         {
             Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
             await Clients.All.UserOffline(Context.User.Identity.Name);

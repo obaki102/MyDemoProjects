@@ -3,74 +3,49 @@
 @using MyDemoProjects.Application.Shared.Events
 @inject NavigationManager NavigationManager
 @inject CustomAuthStateProvider CustomAuthStateProvider
-@inject IOnlineUsers OnlineUsersService
+@inject IJSRuntime JsRuntime
 @implements IDisposable
 <AuthorizeView>
     <Authorized>
-        <MudGrid>
-            <MudItem xs="6">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderAvatar>
-                            @if (string.IsNullOrEmpty(userSettings.ProfileUrl))
-                            {
-                                <MudAvatar Color="Color.Secondary">@userSettings.Initials</MudAvatar>
-                            }
-                            else
-                            {
-                                <MudAvatar Image="@userSettings.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
-                            }
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
+        <div id="scrollableDiv" class="ma-0" style="height:700px;overflow: auto;">
+            <div Class="d-flex flex-column flex-grow-1 gap-4" Elevation="0">
+                @foreach (var message in _messages)
+                {
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                @if (string.IsNullOrEmpty(message.User.ProfileUrl))
+                                {
+                                    <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
+                                }
+                                else
+                                {
+                                    <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                                }
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">@message.User.Email</MudText>
+                                <MudText Typo="Typo.body2">@DateTime.Now</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.body2">@message.Message</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                        </MudCardActions>
+                    </MudCard>
+                }
+            </div>
+        </div>
+        <br />
+        <div class="mud-toolbar-gutters">
+            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
+            <MudButton Color="Color.Default" OnClick="@SendMessage"> Enter</MudButton>
+        </div>
 
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-                        </CardHeaderActions>
-                    </MudCardHeader>
-
-                    @foreach (var message in _messages)
-                    {
-                        @if (string.IsNullOrEmpty(message.User.ProfileUrl))
-                        {
-                            <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
-                        }
-                        else
-                        {
-                            <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
-                        }
-                        <MudText Typo="Typo.body1">@message.Message</MudText>
-                    }
-                    <MudCardContent>
-                        <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Lines="3" @bind-Value="_enteredMessage" />
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Color="Color.Default" OnClick="@SendMessage"> Enter</MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-            <MudItem xs="6">
-                <MudContainer>
-                    <MudPaper Height="400px" Width="100%" Square="true" Class="mud-theme-primary">
-                        @foreach (var user in onlineActivity)
-                        {
-                            <MudText Typo="Typo.body1">@user</MudText>
-                        }
-                    </MudPaper>
-                </MudContainer>
-            </MudItem>
-
-            <MudItem xs="12">
-                <MudContainer>
-                    <MudPaper Height="400px" Width="100%" Square="true" Class="mud-theme-primary">
-                        @foreach (var user in onlineUsers)
-                        {
-                            <MudText Typo="Typo.body1">@user</MudText>
-                        }
-                    </MudPaper>
-                </MudContainer>
-            </MudItem>
-        </MudGrid>
     </Authorized>
 </AuthorizeView>
 
@@ -87,49 +62,35 @@
     protected override async Task OnInitializedAsync()
     {
         userSettings = CustomAuthStateProvider.UserSettings;
-        OnlineUsersService.OnChange += HandleCircuitsChanged;
+        //OnlineUsersService.OnChange += HandleCircuitsChanged;
+
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
-
-        // await _hubConnection.SendAsync("OnlineUsers", CustomAuthStateProvider.UserSettings);
         //TODO : Strongly type client?
-        _hubConnection.On<string, ChatMessage>("ReceiveMessage", async (from, chatMessage) =>
+        _hubConnection.On<string, ChatMessage>("ReceiveMessage", (from, chatMessage) =>
         {
             _messages.Add(chatMessage);
             StateHasChanged();
         });
 
-        _hubConnection.On<string>("UserOnline", async (user) =>
+        _hubConnection.On<string>("UserOnline", (user) =>
         {
 
-            onlineActivity.Add($"{user} has entered the chat");
+            Snackbar.Add($"{user} has entered the chat", Severity.Success);
             StateHasChanged();
         });
 
-        _hubConnection.On<string>("UserOffline", async (user) =>
+        _hubConnection.On<string>("UserOffline", (user) =>
        {
-
-           onlineActivity.Add($"{user} has left the chat");
+           Snackbar.Add($"{user} has left the chat", Severity.Warning);
            StateHasChanged();
        });
 
-        //Leasons learned kick start your hub connecion before your handler definition.
+        //Leasons learned kick start your hub connecion after you defined your handlers.
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
             await _hubConnection.StartAsync();
         }
-    }
-
-    private void HandleCircuitsChanged()
-    {
-        InvokeAsync(() =>
-        {
-            foreach (var user in OnlineUsersService.UsersByNameIdentifier)
-            {
-                onlineUsers.Add(user.Value.Email);
-            }
-            StateHasChanged();
-        });
     }
 
     private async Task SendMessage()
@@ -140,11 +101,12 @@
                 Message = _enteredMessage
             };
         await _hubConnection.SendAsync("ReceiveMessage", userSettings.Email, chatMessage);
+        await JsRuntime.InvokeAsync<string>("Div.scrollToView");
     }
 
     public void Dispose()
     {
-        OnlineUsersService.OnChange -= HandleCircuitsChanged;
-        _ = _hubConnection.DisposeAsync();
+        //OnlineUsersService.OnChange -= HandleCircuitsChanged;
+        _ = _hubConnection?.DisposeAsync();
     }
 }
