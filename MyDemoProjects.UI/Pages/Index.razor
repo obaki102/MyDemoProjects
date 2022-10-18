@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IRandomGOTQuotes RandomGOTQuotes;
+@inject IHttpContextAccessor HTTPContextAccessor
 <AuthorizeView>
     <Authorized>
         @if (RandomQuotes == null)
@@ -19,22 +20,34 @@
                     <MudChip Color="Color.Dark">@RandomQuotes.Character.Name</MudChip>
                 </MudCardActions>
             </MudCard>
+
         }
     </Authorized>
     <NotAuthorized>
-        <MudText Typo="Typo.h3" GutterBottom="true">NOT Authorized!</MudText>
+        <MudText Typo="Typo.h3" GutterBottom="true">Not Authorized</MudText>
     </NotAuthorized>
 </AuthorizeView>
 
 
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
     private RandomGOTQuotesResponse RandomQuotes = default;
 
     protected override async Task OnInitializedAsync()
     {
-        await RandomGOTQuotes.GetRandomGOTQuotes();
-        RandomQuotes = RandomGOTQuotes.GOTQuotes;
+        var isAutheticated = await AuthenticationStateTask;
+
+        if (isAutheticated.User.Identity is not null && isAutheticated.User.Identity.IsAuthenticated)
+        {
+            RandomQuotes = await RandomGOTQuotes.GetRandomGOTQuotes();
+        }
+        else
+        {
+            RandomQuotes = default;
+        }
+
 
     }
 }

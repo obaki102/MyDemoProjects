@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MyDemoProjects.Application.Shared.Constants;
-using MyDemoProjects.UI.Services.Authentication;
+using MyDemoProjects.UI.Services.Authentication.Implementation;
 
 namespace MyDemoProjects.UI.Extensions
 {

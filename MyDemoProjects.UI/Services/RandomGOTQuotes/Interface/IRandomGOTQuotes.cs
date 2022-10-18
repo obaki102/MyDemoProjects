@@ -1,6 +1,6 @@
 ﻿using MyDemoProjects.Application.Shared.DTOs.Response;
 
-namespace MyDemoProjects.UI.Services.RandomGOTQuotes
+namespace MyDemoProjects.UI.Services.RandomGOTQuotes.Interface
 {
     public interface IRandomGOTQuotes
     {

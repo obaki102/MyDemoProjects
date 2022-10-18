@@ -23,10 +23,7 @@ namespace MyDemoProjects.Application.Shared.Models
 
                 return 'D';
             }
-            set
-            {
-                _initials = value;
-            }
+           
         }
     }
 }

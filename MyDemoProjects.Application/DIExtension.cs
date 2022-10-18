@@ -73,6 +73,7 @@ public static class DIExtension
                 ValidateIssuer = false,
                 ValidateAudience = false
             };
+            options.SaveToken = true;
         });
         services.AddAuthorization();
         return services;

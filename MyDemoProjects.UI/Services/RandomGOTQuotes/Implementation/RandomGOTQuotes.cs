@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using MyDemoProjects.Application.Features.ExternalApi.RandomGOTQuotes.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;
-
-namespace MyDemoProjects.UI.Services.RandomGOTQuotes
+using MyDemoProjects.UI.Services.RandomGOTQuotes.Interface;
+namespace MyDemoProjects.UI.Services.RandomGOTQuotes.Implementation
 {
     [Authorize]
     public class RandomGOTQuotes : IRandomGOTQuotes

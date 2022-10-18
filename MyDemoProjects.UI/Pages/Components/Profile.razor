@@ -1,7 +1,7 @@
 ﻿
 @inject IDialogService DialogService
 @inject IRetrieveAuthState RetrieveAuthState
-@inject CustomAuthStateProvider CustomAuthStateProvider
+@inject IAuthentication Authentication
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopLeft">
     <ActivatorContent>
         @if (string.IsNullOrEmpty(userSettings.ProfileUrl))
@@ -40,15 +40,15 @@
 
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
     private bool _drawerProfileOpen = true;
     private bool _drawerOpen = true;
-    private Dictionary<string, string> claims = new Dictionary<string, string>();
     private User userSettings = new User();
     private void OpenDialog()
     {
         DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
     }
-
 
     private void DrawerToggle()
     {
@@ -60,11 +60,12 @@
     }
     private async Task SignOut()
     {
-        await CustomAuthStateProvider.LogOutAndUpdateAuthenticationState();
+        await Authentication.LogOutAndUpdateAuthenticationState();
     }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        userSettings =  CustomAuthStateProvider.UserSettings;
+        var authenticatedUser = await AuthenticationStateTask;
+        userSettings = authenticatedUser.GetAuthenticatedUser();
     }
 }

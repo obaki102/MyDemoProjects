@@ -5,13 +5,15 @@ using Microsoft.AspNetCore.SignalR;
 using MudBlazor;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
-using MyDemoProjects.Application.Infastructure.Services.Identity;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.UI.Data;
 using MyDemoProjects.UI.Hubs;
-using MyDemoProjects.UI.Services.AnimeList;
-using MyDemoProjects.UI.Services.Authentication;
-using MyDemoProjects.UI.Services.RandomGOTQuotes;
+using MyDemoProjects.UI.Services.AnimeList.Implementation;
+using MyDemoProjects.UI.Services.AnimeList.Interface;
+using MyDemoProjects.UI.Services.Authentication.Implementation;
+using MyDemoProjects.UI.Services.Authentication.Interface;
+using MyDemoProjects.UI.Services.RandomGOTQuotes.Implementation;
+using MyDemoProjects.UI.Services.RandomGOTQuotes.Interface;
 using MyDemoProjects.UI.Services.Shared.Utility.Implementation;
 using MyDemoProjects.UI.Services.Shared.Utility.Interface;
 
@@ -32,6 +34,7 @@ builder.Services.AddScoped<IRetrieveAuthState, RetrieveAuthState>();
 builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddSingleton<IOnlineUsers, OnlineUsers>();
 builder.Services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
+builder.Services.AddHttpContextAccessor();
 
 //UI
 builder.Services.AddRazorPages();

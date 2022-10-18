@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using MyDemoProjects.Application.Features.ExternalApi.AnimeList.Queries;
 using MyDemoProjects.Application.Shared.DTOs.Response;
+using MyDemoProjects.UI.Services.AnimeList.Interface;
 
-namespace MyDemoProjects.UI.Services.AnimeList
+namespace MyDemoProjects.UI.Services.AnimeList.Implementation
 {
     public class AnimeList : IAnimeList
     {
         private readonly ISender _mediator;
-        public AnimeList(ISender  mediator)
+        public AnimeList(ISender mediator)
         {
             _mediator = mediator;
         }
@@ -16,11 +17,11 @@ namespace MyDemoProjects.UI.Services.AnimeList
         public async Task<IEnumerable<Datum>> GetAnimeListBySeasonAndYear(Season season)
         {
             var animeListResult = await _mediator.Send(new GetAnimeListBySeasonAndYear(season));
-            if(animeListResult.Data is not  null && animeListResult.Data.Data is not null)
+            if (animeListResult.Data is not null && animeListResult.Data.Data is not null)
             {
                 AnimeLists = animeListResult.Data.Data;
             }
-            
+
             return AnimeLists;
         }
     }

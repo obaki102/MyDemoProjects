@@ -1,6 +1,6 @@
 ﻿using MyDemoProjects.Application.Shared.DTOs.Response;
 
-namespace MyDemoProjects.UI.Services.AnimeList
+namespace MyDemoProjects.UI.Services.AnimeList.Interface
 {
     public interface IAnimeList
     {

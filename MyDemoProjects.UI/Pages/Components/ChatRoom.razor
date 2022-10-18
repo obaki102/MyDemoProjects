@@ -1,6 +1,4 @@
 ﻿@page "/chatroom"
-@using System.Collections.Concurrent
-@using MyDemoProjects.Application.Shared.Events
 @inject NavigationManager NavigationManager
 @inject CustomAuthStateProvider CustomAuthStateProvider
 @inject IJSRuntime JsRuntime
@@ -41,6 +39,8 @@
 </AuthorizeView>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
     private HubConnection _hubConnection { get; set; }
     private List<ChatMessage> _messages = new();
     //TODO casecade it as a parameter
@@ -56,7 +56,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _userSettings = CustomAuthStateProvider.UserSettings;
+        var authenticatedUser = await AuthenticationStateTask;
+        _userSettings = authenticatedUser.GetAuthenticatedUser();
         //OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
