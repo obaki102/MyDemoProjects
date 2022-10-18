@@ -1,6 +1,5 @@
-﻿
-@inject IDialogService DialogService
-@inject IRetrieveAuthState RetrieveAuthState
+﻿@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
 @inject IAuthentication Authentication
 <MudMenu AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopLeft">
     <ActivatorContent>
@@ -45,6 +44,13 @@
     private bool _drawerProfileOpen = true;
     private bool _drawerOpen = true;
     private User userSettings = new User();
+
+    protected override async void OnInitialized()
+    {
+        var authSate = await AuthenticationStateTask;
+        userSettings = authSate.GetAuthenticatedUser();
+    }
+
     private void OpenDialog()
     {
         DialogService.Show<Login>("Login", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, NoHeader = true });
@@ -54,18 +60,15 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
     private void ToggleProfileDrawer()
     {
         _drawerProfileOpen = !_drawerProfileOpen;
     }
+
     private async Task SignOut()
     {
         await Authentication.LogOutAndUpdateAuthenticationState();
-    }
-
-    protected override async void OnInitialized()
-    {
-        var authSate = await AuthenticationStateTask;
-        userSettings = authSate.GetAuthenticatedUser();
+        NavigationManager.NavigateTo("/");
     }
 }

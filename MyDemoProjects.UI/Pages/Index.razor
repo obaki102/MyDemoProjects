@@ -1,27 +1,8 @@
 ﻿@page "/"
-@inject IRandomGOTQuotes RandomGOTQuotes;
-@inject IHttpContextAccessor HTTPContextAccessor
+
 <AuthorizeView>
     <Authorized>
-        @if (RandomQuotes == null)
-        {
-            <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
-            </MudOverlay>
-        }
-        else
-        {
-            <MudCard Outlined="true">
-                <MudCardContent>
-                    <MudText>Random GOT Quotes</MudText>
-                    <MudText Typo="Typo.body2"> @RandomQuotes.Sentence </MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudChip Color="Color.Dark">@RandomQuotes.Character.Name</MudChip>
-                </MudCardActions>
-            </MudCard>
-
-        }
+       <GotQuotes></GotQuotes>
     </Authorized>
     <NotAuthorized>
         <MudText Typo="Typo.h3" GutterBottom="true">Not Authorized</MudText>
@@ -29,25 +10,6 @@
 </AuthorizeView>
 
 
-
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    private RandomGOTQuotesResponse RandomQuotes = default;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authSate = await AuthenticationStateTask;
-
-        if (authSate.User.Identity is not null && authSate.User.Identity.IsAuthenticated)
-        {
-            RandomQuotes = await RandomGOTQuotes.GetRandomGOTQuotes();
-        }
-        else
-        {
-            RandomQuotes = default;
-        }
-
-
-    }
+   
 }

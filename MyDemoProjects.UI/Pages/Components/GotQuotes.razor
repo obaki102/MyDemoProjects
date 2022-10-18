@@ -1,0 +1,33 @@
+﻿@inject IRandomGOTQuotes RandomGOTQuotes;
+@inject IHttpContextAccessor HTTPContextAccessor
+@if (RandomQuotes == null)
+{
+    <MudOverlay Visible="@true" DarkBackground="true" ZIndex="9999" AutoClose="true">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+    </MudOverlay>
+}
+else
+{
+    <MudCard Outlined="true">
+        <MudCardContent>
+            <MudText>Random GOT Quotes</MudText>
+            <MudText Typo="Typo.body2"> @RandomQuotes.Sentence </MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudChip Color="Color.Dark">@RandomQuotes.Character.Name</MudChip>
+        </MudCardActions>
+    </MudCard>
+
+}
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    private RandomGOTQuotesResponse RandomQuotes = default;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RandomQuotes = await RandomGOTQuotes.GetRandomGOTQuotes();
+
+    }
+}

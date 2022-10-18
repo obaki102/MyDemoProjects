@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.UnitTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.AzureFunctions", "MyDemoProjects.AzureFunctions\MyDemoProjects.AzureFunctions.csproj", "{56ABF4FF-4501-46E6-B596-B41FB3C7E794}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyDemoProjects.DiscordBot", "MyDemoProjects.DiscordBot\MyDemoProjects.DiscordBot.csproj", "{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDemoProjects.DiscordBot", "MyDemoProjects.DiscordBot\MyDemoProjects.DiscordBot.csproj", "{607818FB-5EA3-4B9E-8C31-81D68D9AD13A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

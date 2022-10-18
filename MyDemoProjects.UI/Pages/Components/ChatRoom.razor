@@ -65,7 +65,6 @@
         _hubConnection.On<string, ChatMessage>(HubHandler.ReceivedMessage, async (from, chatMessage) =>
         {
             _messages.Add(chatMessage);
-            await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
             _enteredMessage = string.Empty;
             StateHasChanged();
         });

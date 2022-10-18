@@ -14,7 +14,7 @@ public class UserCircuitHandler : CircuitHandler
 
     public override async Task OnConnectionUpAsync(Circuit circuit, CancellationToken cancellationToken)
     {
-       var user =  await _authenticationStateProvider.GetAuthenticationStateAsync();
+        await _authenticationStateProvider.GetAuthenticationStateAsync();
 
     }
 
