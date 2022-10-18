@@ -9,23 +9,40 @@
             <div Class="d-flex flex-column flex-grow-1 gap-4" Elevation="0">
                 @foreach (var message in _messages)
                 {
-                      <div class="d-flex @((IsMyMessage(message.User.Email)? "justify-end" : "justify-start")) flex-row flex-grow-1 gap-4">
-                            @if (string.IsNullOrEmpty(message.User.ProfileUrl))
+                    @if (IsMyMessage(message.User.NameIdentifier))
+                    {
+                        <div class="d-flex justify-end flex-row flex-grow-1 gap-4">
+                            <MudPaper Class="pa-4 mr-16 overflow-auto mud-theme-primary">
+                                <div class="d-flex flex-row">
+                                    <MudChip Variant="Variant.Text" Size="Size.Small">@message.MessageCreateDate</MudChip>
+                                </div>
+                                <MudText Typo="Typo.body1">@message.Message</MudText>
+                            </MudPaper>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-start flex-row flex-grow-1 gap-4">
+                           @*TODO: Implement a service where profile pic wil be fetch 
+                               @if (string.IsNullOrEmpty(message.User.ProfileUrl))
                             {
                                 <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
                             }
                             else
                             {
                                 <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
-                            }
+                            }*@
+
+                            <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
                             <MudPaper Class="pa-4 mr-16 overflow-auto">
-                            <div class="d-flex flex-row">
-                                <MudChip Size="Size.Small" Color="Color.Dark">@message.User.Email</MudChip>
-                                <MudChip Size="Size.Small">@message.MessageCreateDate</MudChip>
-                            </div>
-                            <MudText Typo="Typo.body1">@message.Message</MudText>
-                        </MudPaper>
-                    </div>
+                                <div class="d-flex flex-row">
+                                    <MudChip Size="Size.Small" Color="Color.Dark">@message.User.Name</MudChip>
+                                    <MudChip Variant="Variant.Text"  Size="Size.Small">@message.MessageCreateDate</MudChip>
+                                </div>
+                                <MudText Typo="Typo.body1">@message.Message</MudText>
+                            </MudPaper>
+                        </div>
+                    }
                 }
             </div>
         </div>
@@ -44,25 +61,19 @@
     private HubConnection _hubConnection { get; set; }
     private List<ChatMessage> _messages = new();
     //TODO casecade it as a parameter
-    private User _userSettings = new();
-    private List<string> _onlineActivity = new();
-    private List<string> _onlineUsers = new();
+    private User _user = new();
     private string _enteredMessage { get; set; } = string.Empty;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
-    }
 
     protected override async Task OnInitializedAsync()
     {
         var authSate = await AuthenticationStateTask;
-        _userSettings = authSate.GetAuthenticatedUser();
+        _user = authSate.GetAuthenticatedUser();
         //OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
         //TODO : Strongly type client?
-        _hubConnection.On<string, ChatMessage>(HubHandler.ReceivedMessage, async (from, chatMessage) =>
+        _hubConnection.On<ChatMessage>(HubHandler.ReceivedMessage, async (chatMessage) =>
         {
             _messages.Add(chatMessage);
             _enteredMessage = string.Empty;
@@ -104,18 +115,24 @@
     {
         var chatMessage = new ChatMessage
             {
-                User = _userSettings,
+                User = _user,
                 Message = _enteredMessage
             };
-        await _hubConnection.SendAsync(HubHandler.ReceivedMessage, _userSettings.Email, chatMessage);
+        await _hubConnection.SendAsync(HubHandler.ReceivedMessage, chatMessage);
 
     }
 
-    public bool IsMyMessage(string email)
+    public bool IsMyMessage(string nameIdentifier)
     {
-        if (_userSettings == null)
+        if (_user == null)
             return false;
-        return email.ToLower().Equals(_userSettings.Email.ToLower());
+        return nameIdentifier.ToLower().Equals(_user.NameIdentifier.ToLower());
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
     }
 
     public void Dispose()

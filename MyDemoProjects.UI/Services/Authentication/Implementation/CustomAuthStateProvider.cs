@@ -56,7 +56,7 @@ namespace MyDemoProjects.UI.Services.Authentication.Implementation
             NotifyAuthenticationStateChanged(Task.FromResult(state));
             return state;
         }
-
+        //TODO : Creata a separate token provider.
         public async Task<string> GetAccessToken()
         {
             try

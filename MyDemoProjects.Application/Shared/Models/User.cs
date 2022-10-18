@@ -8,7 +8,6 @@ namespace MyDemoProjects.Application.Shared.Models
 {
     public class User
     {
-        private char _initials;
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string ProfileUrl { get; set; } = string.Empty;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using MyDemoProjects.Application.Shared.Models;
-using System.Collections.Concurrent;
 
 namespace MyDemoProjects.UI.Hubs
 {
@@ -10,20 +9,17 @@ namespace MyDemoProjects.UI.Hubs
     {
         public async override Task OnConnectedAsync()
         {
-            Console.WriteLine($"{Context.ConnectionId} connected");
             Console.WriteLine($"{Context.User.Identity.Name} Hub connected");
             await Clients.All.UserOnline(Context.User.Identity.Name);
-            await base.OnConnectedAsync();
         }
         public override async Task OnDisconnectedAsync(Exception? e)
         {
             Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
             await Clients.All.UserOffline(Context.User.Identity.Name);
-            await base.OnDisconnectedAsync(e);
         }
-        public async Task ReceiveMessage(string from, ChatMessage chatMessage)
+        public async Task ReceiveMessage(ChatMessage chatMessage)
         {
-            await Clients.All.ReceiveMessage(from, chatMessage);  
+            await Clients.All.ReceiveMessage(chatMessage);  
         }
 
 

@@ -1,5 +1,4 @@
-﻿using Duende.IdentityServer.Extensions;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Shared.Models;
 using System.Security.Claims;
@@ -14,17 +13,29 @@ namespace MyDemoProjects.UI.Extensions
             {
                 return new();
             }
+            var user = new User();  
 
-            var user = new User
+            foreach (var claims in authState.User.Claims)
             {
-                Email = authState.User.FindFirst(f => f.Type == ClaimTypes.Email).Value,
-                Name = authState.User.FindFirst(f => f.Type == ClaimTypes.Name).Value,
-                NameIdentifier = authState.User.FindFirst(f => f.Type == ClaimTypes.NameIdentifier).Value,
-                ProfileUrl = authState.User.FindFirst(f => f.Type == ApplicationClaimTypes.ProfilePictureDataUrl).Value,
-                Status = authState.User.Identity.IsAuthenticated
-
-            };
-
+                switch (claims.Type)
+                {
+                    case ApplicationClaimTypes.Status:
+                        user.Status = authState.User.Identity.IsAuthenticated;
+                        break;
+                    case ClaimTypes.NameIdentifier:
+                        user.NameIdentifier = claims.Value;
+                        break;
+                    case ClaimTypes.Name:
+                        user.Name = claims.Value;
+                        break;
+                    case ClaimTypes.Email:
+                        user.Email = claims.Value;
+                        break;
+                    case ApplicationClaimTypes.ProfilePictureDataUrl:
+                        user.ProfileUrl = claims.Value;
+                        break;
+                }
+            }
             return user;
         }
     }
