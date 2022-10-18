@@ -26,4 +26,10 @@
     <Folder Include="wwwroot\js\google\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\sounds\message-notification.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

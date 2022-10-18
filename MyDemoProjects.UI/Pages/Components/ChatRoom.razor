@@ -51,7 +51,9 @@
             <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage" Immediate="true" @onkeydown="OnEnterKeyPress" TextUpdateSuppression="false" DisableUnderLine="true" />
             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudButton>
         </div>
-
+        <audio id="audio-player">
+            <source id="playerSource" src="" />
+        </audio>
     </Authorized>
 </AuthorizeView>
 
@@ -77,6 +79,11 @@
         {
             _messages.Add(chatMessage);
             _enteredMessage = string.Empty;
+            //Receive audio notification from messages other than me(current user).
+            if (!IsMyMessage(chatMessage.User.NameIdentifier)){
+                   await JsRuntime.InvokeVoidAsync("PlayAudioFile", "/sounds/message-notification.wav");
+            }
+         
             StateHasChanged();
         });
 
