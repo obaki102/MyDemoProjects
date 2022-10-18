@@ -65,7 +65,7 @@
 
     protected override async void OnInitialized()
     {
-        var authenticatedUser = await AuthenticationStateTask;
-        userSettings = authenticatedUser.GetAuthenticatedUser();
+        var authSate = await AuthenticationStateTask;
+        userSettings = authSate.GetAuthenticatedUser();
     }
 }

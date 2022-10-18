@@ -56,8 +56,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authenticatedUser = await AuthenticationStateTask;
-        _userSettings = authenticatedUser.GetAuthenticatedUser();
+        var authSate = await AuthenticationStateTask;
+        _userSettings = authSate.GetAuthenticatedUser();
         //OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);

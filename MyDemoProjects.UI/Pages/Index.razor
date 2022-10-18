@@ -37,9 +37,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var isAutheticated = await AuthenticationStateTask;
+        var authSate = await AuthenticationStateTask;
 
-        if (isAutheticated.User.Identity is not null && isAutheticated.User.Identity.IsAuthenticated)
+        if (authSate.User.Identity is not null && authSate.User.Identity.IsAuthenticated)
         {
             RandomQuotes = await RandomGOTQuotes.GetRandomGOTQuotes();
         }
