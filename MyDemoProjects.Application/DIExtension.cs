@@ -2,17 +2,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using System.Reflection;
 using MyDemoProjects.Application.Behaviours.Validation;
 using MyDemoProjects.Application.Middlewares;
-using MyDemoProjects.Application.Infastructure.Identity.Services;
 using MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList;
 using MyDemoProjects.Application.Features.Shared.Service.Http.RandomGOTQuotes;
-using Microsoft.AspNetCore.Authentication;
-using MediatR;
-using Duende.IdentityServer.Models;
-using Microsoft.AspNetCore.Components;
 
 namespace MyDemoProjects.Application;
 

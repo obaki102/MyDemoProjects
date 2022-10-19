@@ -1,12 +1,9 @@
-﻿using Discord.Interactions;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using Discord;
 using System.Reflection;
 using Discord.Commands;
-using Microsoft.Extensions.Logging;
 using MyDemoProjects.DiscordBot.Services;
-using System.Windows.Input;
-using MyDemoProjects.DiscordBot.Modules;
+
 
 namespace MyDemoProjects.DiscordBot.Handlers
 {
@@ -55,6 +52,12 @@ namespace MyDemoProjects.DiscordBot.Handlers
             // We don't want the bot to respond to itself or other bots.
             if (msg.Author.Id == _client.CurrentUser.Id || msg.Author.IsBot)
                 return;
+            
+            if(msg.Channel.Id == 1032124362523955210)
+            {
+                await msg.ReplyAsync("pong");
+            }
+          
 
             // Create a Command Context.
             var context = new ShardedCommandContext(_client, msg);
