@@ -28,5 +28,10 @@ namespace MyDemoProjects.Application.Shared.Constants
             public const string XmalClientId = "X-MAL-CLIENT-ID";
             public const string AnimelistClientId = "clientId";
         }
+
+        public static class SignalR
+        {
+            public const string ConnectionString = "azureSignalRConnectionString";
+        }
     }
 }

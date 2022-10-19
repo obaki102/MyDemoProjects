@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
 using MyDemoProjects.Application;
@@ -39,7 +40,9 @@ builder.Services.AddHttpContextAccessor();
 //UI
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });
-builder.Services.AddSignalR().AddMessagePackProtocol();
+builder.Services.AddSignalR()
+    .AddAzureSignalR(builder.Configuration.GetSection(AppSecrets.SignalR.ConnectionString).Value)
+    .AddMessagePackProtocol();
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomEnd;
