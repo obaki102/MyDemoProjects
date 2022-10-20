@@ -10,7 +10,7 @@ namespace MyDemoProjects.AzureFunctions
     {
         [FunctionName("negotiate")]
         public static SignalRConnectionInfo GetSignalRInfo(
-         [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req,
          [SignalRConnectionInfo(HubName = "chat")] SignalRConnectionInfo connectionInfo)
         {
             return connectionInfo;
@@ -18,7 +18,7 @@ namespace MyDemoProjects.AzureFunctions
 
         [FunctionName("messages")]
         public static Task SendMessage(
-         [HttpTrigger(AuthorizationLevel.Anonymous, "post")] object chatMessage,
+         [HttpTrigger(AuthorizationLevel.Function, "post")] object chatMessage,
          [SignalR(HubName = "chat")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
             return signalRMessages.AddAsync(
