@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Shared.Models;
-using System;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MyDemoProjects.AzureFunctions
@@ -20,34 +22,18 @@ namespace MyDemoProjects.AzureFunctions
         }
 
         [FunctionName("messages")]
-        public static Task SendMessage(
-         [HttpTrigger(AuthorizationLevel.Function, "post")] ChatMessage chatMessage,
+        public static async Task SendMessage(
+         [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestMessage req,
          [SignalR(HubName = "chat")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
-            return signalRMessages.AddAsync(
-                new SignalRMessage
-                {
-                    Target = HubHandler.ReceivedMessage,
-                    Arguments = new[] { chatMessage }
-                });
+            var jsonContent = await req.Content.ReadAsStreamAsync();
+            var chatMesasgeResult = await JsonSerializer.DeserializeAsync<ChatMessage>(jsonContent);
+            await signalRMessages.AddAsync(
+               new SignalRMessage
+               {
+                   Target = HubHandler.ReceivedMessage,
+                   Arguments = new[] { chatMesasgeResult }
+               });
         }
-    }
-
-    public class ChatMessage
-    {
-        private DateTime _createDate;
-
-        public ChatMessage()
-        {
-            _createDate = DateTime.Now;
-        }
-
-        public User User { get; set; } = new User();
-        public string Message { get; set; } = string.Empty;
-
-        public DateTime MessageCreateDate { get => _createDate; }
-        //TO DO
-        public string Gif { get; set; } = string.Empty;
-
     }
 }
