@@ -41,7 +41,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });
 builder.Services.AddSignalR()
-    .AddAzureSignalR(builder.Configuration.GetSection(AppSecrets.SignalR.ConnectionString).Value)
+    //.AddAzureSignalR(builder.Configuration.GetSection(AppSecrets.SignalR.ConnectionString).Value)
     .AddMessagePackProtocol();
 builder.Services.AddMudServices(config =>
 {

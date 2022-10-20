@@ -3,7 +3,8 @@ using Discord;
 using System.Reflection;
 using Discord.Commands;
 using MyDemoProjects.DiscordBot.Services;
-
+using Microsoft.AspNetCore.SignalR.Client;
+using MyDemoProjects.Application.Shared.Models;
 
 namespace MyDemoProjects.DiscordBot.Handlers
 {
@@ -11,20 +12,23 @@ namespace MyDemoProjects.DiscordBot.Handlers
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commands;
+        private readonly HubConnection _hubconnetion;
 
         public CommandHandler(
             DiscordShardedClient client,
-            CommandService commands)
+            CommandService commands,
+            HubConnection hubConnection)
         {
             _client = client;
             _commands = commands;
+            _hubconnetion = hubConnection;
         }
 
         public async Task InitializeAsync()
         {
             // add the public modules that inherit InteractionModuleBase<T> to the InteractionService
             await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), Initializer.ServiceProvider);
-
+            await _hubconnetion.StartAsync();
             // Subscribe a handler to see if a message invokes a command.
             _client.MessageReceived += HandleCommandAsync;
 
@@ -56,6 +60,16 @@ namespace MyDemoProjects.DiscordBot.Handlers
             if(msg.Channel.Id == 1032124362523955210)
             {
                 await msg.ReplyAsync("pong");
+
+                var chatMessage = new ChatMessage
+                {
+                    User = new User
+                    {
+                         Name = "Chatbot"
+                    },
+                    Message = msg.Content
+                };
+                await _hubconnetion.SendAsync("ReceivedMessage", chatMessage);
             }
           
 

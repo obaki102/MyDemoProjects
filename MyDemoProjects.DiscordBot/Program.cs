@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyDemoProjects.DiscordBot;
@@ -24,6 +25,8 @@ var commands = new CommandService(new CommandServiceConfig
 });
 var interactionCommand = new InteractionService(client);
 
+var hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7205/chathub").Build();
+
 IConfiguration config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddEnvironmentVariables()
@@ -35,6 +38,7 @@ Initializer.Init();
 Initializer.RegisterSingletonInstance(client);
 Initializer.RegisterSingletonInstance(commands);
 Initializer.RegisterSingletonInstance(interactionCommand);
+Initializer.RegisterSingletonInstance(hubConnection);
 Initializer.RegisterSingletonInstance(config);
 Initializer.RegisterSingletonType<ICommandHandler,CommandHandler>();
 Initializer.RegisterSingletonType<IInteractionHandler, InteractionHandler>();

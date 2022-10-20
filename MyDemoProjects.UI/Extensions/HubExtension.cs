@@ -16,6 +16,7 @@ namespace MyDemoProjects.UI.Extensions
                                   {
                                       options.AccessTokenProvider = async () =>
                                       {
+                                          Console.WriteLine(navigationManager.ToAbsoluteUri(HubConstants.ChatHubUrl));
                                           var accessTokenResult = await tokenProvider.GetAccessToken();
                                           return accessTokenResult;
                                       };

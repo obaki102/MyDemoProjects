@@ -48,7 +48,7 @@
         </div>
         <br />
         <div Class="d-flex  flex-row px-2 mx-4">
-            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage" Immediate="true" @onkeydown="OnEnterKeyPress" TextUpdateSuppression="false" DisableUnderLine="true" />
+             <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage"  @onkeyup="OnEnterKeyPress" TextUpdateSuppression="false" DisableUnderLine="true" />
             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudButton>
         </div>
         <audio id="audio-player">
