@@ -20,7 +20,7 @@ namespace MyDemoProjects.UI.Extensions
                                       logging.ClearProviders();
                                       logging.AddConsole();
                                   })
-                                  .WithAutomaticReconnect()
+                                  .AddMessagePackProtocol()
                                   .Build();
             }
             else

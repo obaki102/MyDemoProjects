@@ -1,12 +1,8 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using MyDemoProjects.Application.Shared.Constants;
-using MyDemoProjects.Application.Shared.Models;
-using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MyDemoProjects.AzureFunctions
@@ -22,18 +18,16 @@ namespace MyDemoProjects.AzureFunctions
         }
 
         [FunctionName("messages")]
-        public static async Task SendMessage(
-         [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestMessage req,
+        public static Task SendMessage(
+         [HttpTrigger(AuthorizationLevel.Function, "post")] object chatMessage,
          [SignalR(HubName = "chat")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
-            var jsonContent = await req.Content.ReadAsStreamAsync();
-            var chatMesasgeResult = await JsonSerializer.DeserializeAsync<ChatMessage>(jsonContent);
-            await signalRMessages.AddAsync(
-               new SignalRMessage
-               {
-                   Target = HubHandler.ReceivedMessage,
-                   Arguments = new[] { chatMesasgeResult }
-               });
+            return signalRMessages.AddAsync(
+                new SignalRMessage
+                {
+                    Target = HubHandler.ReceivedMessage,
+                    Arguments = new[] { chatMessage }
+                });
         }
     }
 }

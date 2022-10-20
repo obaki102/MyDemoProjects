@@ -77,7 +77,7 @@
         //Establish hub connection
         _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider, true);
         //TODO : Strongly type client?
-        _hubConnection.On<ChatMessage>(HubHandler.ReceivedMessage, async (chatMessage) =>
+        _hubConnection.On<string>(HubHandler.ReceivedMessage, async (chatMessage) =>
         {
            // var json = (JsonElement)chatMessage;
            // var test = JsonSerializer.Deserialize<ChatMessage>(json.GetRawText());
