@@ -3,7 +3,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using MyDemoProjects.Application.Shared.Constants;
-using MyDemoProjects.Application.Shared.Models;
 using System.Threading.Tasks;
 
 namespace MyDemoProjects.AzureFunctions
@@ -20,7 +19,7 @@ namespace MyDemoProjects.AzureFunctions
 
         [FunctionName("messages")]
         public static Task SendMessage(
-         [HttpTrigger(AuthorizationLevel.Function, "post")] ChatMessage chatMessage,
+         [HttpTrigger(AuthorizationLevel.Function, "post")] object chatMessage,
          [SignalR(HubName = "chat")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
             return signalRMessages.AddAsync(
