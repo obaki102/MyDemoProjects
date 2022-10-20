@@ -14,6 +14,7 @@ namespace MyDemoProjects.UI.Extensions
                 if(isAzureHub)
                 hubConnection = new HubConnectionBuilder()
                                   .WithUrl("https://mydemoprojectsfunction.azurewebsites.net/api/?Code=eo8KJcUhAJqIjNjhAaFStXRKfJSDi3AxYRT_F530PKlZAzFuEZBPcQ==")
+                                 //.WithUrl("http://localhost:7153/api/")
                                   .ConfigureLogging(logging =>
                                   {
                                       logging.ClearProviders();
