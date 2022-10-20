@@ -25,7 +25,7 @@ var commands = new CommandService(new CommandServiceConfig
 });
 var interactionCommand = new InteractionService(client);
 
-var hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7205/chathub").Build();
+var hubConnection = new HubConnectionBuilder().WithUrl("https://mydemoprojectsfunction.azurewebsites.net/api/?Code=eo8KJcUhAJqIjNjhAaFStXRKfJSDi3AxYRT_F530PKlZAzFuEZBPcQ==").Build();
 
 IConfiguration config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)

@@ -3,6 +3,7 @@
 @inject CustomAuthStateProvider CustomAuthStateProvider
 @inject IJSRuntime JsRuntime
 @implements IDisposable
+@inject HttpClient HttpClient
 <AuthorizeView>
     <Authorized>
         <div id="scrollableDiv" style="height:800px;overflow: auto;">
@@ -73,7 +74,7 @@
         _user = authSate.GetAuthenticatedUser();
         //OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
-        _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider);
+        _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider, true);
         //TODO : Strongly type client?
         _hubConnection.On<ChatMessage>(HubHandler.ReceivedMessage, async (chatMessage) =>
         {
@@ -81,23 +82,23 @@
             _enteredMessage = string.Empty;
             //Receive audio notification from messages other than me(current user).
             if (!IsMyMessage(chatMessage.User.NameIdentifier)){
-                   await JsRuntime.InvokeVoidAsync("PlayAudioFile", "/sounds/message-notification.wav");
+                await JsRuntime.InvokeVoidAsync("PlayAudioFile", "/sounds/message-notification.wav");
             }
-         
+
             StateHasChanged();
         });
 
-        _hubConnection.On<string>(HubHandler.UserOnline, (user) =>
-        {
-            Snackbar.Add($"{user} has entered the chat", Severity.Success);
-            StateHasChanged();
-        });
+        // _hubConnection.On<string>(HubHandler.UserOnline, (user) =>
+        // {
+        //     Snackbar.Add($"{user} has entered the chat", Severity.Success);
+        //     StateHasChanged();
+        // });
 
-        _hubConnection.On<string>(HubHandler.UserOffline, (user) =>
-       {
-           Snackbar.Add($"{user} has left the chat", Severity.Warning);
-           StateHasChanged();
-       });
+        // _hubConnection.On<string>(HubHandler.UserOffline, (user) =>
+        //{
+        //    Snackbar.Add($"{user} has left the chat", Severity.Warning);
+        //    StateHasChanged();
+       //});
 
         //Lessons learned kick start your hub connecion after you defined your handlers.
         if (_hubConnection.State == HubConnectionState.Disconnected)
@@ -125,7 +126,8 @@
                 User = _user,
                 Message = _enteredMessage
             };
-        await _hubConnection.SendAsync(HubHandler.ReceivedMessage, chatMessage);
+        //await _hubConnection.SendAsync(HubHandler.ReceivedMessage, chatMessage);
+        await HttpClient.PostAsJsonAsync("https://mydemoprojectsfunction.azurewebsites.net/api/messages?code=mKDB3ubiBfiwtJ0xnYD7VqX__VRopWheo2IY9wLkcdMWAzFu8E0wvQ==", chatMessage);
 
     }
 
@@ -145,5 +147,6 @@
     public void Dispose()
     {
         _ = _hubConnection?.DisposeAsync();
+        HttpClient.Dispose();
     }
 }
