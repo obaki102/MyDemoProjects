@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Features.Authentication.Commands;
+using MyDemoProjects.Application.Shared.Constants;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 
@@ -13,8 +13,8 @@ namespace MyDemoProjects.UI.Services.Authentication.Implementation
         private readonly ProtectedLocalStorage _protectedLocalStorage;
         private readonly HttpClient _httpClient;
         private readonly ISender _mediator;
-        public CustomAuthStateProvider(ProtectedLocalStorage protectedLocalStorage, 
-                HttpClient httpClient, 
+        public CustomAuthStateProvider(ProtectedLocalStorage protectedLocalStorage,
+                HttpClient httpClient,
                 ISender mediator)
         {
             _protectedLocalStorage = protectedLocalStorage;

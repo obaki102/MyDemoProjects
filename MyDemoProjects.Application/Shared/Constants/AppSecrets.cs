@@ -32,6 +32,7 @@ namespace MyDemoProjects.Application.Shared.Constants
         public static class SignalR
         {
             public const string ConnectionString = "azureSignalRConnectionString";
+            public const string AzureFuncAuthCode = "azureFunctionAuthCode"; 
         }
     }
 }

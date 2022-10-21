@@ -10,6 +10,7 @@ namespace MyDemoProjects.Application.Shared.Constants
     public static class HubConstants
     {
         public const string ChatHubUrl = "/chathub";
+        public const string AzureFunctionHubUrl = "https://mydemoprojectsfunction.azurewebsites.net/api/";
     }
     public static class HubHandler
     {

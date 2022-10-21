@@ -2,6 +2,7 @@
 @using System.Text.Json
 @using Newtonsoft.Json
 @inject NavigationManager NavigationManager
+@inject IConfiguration ConfigurationManager
 @inject CustomAuthStateProvider CustomAuthStateProvider
 @inject IJSRuntime JsRuntime
 @implements IDisposable
@@ -78,7 +79,7 @@
         _user = authSate.GetAuthenticatedUser();
         //OnlineUsersService.OnChange += HandleCircuitsChanged;
         //Establish hub connection
-        _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider, true);
+        _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider, ConfigurationManager, true);
         //TODO : Strongly type client?
         _hubConnection.On<object>(HubHandler.ReceivedMessage, async (receivedMessage) =>
         {
