@@ -5,6 +5,11 @@ using Discord.Commands;
 using MyDemoProjects.DiscordBot.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using MyDemoProjects.Application.Shared.Models;
+using System.Net.Http.Json;
+using Microsoft.JSInterop;
+using MyDemoProjects.Application.Shared.Constants;
+using Newtonsoft.Json;
+using MyDemoProjects.DiscordBot.DTOs;
 
 namespace MyDemoProjects.DiscordBot.Handlers
 {
@@ -12,23 +17,37 @@ namespace MyDemoProjects.DiscordBot.Handlers
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commands;
-        private readonly HubConnection _hubconnetion;
+        private readonly HubConnection _hubConnection;
+        private readonly HttpClient _httpClient;
 
         public CommandHandler(
             DiscordShardedClient client,
             CommandService commands,
-            HubConnection hubConnection)
+            HubConnection hubConnection,
+            HttpClient httpClient)
         {
             _client = client;
             _commands = commands;
-            _hubconnetion = hubConnection;
+            _hubConnection = hubConnection;
+            _httpClient = httpClient;
         }
 
         public async Task InitializeAsync()
         {
             // add the public modules that inherit InteractionModuleBase<T> to the InteractionService
             await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), Initializer.ServiceProvider);
-            await _hubconnetion.StartAsync();
+            await _hubConnection.StartAsync();
+
+            _hubConnection.On<object>(HubHandler.ReceivedMessage, async (receivedMessage) =>
+            {
+                var chatMessage = JsonConvert.DeserializeObject<ChatMessage>(receivedMessage.ToString());
+                ulong id = 1032124362523955210; // 3
+                var chnl = _client.GetChannel(id) as IMessageChannel; // 4
+                if (!chatMessage.User.Name.Equals("Chatbot"))
+                {
+                    await chnl.SendMessageAsync($"from {chatMessage.User.Name} Message: {chatMessage.Message}"); // 5
+                }
+            });
             // Subscribe a handler to see if a message invokes a command.
             _client.MessageReceived += HandleCommandAsync;
 
@@ -45,6 +64,8 @@ namespace MyDemoProjects.DiscordBot.Handlers
             {
                 Console.WriteLine($"{nameof(CommandHandler)} | Commands", $"Module '{module.Name}' initialized.");
             }
+
+
         }
 
         private async Task HandleCommandAsync(SocketMessage arg)
@@ -56,22 +77,21 @@ namespace MyDemoProjects.DiscordBot.Handlers
             // We don't want the bot to respond to itself or other bots.
             if (msg.Author.Id == _client.CurrentUser.Id || msg.Author.IsBot)
                 return;
-            
-            if(msg.Channel.Id == 1032124362523955210)
-            {
-                await msg.ReplyAsync("pong");
 
+            if (msg.Channel.Id == 1032124362523955210)
+            {
                 var chatMessage = new ChatMessage
                 {
                     User = new User
                     {
-                         Name = "Chatbot"
+                        Name = "Chatbot"
                     },
                     Message = msg.Content
                 };
-                await _hubconnetion.SendAsync("ReceivedMessage", chatMessage);
+                // await _hubconnetion.SendAsync("ReceivedMessage", chatMessage);
+                await _httpClient.PostAsJsonAsync("https://mydemoprojectsfunction.azurewebsites.net/api/messages?code=mKDB3ubiBfiwtJ0xnYD7VqX__VRopWheo2IY9wLkcdMWAzFu8E0wvQ==", chatMessage);
             }
-          
+
 
             // Create a Command Context.
             var context = new ShardedCommandContext(_client, msg);
@@ -79,7 +99,7 @@ namespace MyDemoProjects.DiscordBot.Handlers
             if (msg.HasStringPrefix("obaki/", ref markPos) || msg.HasCharPrefix('?', ref markPos))
             {
                 Console.WriteLine("It has 'obaki'");
-              //  await context.Message.ReplyAsync("Zup boss");
+                //  await context.Message.ReplyAsync("Zup boss");
                 var result = await _commands.ExecuteAsync(context, markPos, Initializer.ServiceProvider);
             }
 

@@ -33,6 +33,8 @@ IConfiguration config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
 
+var httpClient =  new HttpClient(); 
+
 // Setup your DI container.
 Initializer.Init();
 Initializer.RegisterSingletonInstance(client);
@@ -40,6 +42,7 @@ Initializer.RegisterSingletonInstance(commands);
 Initializer.RegisterSingletonInstance(interactionCommand);
 Initializer.RegisterSingletonInstance(hubConnection);
 Initializer.RegisterSingletonInstance(config);
+Initializer.RegisterSingletonInstance(httpClient);
 Initializer.RegisterSingletonType<ICommandHandler,CommandHandler>();
 Initializer.RegisterSingletonType<IInteractionHandler, InteractionHandler>();
 Initializer.BuildServiceProvider();

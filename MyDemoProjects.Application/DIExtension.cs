@@ -132,9 +132,6 @@ public static class DIExtension
         return services;
     }
 
-
-
-
     public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
     {
         if (app == null)
