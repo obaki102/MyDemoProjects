@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace MyDemoProjects.Application.Shared.Events
 {
-    public class UserSettingsEventArgs : EventArgs
+    public class ChatMessageEventArgs : EventArgs
     {
-        public User UserSettings { get; set; }
+        public ChatMessage ChatMessage { get; set; } = new();
     }
 }

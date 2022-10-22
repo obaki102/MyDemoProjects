@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.SignalR;
 using MudBlazor;
 using MudBlazor.Services;
-using MyDemoProjects.Application;
+using MyDemoProjects.Application.Infastructure.Hubs.Implementation;
+using MyDemoProjects.Application.Infastructure.Hubs.Interface;
+using MyDemoProjects.Application.Infastructure.Identity.Extensions;
 using MyDemoProjects.Application.Shared.Constants;
+using MyDemoProjects.Application.Shared.Extensions;
 using MyDemoProjects.UI.Data;
 using MyDemoProjects.UI.Hubs;
 using MyDemoProjects.UI.Services.AnimeList.Implementation;
@@ -23,7 +26,6 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 builder.Services.AddUIApplicationDependencies(builder.Configuration);
 
 builder.Services.AddSingleton<WeatherForecastService>();
-
 //Services
 builder.Services.AddScoped<IAnimeList,AnimeList>();
 builder.Services.AddScoped<IRandomGOTQuotes, RandomGOTQuotes>();
@@ -31,7 +33,10 @@ builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddScoped<CircuitHandler, UserCircuitHandler>();
 builder.Services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScopedChatHubClient(options =>
+{
+    options.HubUrl = $"{HubConstants.AzureFunctionHubUrl}?Code={builder.Configuration.GetSection(AppSecrets.SignalR.AzureFuncAuthCode).Value}";
+});
 //UI
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(option => { option.DetailedErrors = true; });

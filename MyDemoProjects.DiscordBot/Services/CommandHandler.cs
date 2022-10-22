@@ -40,9 +40,8 @@ namespace MyDemoProjects.DiscordBot.Handlers
 
             _hubConnection.On<object>(HubHandler.ReceivedMessage, async (receivedMessage) =>
             {
-                var chatMessage = JsonConvert.DeserializeObject<ChatMessage>(receivedMessage.ToString());
-                ulong id = 1032124362523955210; // 3
-                var chnl = _client.GetChannel(id) as IMessageChannel; // 4
+                var chatMessage = JsonConvert.DeserializeObject<ChatMessage>(receivedMessage as string);
+                var chnl = _client.GetChannel(1032124362523955210) as IMessageChannel; // 4
                 if (!chatMessage.User.Name.Equals("Chatbot"))
                 {
                     await chnl.SendMessageAsync($"from {chatMessage.User.Name} Message: {chatMessage.Message}"); // 5

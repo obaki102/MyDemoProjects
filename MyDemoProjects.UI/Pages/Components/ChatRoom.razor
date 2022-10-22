@@ -1,12 +1,15 @@
 ﻿@page "/chatroom"
 @using System.Text.Json
+@using MyDemoProjects.Application.Infastructure.Hubs.Interface
+@using MyDemoProjects.Application.Shared.Events
 @using Newtonsoft.Json
 @inject NavigationManager NavigationManager
 @inject IConfiguration ConfigurationManager
 @inject CustomAuthStateProvider CustomAuthStateProvider
 @inject IJSRuntime JsRuntime
-@implements IDisposable
+@implements IAsyncDisposable
 @inject HttpClient HttpClient
+@inject IHubClient ChatHubClient
 <AuthorizeView>
     <Authorized>
         <div id="scrollableDiv" style="height:800px;overflow: auto;">
@@ -27,21 +30,21 @@
                     else
                     {
                         <div class="d-flex justify-start flex-row flex-grow-1 gap-4">
-                           @*TODO: Implement a service where profile pic wil be fetch 
-                               @if (string.IsNullOrEmpty(message.User.ProfileUrl))
-                            {
-                                <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
-                            }
-                            else
-                            {
-                                <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
-                            }*@
+                            @*TODO: Implement a service where profile pic wil be fetch
+                    @if (string.IsNullOrEmpty(message.User.ProfileUrl))
+                    {
+                    <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
+                    }
+                    else
+                    {
+                    <MudAvatar Image="@message.User.ProfileUrl" Style="height:50px; width:50px;"> </MudAvatar>
+                    }*@
 
                             <MudAvatar Color="Color.Secondary">@message.User.Initials</MudAvatar>
                             <MudPaper Class="pa-4 mr-16 overflow-auto">
                                 <div class="d-flex flex-row">
                                     <MudChip Size="Size.Small" Color="Color.Dark">@message.User.Name</MudChip>
-                                    <MudChip Variant="Variant.Text"  Size="Size.Small">@message.MessageCreateDate</MudChip>
+                                    <MudChip Variant="Variant.Text" Size="Size.Small">@message.MessageCreateDate</MudChip>
                                 </div>
                                 <MudText Typo="Typo.body1">@message.Message</MudText>
                             </MudPaper>
@@ -52,7 +55,7 @@
         </div>
         <br />
         <div Class="d-flex  flex-row px-2 mx-4">
-             <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage"  @onkeyup="OnEnterKeyPress" TextUpdateSuppression="false" DisableUnderLine="true" />
+            <MudTextField T="string" Label="Chatbox" Variant="Variant.Outlined" Class="mt-n2 mx-4" @bind-Value="_enteredMessage" @onkeyup="OnEnterKeyPress" TextUpdateSuppression="false" DisableUnderLine="true" />
             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="SendMessage">Send</MudButton>
         </div>
         <audio id="audio-player">
@@ -77,48 +80,25 @@
     {
         var authSate = await AuthenticationStateTask;
         _user = authSate.GetAuthenticatedUser();
-        //OnlineUsersService.OnChange += HandleCircuitsChanged;
-        //Establish hub connection
-        _hubConnection = _hubConnection.TryInitialize(NavigationManager, CustomAuthStateProvider, ConfigurationManager, true);
-        //TODO : Strongly type client?
-        _hubConnection.On<object>(HubHandler.ReceivedMessage, async (receivedMessage) =>
-        {
-            var json = JsonConvert.SerializeObject(receivedMessage);
-            if (!string.IsNullOrEmpty(json))
-            {
-                chatMessage = JsonConvert.DeserializeObject<ChatMessage>(json);
-                _messages.Add(chatMessage);
-                _enteredMessage = string.Empty;
-                //Receive audio notification from messages other than me(current user).
-                if (!IsMyMessage(chatMessage.User.NameIdentifier)){
-                    await JsRuntime.InvokeVoidAsync("PlayAudioFile", "/sounds/message-notification.wav");
-                }
-            }
+        ChatHubClient.ReceivedMessageHandler += ReceivedChatMessage;
+        await ChatHubClient.ConnectAsync();
 
-            StateHasChanged();
-        });
-
-        // _hubConnection.On<string>(HubHandler.UserOnline, (user) =>
-        // {
-        //     Snackbar.Add($"{user} has entered the chat", Severity.Success);
-        //     StateHasChanged();
-        // });
-
-        // _hubConnection.On<string>(HubHandler.UserOffline, (user) =>
-        //{
-        //    Snackbar.Add($"{user} has left the chat", Severity.Warning);
-        //    StateHasChanged();
-       //});
-
-        //Lessons learned kick start your hub connecion after you defined your handlers.
-        if (_hubConnection.State == HubConnectionState.Disconnected)
-        {
-            await _hubConnection.StartAsync();
-        }
     }
     private void ClearText()
     {
         _enteredMessage = string.Empty;
+    }
+
+    private async void ReceivedChatMessage(object? sender, ChatMessageEventArgs e)
+    {
+        _messages.Add(e.ChatMessage);
+        if (!IsMyMessage(e.ChatMessage.User.NameIdentifier))
+        {
+            await JsRuntime.InvokeVoidAsync("PlayAudioFile", "/sounds/message-notification.wav");
+        }
+        _enteredMessage = string.Empty;
+        StateHasChanged();
+
     }
 
     private async Task OnEnterKeyPress(KeyboardEventArgs e)
@@ -154,9 +134,11 @@
         await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         _ = _hubConnection?.DisposeAsync();
+        await ChatHubClient.DisconnectAsync();
+        ChatHubClient.ReceivedMessageHandler -= ReceivedChatMessage;
         HttpClient.Dispose();
     }
 }

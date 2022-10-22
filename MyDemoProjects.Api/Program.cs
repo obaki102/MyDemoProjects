@@ -1,6 +1,6 @@
 
 using Microsoft.OpenApi.Models;
-using MyDemoProjects.Application;
+using MyDemoProjects.Application.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,11 +38,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseInfrastructure();
 app.MapControllers();
 app.Run();

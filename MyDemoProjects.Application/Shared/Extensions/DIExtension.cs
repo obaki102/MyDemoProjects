@@ -8,7 +8,7 @@ using MyDemoProjects.Application.Middlewares;
 using MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList;
 using MyDemoProjects.Application.Features.Shared.Service.Http.RandomGOTQuotes;
 
-namespace MyDemoProjects.Application;
+namespace MyDemoProjects.Application.Shared.Extensions;
 
 public static class DIExtension
 {
