@@ -35,7 +35,7 @@ builder.Services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScopedChatHubClient(options =>
 {
-    options.HubUrl = $"{HubConstants.AzureFunctionHubUrl}?Code={builder.Configuration.GetSection(AppSecrets.SignalR.AzureFuncAuthCode).Value}";
+    options.HubUrl = builder.Configuration.GetSection(AppSecrets.SignalR.AzureFunctionHubUrl).Value;
 });
 //UI
 builder.Services.AddRazorPages();

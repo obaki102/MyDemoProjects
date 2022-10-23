@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
+using MyDemoProjects.Application.Infastructure.Identity.Extensions;
+using MyDemoProjects.Application.Shared.Constants;
 
 namespace MyDemoProjects.DiscordBot
 {
@@ -7,6 +11,7 @@ namespace MyDemoProjects.DiscordBot
         public static IServiceProvider ServiceProvider { get; set; }
         private static IServiceCollection _serviceCollection;
         private static bool _isInitialized = false;
+
 
         public static void Init()
         {
@@ -33,6 +38,14 @@ namespace MyDemoProjects.DiscordBot
             where TInterface : class
         {
             _serviceCollection.AddSingleton(instance);
+        }
+
+        public static void RegisterSingletonHubConenction(IConfiguration config)
+        {
+            _serviceCollection.AddSingletonChatHubClient(options =>
+            {
+                options.HubUrl = config.GetSection(AppSecrets.SignalR.AzureFunctionHubUrl).Value;
+            });
         }
 
         public static void BuildServiceProvider()

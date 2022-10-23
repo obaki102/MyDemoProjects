@@ -14,7 +14,7 @@ namespace MyDemoProjects.UI.Extensions
                 if (isAzureHub)
                 {
                     hubConnection = new HubConnectionBuilder()
-                                      .WithUrl($"{HubConstants.AzureFunctionHubUrl}?Code={configManager.GetSection(AppSecrets.SignalR.AzureFuncAuthCode).Value}")
+                                      .WithUrl(configManager.GetSection(AppSecrets.SignalR.AzureFunctionHubUrl).Value)
                                       //.WithUrl("http://localhost:7153/api/")
                                       .ConfigureLogging(logging =>
                                       {

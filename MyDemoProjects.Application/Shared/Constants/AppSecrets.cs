@@ -32,7 +32,20 @@ namespace MyDemoProjects.Application.Shared.Constants
         public static class SignalR
         {
             public const string ConnectionString = "azureSignalRConnectionString";
-            public const string AzureFuncAuthCode = "azureFunctionAuthCode"; 
+            public const string AzureFuncAuthCode = "azureFunctionAuthCode";
+            public const string AzureFunctionHubUrl = "azureFunctionHubUrl";
+        }
+
+        public static class HttpPost
+        {
+            public const string AzureFunctionsMessages = "azureFunctionsMessages";
+            
+        }
+
+        public static class HttpGet
+        {
+            public const string ConnectionString = "azureSignalRConnectionString";
+            
         }
     }
 }

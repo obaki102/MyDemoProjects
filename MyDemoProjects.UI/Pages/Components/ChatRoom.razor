@@ -67,7 +67,6 @@
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    private HubConnection _hubConnection { get; set; }
     private List<ChatMessage> _messages = new();
     private ChatMessage chatMessage = new();
 
@@ -116,9 +115,7 @@
                 User = _user,
                 Message = _enteredMessage
             };
-        //await _hubConnection.SendAsync(HubHandler.ReceivedMessage, chatMessage);
-        await HttpClient.PostAsJsonAsync("https://mydemoprojectsfunction.azurewebsites.net/api/messages?code=mKDB3ubiBfiwtJ0xnYD7VqX__VRopWheo2IY9wLkcdMWAzFu8E0wvQ==", chatMessage);
-
+        await HttpClient.PostAsJsonAsync(ConfigurationManager.GetSection(AppSecrets.HttpPost.AzureFunctionsMessages).Value, chatMessage);
     }
 
     public bool IsMyMessage(string nameIdentifier)
@@ -130,13 +127,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
         await JsRuntime.InvokeAsync<string>("ScrollToBottom", "scrollableDiv");
     }
 
     public async ValueTask DisposeAsync()
     {
-        _ = _hubConnection?.DisposeAsync();
         await ChatHubClient.DisconnectAsync();
         ChatHubClient.ReceivedMessageHandler -= ReceivedChatMessage;
         HttpClient.Dispose();

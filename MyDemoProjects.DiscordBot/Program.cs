@@ -10,6 +10,7 @@ using MyDemoProjects.DiscordBot.Handlers;
 using MyDemoProjects.DiscordBot.Services;
 
 
+
 var client = new DiscordShardedClient(new DiscordSocketConfig
 {
     GatewayIntents  = GatewayIntents.All,
@@ -25,8 +26,6 @@ var commands = new CommandService(new CommandServiceConfig
 });
 var interactionCommand = new InteractionService(client);
 
-var hubConnection = new HubConnectionBuilder().WithUrl("https://mydemoprojectsfunction.azurewebsites.net/api/?Code=eo8KJcUhAJqIjNjhAaFStXRKfJSDi3AxYRT_F530PKlZAzFuEZBPcQ==").Build();
-
 IConfiguration config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddEnvironmentVariables()
@@ -40,7 +39,8 @@ Initializer.Init();
 Initializer.RegisterSingletonInstance(client);
 Initializer.RegisterSingletonInstance(commands);
 Initializer.RegisterSingletonInstance(interactionCommand);
-Initializer.RegisterSingletonInstance(hubConnection);
+//Add hubconnection
+Initializer.RegisterSingletonHubConenction(config);
 Initializer.RegisterSingletonInstance(config);
 Initializer.RegisterSingletonInstance(httpClient);
 Initializer.RegisterSingletonType<ICommandHandler,CommandHandler>();

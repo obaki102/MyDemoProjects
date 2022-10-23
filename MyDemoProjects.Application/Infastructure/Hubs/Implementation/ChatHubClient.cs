@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.JSInterop;
 using MyDemoProjects.Application.Infastructure.Hubs.Interface;
 using MyDemoProjects.Application.Shared.Events;
 using MyDemoProjects.Application.Shared.Models;

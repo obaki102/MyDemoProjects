@@ -3,50 +3,52 @@ using Discord;
 using System.Reflection;
 using Discord.Commands;
 using MyDemoProjects.DiscordBot.Services;
-using Microsoft.AspNetCore.SignalR.Client;
 using MyDemoProjects.Application.Shared.Models;
 using System.Net.Http.Json;
-using Microsoft.JSInterop;
+using MyDemoProjects.Application.Infastructure.Hubs.Interface;
+using MyDemoProjects.Application.Shared.Events;
+using Microsoft.Extensions.Configuration;
 using MyDemoProjects.Application.Shared.Constants;
-using Newtonsoft.Json;
-using MyDemoProjects.DiscordBot.DTOs;
 
 namespace MyDemoProjects.DiscordBot.Handlers
 {
-    public class CommandHandler : ICommandHandler
+    public class CommandHandler : ICommandHandler, IAsyncDisposable
     {
         private readonly DiscordShardedClient _client;
         private readonly CommandService _commands;
-        private readonly HubConnection _hubConnection;
+        private readonly IHubClient _hubClient;
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
         public CommandHandler(
             DiscordShardedClient client,
             CommandService commands,
-            HubConnection hubConnection,
-            HttpClient httpClient)
+            IHubClient hubClient,
+            HttpClient httpClient,
+            IConfiguration configuration)
         {
             _client = client;
             _commands = commands;
-            _hubConnection = hubConnection;
             _httpClient = httpClient;
+            _hubClient = hubClient;
+            _configuration = configuration;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await _hubClient.DisconnectAsync();
+            _hubClient.ReceivedMessageHandler -= ReceivedChatMessage;
         }
 
         public async Task InitializeAsync()
         {
             // add the public modules that inherit InteractionModuleBase<T> to the InteractionService
             await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), Initializer.ServiceProvider);
-            await _hubConnection.StartAsync();
+           
+            //Subscribe to any incoming message from signalalR
+            _hubClient.ReceivedMessageHandler += ReceivedChatMessage;
+            await _hubClient.ConnectAsync();
 
-            _hubConnection.On<object>(HubHandler.ReceivedMessage, async (receivedMessage) =>
-            {
-                var chatMessage = JsonConvert.DeserializeObject<ChatMessage>(receivedMessage as string);
-                var chnl = _client.GetChannel(1032124362523955210) as IMessageChannel; // 4
-                if (!chatMessage.User.Name.Equals("Chatbot"))
-                {
-                    await chnl.SendMessageAsync($"from {chatMessage.User.Name} Message: {chatMessage.Message}"); // 5
-                }
-            });
             // Subscribe a handler to see if a message invokes a command.
             _client.MessageReceived += HandleCommandAsync;
 
@@ -87,8 +89,7 @@ namespace MyDemoProjects.DiscordBot.Handlers
                     },
                     Message = msg.Content
                 };
-                // await _hubconnetion.SendAsync("ReceivedMessage", chatMessage);
-                await _httpClient.PostAsJsonAsync("https://mydemoprojectsfunction.azurewebsites.net/api/messages?code=mKDB3ubiBfiwtJ0xnYD7VqX__VRopWheo2IY9wLkcdMWAzFu8E0wvQ==", chatMessage);
+                await _httpClient.PostAsJsonAsync(_configuration.GetSection(AppSecrets.HttpPost.AzureFunctionsMessages).Value, chatMessage);
             }
 
 
@@ -123,6 +124,15 @@ namespace MyDemoProjects.DiscordBot.Handlers
             //await usermsg.AddReactionAsync(emote2);
 
 
+        }
+
+        private async void ReceivedChatMessage(object? sender, ChatMessageEventArgs receivedMessage)
+        {
+            if (!receivedMessage.ChatMessage.User.Name.Equals("Chatbot"))
+            {
+                var chnl = _client.GetChannel(1032124362523955210) as IMessageChannel;
+                await chnl.SendMessageAsync($"from {receivedMessage.ChatMessage.User.Name} Message: {receivedMessage.ChatMessage.Message}"); // 5
+            }
         }
     }
 

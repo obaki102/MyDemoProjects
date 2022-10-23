@@ -43,5 +43,15 @@ namespace MyDemoProjects.Application.Infastructure.Identity.Extensions
             services.Configure(options);
             return services;
         }
+        public static IServiceCollection AddSingletonChatHubClient(this IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            services.TryAddSingleton<IHubClient, ChatHubClient>();
+            return services;
+        }
     }
 }
