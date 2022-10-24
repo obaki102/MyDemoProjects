@@ -1,4 +1,5 @@
-﻿using MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList;
+﻿using Microsoft.Extensions.Caching.Memory;
+using MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList;
 using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Application.Features.ExternalApi.AnimeList.Queries;
@@ -8,13 +9,23 @@ public record GetAnimeListBySeasonAndYear(Season Season) : IRequest<ApplicationR
 public class GetAnimeListBySeasonAndYearHandler : IRequestHandler<GetAnimeListBySeasonAndYear, ApplicationResponse<AnimeListRoot>>
 {
     private readonly IAnimeListHttpService _animeListHttpService;
-    public GetAnimeListBySeasonAndYearHandler(IAnimeListHttpService animeListHttpService)
+    private readonly IMemoryCache _memoryCache;
+    public GetAnimeListBySeasonAndYearHandler(IAnimeListHttpService animeListHttpService, IMemoryCache memoryCache)
     {
         _animeListHttpService = animeListHttpService;
+        _memoryCache = memoryCache;
     }
-    public async Task<ApplicationResponse<AnimeListRoot>> Handle(GetAnimeListBySeasonAndYear request, CancellationToken cancellationToken)
+    public  Task<ApplicationResponse<AnimeListRoot>> Handle(GetAnimeListBySeasonAndYear request, CancellationToken cancellationToken)
     {
-        return await _animeListHttpService.GetAnimeListBySeasonAndYear(request.Season);
+        var memoryKey = new Guid();
+        return  _memoryCache.GetOrCreateAsync(
+            memoryKey,
+            async entry =>
+            {
+                entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+                return await _animeListHttpService.GetAnimeListBySeasonAndYear(request.Season);
+            });
+      
 
 
     }
