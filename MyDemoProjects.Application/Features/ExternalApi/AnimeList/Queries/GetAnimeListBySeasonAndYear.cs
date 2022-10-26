@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using MyDemoProjects.Application.Features.Shared.Service.Http.AnimeList;
-using MyDemoProjects.Application.Shared.Models.Response;
 
 namespace MyDemoProjects.Application.Features.ExternalApi.AnimeList.Queries;
 
@@ -22,11 +21,9 @@ public class GetAnimeListBySeasonAndYearHandler : IRequestHandler<GetAnimeListBy
             memoryKey,
             async entry =>
             {
-                entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+                entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(60));
                 return await _animeListHttpService.GetAnimeListBySeasonAndYear(request.Season);
             });
-      
-
 
     }
 }
