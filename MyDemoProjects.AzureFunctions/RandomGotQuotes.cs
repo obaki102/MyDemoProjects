@@ -33,13 +33,13 @@ namespace MyDemoProjects.AzureFunctions
             var rootRequest = new Root("", new List<Embed> { embedRequest });
             var serializedRequest = JsonSerializer.Serialize<Root>(rootRequest);
             //Send response to discord webhook.
-            var postResponse = await httpClient.PostAsync("https://discord.com/api/webhooks/1027409178727297024/R1ek93N_HYYdxotCdefbyQRGUiDW3KrRpgHvdkr04u6DhY8YR90v2Guq-i1nFMuoqswd", new StringContent(serializedRequest, System.Text.Encoding.UTF8, "application/json"));
-            if (!postResponse.IsSuccessStatusCode)
-            {
-                return new BadRequestResult();
-            }
 
-            log.LogInformation(postResponse.StatusCode.ToString());
+            //if (!postResponse.IsSuccessStatusCode)
+            //{
+            //    return new BadRequestResult();
+            //}
+
+            //log.LogInformation(postResponse.StatusCode.ToString());
             return new OkObjectResult(rootRequest);
         }
 

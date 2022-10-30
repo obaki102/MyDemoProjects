@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.SignalR;
 using MudBlazor;
 using MudBlazor.Services;
-using MyDemoProjects.Application.Infastructure.Hubs.Implementation;
-using MyDemoProjects.Application.Infastructure.Hubs.Interface;
 using MyDemoProjects.Application.Infastructure.Identity.Extensions;
 using MyDemoProjects.Application.Shared.Constants;
 using MyDemoProjects.Application.Shared.Extensions;
